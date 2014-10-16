@@ -35,7 +35,17 @@ using namespace itpp;
 int main()
 {
   LDPC_Parity_Regular H;
-  H.generate(200, 3, 6, "rand", "100 6");
+
+  CPU_Timer t1;
+
+  t1.reset();
+  t1.start();
+
+  H.generate(400, 3, 6, "rand", "100 6");
+
+  t1.stop();
+  cout << endl << endl << t1.get_time()*1000.0f << "ms H.generate" << endl << endl;
+
   int girth = H.cycle_removal_MGW(6);
   cout << "girth=" << girth << endl;
   LDPC_Generator_Systematic G;
@@ -44,20 +54,36 @@ int main()
   C.save_code("ldpc_test.codec");
   LDPC_Code C1("ldpc_test.codec", &G);
   cout << C << endl;
+
+#if 0
   bvec bitsin = randb(C.get_nvar() - C.get_ncheck());
   bvec bitsout;
   C.encode(bitsin, bitsout);
   it_assert(C.syndrome_check(bitsout), "syndrome check failed");
+
+#endif
 
   double EbN0db = 1.5;
   double N0 = pow(10.0, -EbN0db / 10.0) / C.get_rate();
   double sigma = sqrt(N0 / 2.0);
   vec x = 1.0 + sigma * randn(C.get_nvar());
   QLLRvec LLRin = C.get_llrcalc().to_qllr(2.0 * x / (N0 / 2.0));
+
+  cout << "codeword llr int LLRin" << endl;
+  cout << LLRin.left(25) << LLRin.size() << endl << endl ;
+
   QLLRvec LLRout(C.get_nvar());
+
+  t1.reset();
+  t1.start();
+
   C.bp_decode(LLRin, LLRout);
+  t1.stop();
+  cout << t1.get_time()*1000.0f << "ms LDPC_Code::bp_decode" << endl << endl;
+
   cout << LLRout.left(25) << endl;
 
+#if 0
   // BLDPC code
   {
     cout.precision(5);
@@ -84,4 +110,5 @@ int main()
     G.encode(in_bits, codeword);
     cout << in_bits << endl << codeword << endl;
   }
+#endif
 }
