@@ -1,0 +1,798 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\base">
+      <UniqueIdentifier>{22f9e746-1a0f-42c8-b3cd-ccc57b531680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\base\bessel">
+      <UniqueIdentifier>{fb114fd5-d1d1-4f6a-bd40-1f357c655a0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\base\algebra">
+      <UniqueIdentifier>{eebd46ed-939b-4917-8a75-817a2dc6a9ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\base\math">
+      <UniqueIdentifier>{c01ee9ca-f2f2-430a-a27e-3e8b1022f15a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\comm">
+      <UniqueIdentifier>{1006a21f-895d-46a2-a3f7-ca9e7c4c96ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\srccode">
+      <UniqueIdentifier>{f493bd62-8018-436f-aa50-f699ba52d684}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fixedpoint">
+      <UniqueIdentifier>{370db42c-7c23-4d0e-aaed-6dfff0a28180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\protocol">
+      <UniqueIdentifier>{92908467-5651-4189-b654-d05ebb0e77a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\signal">
+      <UniqueIdentifier>{7266f555-8590-492b-b931-b62a31ad20ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\stat">
+      <UniqueIdentifier>{d17123e0-1e65-4677-b2ea-e6df04fa3569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\optim">
+      <UniqueIdentifier>{46eaf689-85bc-46a9-b13d-90b5f299a201}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\base">
+      <UniqueIdentifier>{6274a8d6-4d4a-4e1e-ac89-e3d80b911423}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\base\bessel">
+      <UniqueIdentifier>{9d8d6ffe-7286-450b-b5f0-85bc025afbc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\base\algebra">
+      <UniqueIdentifier>{1db2a27a-4c41-4eae-a3bc-ed08e13977ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\base\math">
+      <UniqueIdentifier>{1492a1cc-04d0-4966-8711-614452df4d1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\comm">
+      <UniqueIdentifier>{1d654b5a-d0b4-4cc6-8d81-19c34b891c09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\srccode">
+      <UniqueIdentifier>{6b91bff6-f93b-49b0-a9c1-356e39010124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fixed">
+      <UniqueIdentifier>{4b792229-2d95-49d0-aaef-09b49e521d16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\protocol">
+      <UniqueIdentifier>{0d5cd140-51fb-4efe-8730-05e86903c754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\signal">
+      <UniqueIdentifier>{5f73f7f1-b0e2-4f40-b35b-233463b805dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\stat">
+      <UniqueIdentifier>{84ef5e8c-9fc4-44b1-8a30-19b33b98a5c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\optim">
+      <UniqueIdentifier>{5686b1a1-a1d9-47b8-a40e-df824822737e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\itpp\base\bessel.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\binary.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\binfile.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\converters.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\copy_vector.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\fastmath.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\gf2mat.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\help_functions.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\itassert.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\itcompat.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\itfile.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\mat.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\matfunc.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\operators.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\parser.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\random.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\smat.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\specmat.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\svec.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\timing.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\vec.cpp">
+      <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\airy.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\chbevl.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\gamma.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\hyperg.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\i0.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\i1.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\iv.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\jv.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\k0.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\k1.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\kn.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\polevl.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\bessel\struve.cpp">
+      <Filter>Source Files\base\bessel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\cholesky.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\det.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\eigen.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\inv.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\ls_solve.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\lu.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\qr.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\schur.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\algebra\svd.cpp">
+      <Filter>Source Files\base\algebra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\math\elem_math.cpp">
+      <Filter>Source Files\base\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\math\error.cpp">
+      <Filter>Source Files\base\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\math\integration.cpp">
+      <Filter>Source Files\base\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\math\log_exp.cpp">
+      <Filter>Source Files\base\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\math\misc.cpp">
+      <Filter>Source Files\base\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\base\math\trig_hyp.cpp">
+      <Filter>Source Files\base\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\bch.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\channel.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\commfunc.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\convcode.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\crc.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\egolay.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\error_counters.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\exit.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\galois.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\hammcode.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\interleave.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\ldpc.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\llr.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\modulator.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\modulator_nd.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\ofdm.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\pulse_shape.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\punct_convcode.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\rec_syst_conv_code.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\reedsolomon.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\sequence.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\siso_dem.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\siso_eq.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\siso_mud.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\siso_nsc.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\siso_rsc.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\spread.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\stc.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\comm\turbo.cpp">
+      <Filter>Source Files\comm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\srccode\audiofile.cpp">
+      <Filter>Source Files\srccode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\srccode\gmm.cpp">
+      <Filter>Source Files\srccode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\srccode\lpcfunc.cpp">
+      <Filter>Source Files\srccode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\srccode\pnm.cpp">
+      <Filter>Source Files\srccode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\srccode\vq.cpp">
+      <Filter>Source Files\srccode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\srccode\vqtrain.cpp">
+      <Filter>Source Files\srccode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\cfix.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\cfixed.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\fix.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\fix_base.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\fix_factory.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\fix_functions.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\fix_operators.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\fixed\fixed.cpp">
+      <Filter>Source Files\fixedpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\protocol\events.cpp">
+      <Filter>Source Files\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\protocol\front_drop_queue.cpp">
+      <Filter>Source Files\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\protocol\packet_channel.cpp">
+      <Filter>Source Files\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\protocol\packet_generator.cpp">
+      <Filter>Source Files\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\protocol\selective_repeat.cpp">
+      <Filter>Source Files\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\protocol\tcp.cpp">
+      <Filter>Source Files\protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\fastica.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\filter.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\filter_design.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\freq_filt.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\poly.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\resampling.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\sigfun.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\source.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\transforms.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\window.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\stat\misc_stat.cpp">
+      <Filter>Source Files\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\stat\mog_diag.cpp">
+      <Filter>Source Files\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\stat\mog_diag_em.cpp">
+      <Filter>Source Files\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\stat\mog_diag_kmeans.cpp">
+      <Filter>Source Files\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\stat\mog_generic.cpp">
+      <Filter>Source Files\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\optim\newton_search.cpp">
+      <Filter>Source Files\optim</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\itpp\config_msvc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itbase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itcomm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itfixed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itmex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itoptim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itprotocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itsignal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itsrccode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itstat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\array.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\bessel.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\binary.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\binfile.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\blas.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\circular_buffer.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\converters.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\copy_vector.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\factory.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\fastmath.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\gf2mat.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\help_functions.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\itassert.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\itcompat.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\itfile.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\ittypes.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\mat.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\matfunc.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\operators.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\parser.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\random.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\smat.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\sort.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\specmat.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\stack.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\svec.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\timing.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\vec.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\bessel\bessel_internal.h">
+      <Filter>Header Files\base\bessel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\cholesky.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\det.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\eigen.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\inv.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\lapack.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\ls_solve.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\lu.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\qr.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\schur.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\algebra\svd.h">
+      <Filter>Header Files\base\algebra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\math\elem_math.h">
+      <Filter>Header Files\base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\math\error.h">
+      <Filter>Header Files\base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\math\integration.h">
+      <Filter>Header Files\base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\math\log_exp.h">
+      <Filter>Header Files\base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\math\min_max.h">
+      <Filter>Header Files\base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\math\misc.h">
+      <Filter>Header Files\base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\base\math\trig_hyp.h">
+      <Filter>Header Files\base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\bch.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\channel.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\channel_code.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\commfunc.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\convcode.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\crc.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\egolay.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\error_counters.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\exit.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\galois.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\hammcode.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\interleave.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\ldpc.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\llr.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\modulator.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\modulator_nd.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\ofdm.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\pulse_shape.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\punct_convcode.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\rec_syst_conv_code.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\reedsolomon.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\sequence.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\siso.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\spread.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\stc.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\comm\turbo.h">
+      <Filter>Header Files\comm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\srccode\audiofile.h">
+      <Filter>Header Files\srccode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\srccode\gmm.h">
+      <Filter>Header Files\srccode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\srccode\lpcfunc.h">
+      <Filter>Header Files\srccode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\srccode\pnm.h">
+      <Filter>Header Files\srccode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\srccode\vq.h">
+      <Filter>Header Files\srccode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\srccode\vqtrain.h">
+      <Filter>Header Files\srccode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\cfix.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\cfixed.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\fix.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\fix_base.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\fix_factory.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\fix_functions.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\fix_operators.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\fixed\fixed.h">
+      <Filter>Header Files\fixed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\events.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\front_drop_queue.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\packet.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\packet_channel.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\packet_generator.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\selective_repeat.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\signals_slots.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\tcp.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\protocol\tcp_client_server.h">
+      <Filter>Header Files\protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\fastica.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\filter.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\filter_design.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\freq_filt.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\poly.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\resampling.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\sigfun.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\source.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\transforms.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\window.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\stat\histogram.h">
+      <Filter>Header Files\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\stat\misc_stat.h">
+      <Filter>Header Files\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\stat\mog_diag.h">
+      <Filter>Header Files\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\stat\mog_diag_em.h">
+      <Filter>Header Files\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\stat\mog_diag_kmeans.h">
+      <Filter>Header Files\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\stat\mog_generic.h">
+      <Filter>Header Files\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\optim\newton_search.h">
+      <Filter>Header Files\optim</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\AUTHORS" />
+    <None Include="..\ChangeLog" />
+    <None Include="..\COPYING" />
+    <None Include="..\NEWS" />
+    <None Include="..\README" />
+  </ItemGroup>
+</Project>
