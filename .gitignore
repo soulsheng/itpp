@@ -25,3 +25,9 @@
 /win32/itpp_mkl_tests/stat_test_build
 /win32/itpp_mkl_tests/turbo_test_build
 /win32/itpp_mkl_tests/vec_test_build
+/bin/*.exe
+/bin/*.pdb
+/win32/diy/*.it
+/win32/*.user
+/win32/itpp_mkl_tests/*.codec
+/win32/lib/*.lib
