@@ -63,7 +63,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>itpp.lib;mkl_intel_c_dll.lib;mkl_core_dll.lib;mkl_intel_thread_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib;$(LIB);C:\Program Files (x86)\Intel\Composer XE 2013 SP1\mkl\lib\ia32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib;$(LIB);$(MKLDIR)lib\ia32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>uuid.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -93,7 +93,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>itpp_debug.lib;mkl_intel_c_dll.lib;mkl_core_dll.lib;mkl_intel_thread_dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib;$(LIB);C:\Program Files (x86)\Intel\Composer XE 2013 SP1\mkl\lib\ia32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib;$(LIB);$(MKLDIR)lib\ia32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>uuid.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>

@@ -13,3 +13,15 @@
 /win32/*.opensdf
 /win32/itpp_mkl_tests/*.sdf
 /win32/itpp_mkl_tests/*.suo
+/win32/diy/ldpc_bersim_awgn_build
+/win32/diy/ldpc_gen_codes_build
+/win32/itpp_mkl_tests/llr_test_build
+/win32/itpp_mkl_tests/reedsolomon_test_build
+/win32/itpp_mkl_tests/rand_test_build
+/win32/itpp_mkl_tests/mat_test_build
+/win32/itpp_mkl_tests/sparse_test_build
+/win32/itpp_mkl_tests/specmat_test_build
+/win32/itpp_mkl_tests/transforms_test_build
+/win32/itpp_mkl_tests/stat_test_build
+/win32/itpp_mkl_tests/turbo_test_build
+/win32/itpp_mkl_tests/vec_test_build
