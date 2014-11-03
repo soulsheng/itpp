@@ -32,3 +32,4 @@
 /win32/itpp_mkl_tests/*.codec
 /win32/lib/*.lib
 /win32/itpp_mkl_tests/bch_test_build
+/win32/diy/ldpc_bch_dvb-s2_build

@@ -32,6 +32,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_gen_codes", "diy\ldpc_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bch_test", "itpp_mkl_tests\bch_test.vcxproj", "{4AF082AF-33FD-44F7-915D-7D9041BA51CC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_bch_dvb-s2", "diy\ldpc_bch_dvb-s2.vcxproj", "{C407E548-5783-431D-9F14-0E4D02D95549}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -125,6 +127,12 @@ Global
 		{4AF082AF-33FD-44F7-915D-7D9041BA51CC}.DebugN|Win32.Build.0 = DebugN|Win32
 		{4AF082AF-33FD-44F7-915D-7D9041BA51CC}.Release|Win32.ActiveCfg = Release|Win32
 		{4AF082AF-33FD-44F7-915D-7D9041BA51CC}.Release|Win32.Build.0 = Release|Win32
+		{C407E548-5783-431D-9F14-0E4D02D95549}.Debug|Win32.ActiveCfg = DebugN|Win32
+		{C407E548-5783-431D-9F14-0E4D02D95549}.Debug|Win32.Build.0 = DebugN|Win32
+		{C407E548-5783-431D-9F14-0E4D02D95549}.DebugN|Win32.ActiveCfg = DebugN|Win32
+		{C407E548-5783-431D-9F14-0E4D02D95549}.DebugN|Win32.Build.0 = DebugN|Win32
+		{C407E548-5783-431D-9F14-0E4D02D95549}.Release|Win32.ActiveCfg = Release|Win32
+		{C407E548-5783-431D-9F14-0E4D02D95549}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
