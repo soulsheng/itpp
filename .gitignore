@@ -31,3 +31,4 @@
 /win32/*.user
 /win32/itpp_mkl_tests/*.codec
 /win32/lib/*.lib
+/win32/itpp_mkl_tests/bch_test_build
