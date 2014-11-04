@@ -24,6 +24,7 @@ int main(int argc, char **argv)
     istringstream ss(argv[2]);
     double x;
     ss >> x;
+	EbN0db.set_length(1);
     EbN0db = x;
     single_snr_mode = true;
   }
