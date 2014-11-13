@@ -53,7 +53,9 @@ int main(int argc, char **argv)
                "0 0 0 0 0 0.01568 0.85244 0.13188",
                "rand",   // random unstructured matrix
                "500 8"); // optimize girth
-    LDPC_Code C(&H);
+    //LDPC_Code C(&H);
+	LDPC_Generator_Systematic G(&H);
+	LDPC_Code C(&H, &G);
     C.save_code("RU_1000.it");
   }
 
@@ -80,7 +82,9 @@ int main(int argc, char **argv)
                "0 0 0 0 0 0 0 0 0.33620 0.08883 0.57497",
                "rand",
                "40 4");  // less aggressive optimization
-    LDPC_Code C(&H);
+    //LDPC_Code C(&H);
+	LDPC_Generator_Systematic G(&H);
+	LDPC_Code C(&H, &G);
     C.save_code("RU_100000.it");
   }
 
