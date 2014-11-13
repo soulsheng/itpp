@@ -68,9 +68,13 @@ int main(int argc, char **argv)
                "0 0 0 0 0 0 0 0.64854 0.34747 0.00399",
                "rand",  // random unstructured matrix
                "150 8"); // optimize
-    LDPC_Code C(&H);
+	//LDPC_Code C(&H);
+	LDPC_Generator_Systematic G(&H);
+	LDPC_Code C(&H, &G);
     C.save_code("RU_10000.it");
   }
+
+  return 0;
 
   { // 100000 bits (takes a while to run)
     cout << "========= IRREGULAR CODE 100000 BITS ==========" << endl;
@@ -88,7 +92,6 @@ int main(int argc, char **argv)
     C.save_code("RU_100000.it");
   }
 
-  return 0;
 
   { // 1000000 bits (THIS CODE REQUIRES ABOUT 450 MB TO STORE AND 2GB
     // INTERNAL MEMORY TO GENERATE)
