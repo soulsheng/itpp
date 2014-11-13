@@ -5,7 +5,7 @@ using namespace std;
 using namespace itpp;
 
 #define		FILENAME_IT		"RU_1000.it"
-#define		EBNO			0.67
+#define		EBNO			1.9
 
 int main(int argc, char **argv)
 {
@@ -37,9 +37,12 @@ int main(int argc, char **argv)
     for (int64_t i = 0; i < Nbits; i += C.get_nvar()) 
 	{
       
-		int N = C.get_nvar();             // number of bits per codeword
-		bvec bitsin = zeros_b(N);
-		vec s = Mod.modulate_bits(bitsin);
+		int N = C.get_ninfo();             // number of bits per codeword
+		bvec bitsin = randb(N);
+		
+		bvec decbits = C.encode(bitsin);
+		
+		vec s = Mod.modulate_bits(decbits);
 
 		
 		// Received data
@@ -51,7 +54,8 @@ int main(int argc, char **argv)
 		// Decode the received bits
 		QLLRvec llr;
 		C.bp_decode(C.get_llrcalc().to_qllr(softbits), llr);
-		bvec bitsout = llr < 0;
+		bvec bitsoutAll = llr < 0;
+		bvec bitsout = bitsoutAll.left(N);
 		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
 		// Count the number of errors
