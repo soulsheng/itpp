@@ -34,6 +34,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bch_test", "itpp_mkl_tests\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_bch_dvb-s2", "diy\ldpc_bch_dvb-s2.vcxproj", "{C407E548-5783-431D-9F14-0E4D02D95549}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bch_bersim_awgn", "diy\bch_bersim_awgn.vcxproj", "{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -133,6 +135,12 @@ Global
 		{C407E548-5783-431D-9F14-0E4D02D95549}.DebugN|Win32.Build.0 = DebugN|Win32
 		{C407E548-5783-431D-9F14-0E4D02D95549}.Release|Win32.ActiveCfg = Release|Win32
 		{C407E548-5783-431D-9F14-0E4D02D95549}.Release|Win32.Build.0 = Release|Win32
+		{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}.Debug|Win32.ActiveCfg = DebugN|Win32
+		{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}.Debug|Win32.Build.0 = DebugN|Win32
+		{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}.DebugN|Win32.ActiveCfg = DebugN|Win32
+		{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}.DebugN|Win32.Build.0 = DebugN|Win32
+		{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}.Release|Win32.ActiveCfg = Release|Win32
+		{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
