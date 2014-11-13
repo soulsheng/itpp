@@ -8,6 +8,10 @@ using namespace itpp;
 #define		EBNO			1.1
 #define		COUNT_REPEAT	1000	// repeat time 
 
+#define		N_BCH			31
+#define		T_BCH			2
+#define		K_BCH			21
+
 int main(int argc, char **argv)
 {
 
@@ -20,6 +24,8 @@ int main(int argc, char **argv)
 
 	// Alternate high speed settings: 50 iterations, logmax approximation
 	// C.set_llrcalc(LLR_calc_unit(12,0,7));
+	
+	BCH bch(N_BCH, T_BCH);
 
 
 	BPSK Mod;
@@ -30,17 +36,36 @@ int main(int argc, char **argv)
 
 	BERC berc;  // Counters for coded and uncoded BER
 	BLERC ferc; // Counter for coded FER
-	ferc.set_blocksize(C.get_nvar() - C.get_ncheck());
 
 	RNG_randomize();
 
+
+	int N = C.get_ninfo();             // number of bits per codeword
+
+	int nSplit = N / N_BCH;
+	int Nbch = nSplit * N_BCH;
+
+	int Kbch = nSplit * K_BCH;
+
+	ferc.set_blocksize(Kbch);
+
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
-      
-		int N = C.get_ninfo();             // number of bits per codeword
-		bvec bitsin = randb(N);
-		
-		bvec decbits = C.encode(bitsin);
+
+		bvec bitsin = randb(Kbch);
+
+		bvec bitsoutBCH(Nbch);
+		for (int j = 0; j < nSplit; j++)
+		{
+			bvec bitsinBCH = bitsin.mid(j*K_BCH, K_BCH);
+			bvec encodedBCH = bch.encode(bitsinBCH);
+			bitsoutBCH.set_subvector(j*N_BCH, encodedBCH);
+		}
+
+		bvec bitsinLDPC(N);
+		bitsinLDPC.set_subvector(0, bitsoutBCH);
+
+		bvec decbits = C.encode(bitsinLDPC);
 		
 		vec s = Mod.modulate_bits(decbits);
 
@@ -55,12 +80,20 @@ int main(int argc, char **argv)
 		QLLRvec llr;
 		C.bp_decode(C.get_llrcalc().to_qllr(softbits), llr);
 		bvec bitsoutAll = llr < 0;
-		bvec bitsout = bitsoutAll.left(N);
+		bvec bitsoutLDPC = bitsoutAll.left(Nbch);
 		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
+		bvec bitsDecodeBCH(Kbch);
+		for (int j = 0; j < nSplit; j++)
+		{
+			bvec bitsinBCH = bitsoutLDPC.mid(j*N_BCH, N_BCH);
+			bvec decodedBCH = bch.decode(bitsinBCH);
+			bitsDecodeBCH.set_subvector(j*K_BCH, decodedBCH);
+		}
+
 		// Count the number of errors
-		berc.count(bitsin, bitsout);
-		ferc.count(bitsin, bitsout);
+		berc.count(bitsin, bitsDecodeBCH);
+		ferc.count(bitsin, bitsDecodeBCH);
 
       
 		cout << "Eb/N0 = " << EBNO << "  Simulated "
