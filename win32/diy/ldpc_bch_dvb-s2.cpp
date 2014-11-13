@@ -14,16 +14,9 @@ using namespace itpp;
 
 int main(int argc, char **argv)
 {
-
+	// step 0: intialize ldpc,bch,bpsk,awgn
 	LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
 	LDPC_Code ldpc(FILENAME_IT, &G);
-	cout << ldpc << endl;
-
-	// High performance: 2500 iterations, high resolution LLR algebra
-	ldpc.set_exit_conditions(2500);
-
-	// Alternate high speed settings: 50 iterations, logmax approximation
-	// C.set_llrcalc(LLR_calc_unit(12,0,7));
 	
 	BCH bch(N_BCH, T_BCH);
 
@@ -52,8 +45,10 @@ int main(int argc, char **argv)
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 
+		// step 1: input message
 		bvec bitsinBCHEnc = randb(Kbch);
 
+		// step 2: bch encode
 		bvec bitsoutBCHEnc(Nbch);
 		for (int j = 0; j < nSplit; j++)
 		{
@@ -66,24 +61,27 @@ int main(int argc, char **argv)
 		bvec bitsinLDPCEnc(kldpc);
 		bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
 
+		// step 3: ldpc encode
 		bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
 		
+		// step 4: modulate
 		vec s = Mod.modulate_bits(bitsoutLDPCEnc);
 
 		
-		// Received data
+		// step 5: awgn Received data
 		vec x = chan(s);
 
-		// Demodulate
+		// step 6: Demodulate
 		vec softbits = Mod.demodulate_soft_bits(x, N0);
 
-		// Decode the received bits
+		// step 7: ldpc Decode the received bits
 		QLLRvec llr;
 		ldpc.bp_decode(ldpc.get_llrcalc().to_qllr(softbits), llr);
 		bvec bitsoutLDPCDec = llr < 0;
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
 		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
+		// step 8: bch decode
 		bvec bitsoutBCHDec(Kbch);
 		for (int j = 0; j < nSplit; j++)
 		{
@@ -92,7 +90,7 @@ int main(int argc, char **argv)
 			bitsoutBCHDec.set_subvector(j*K_BCH, bitsoutBCHDecOne);
 		}
 
-		// Count the number of errors
+		// step 9: verify result, Count the number of errors
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
 		ferc.count(bitsinBCHEnc, bitsoutBCHDec);
 
