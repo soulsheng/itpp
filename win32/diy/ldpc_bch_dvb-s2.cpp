@@ -6,6 +6,7 @@ using namespace itpp;
 
 #define		FILENAME_IT		"RU_1000.it"
 #define		EBNO			1.9
+#define		COUNT_REPEAT	1000	// repeat time 
 
 int main(int argc, char **argv)
 {
@@ -33,8 +34,7 @@ int main(int argc, char **argv)
 
 	RNG_randomize();
 
-	int64_t Nbits = 10000LL; // maximum number of bits simulated 5000000000LL
-    for (int64_t i = 0; i < Nbits; i += C.get_nvar()) 
+    for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
       
 		int N = C.get_ninfo();             // number of bits per codeword
