@@ -4,8 +4,7 @@
 using namespace std;
 using namespace itpp;
 
-#define		FILENAME_IT		"RU_1000.it"
-#define		EBNO			0.67
+#define		EBNO			6.3
 #define		N_BCH			15
 #define		T_BCH			1
 #define		K_BCH			11
@@ -25,7 +24,7 @@ int main(int argc, char **argv)
 
 	RNG_randomize();
 
-	int64_t Nbits = 396LL; // maximum number of bits simulated 5000000000LL
+	int64_t Nbits = 3960LL; // maximum number of bits simulated 5000000000LL
     for (int64_t i = 0; i < Nbits; i += K_BCH) 
 	{
       
