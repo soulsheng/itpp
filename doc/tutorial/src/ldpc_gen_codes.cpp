@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   {  // 10000 bits (takes a few minutes to run)
     cout << "========= IRREGULAR CODE 10000 BITS ==========" << endl;
     LDPC_Parity_Irregular H;
-    H.generate(10000,
+    H.generate(20000,
                "0 0.21991 0.23328 0.02058 0 0.08543 0.06540 0.04767 0.01912"
                "0 0 0 0 0 0 0 0 0 0.08064 0.22798",
                "0 0 0 0 0 0 0 0.64854 0.34747 0.00399",
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 	//LDPC_Code C(&H);
 	LDPC_Generator_Systematic G(&H);
 	LDPC_Code C(&H, &G);
-    C.save_code("RU_10000.it");
+    C.save_code("RU_20000.it");
   }
 
   return 0;
