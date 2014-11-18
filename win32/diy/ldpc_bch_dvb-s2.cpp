@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	BCH bch(N_BCH, T_BCH);
 
 
-	BPSK Mod;
+	BPSK bpsk;
 
 	// Noise variance is N0/2 per dimension
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -65,14 +65,14 @@ int main(int argc, char **argv)
 		bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
 		
 		// step 4: modulate
-		vec s = Mod.modulate_bits(bitsoutLDPCEnc);
+		vec s = bpsk.modulate_bits(bitsoutLDPCEnc);
 
 		
 		// step 5: awgn Received data
 		vec x = chan(s);
 
 		// step 6: Demodulate
-		vec softbits = Mod.demodulate_soft_bits(x, N0);
+		vec softbits = bpsk.demodulate_soft_bits(x, N0);
 
 		// step 7: ldpc Decode the received bits
 		QLLRvec llr;
