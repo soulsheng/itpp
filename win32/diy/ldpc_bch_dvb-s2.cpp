@@ -12,6 +12,15 @@ using namespace itpp;
 #define		T_BCH			2
 #define		K_BCH			21
 
+enum	MOD_TYPE
+{
+	MOD_BPSK,	//	0-
+	MOD_QPSK,	//	1-
+	MOD_8PSK,	//	2-
+	MOD_16APSK,	//	3- 
+	MOD_32APSK	//	4-
+};
+
 int main(int argc, char **argv)
 {
 	// step 0: intialize ldpc,bch,bpsk,awgn
@@ -20,8 +29,10 @@ int main(int argc, char **argv)
 	
 	BCH bch(N_BCH, T_BCH);
 
+	MOD_TYPE	modType = MOD_QPSK;
 
 	QPSK qpsk;
+	BPSK bpsk;
 
 	// Noise variance is N0/2 per dimension
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -64,15 +75,35 @@ int main(int argc, char **argv)
 		// step 3: ldpc encode
 		bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
 		
-		// step 4: modulate
-		cvec s = qpsk.modulate_bits(bitsoutLDPCEnc);
+		// step 4-6: modulate	-- awgn -- Demodulate
+		vec		dMOD;	// double vector
+		cvec	cMOD;	// complex vector
 
-		
-		// step 5: awgn Received data
-		cvec x = chan(s);
+		// Received data
+		vec		dAWGN;
+		cvec	cAWGN;
 
-		// step 6: Demodulate
-		vec softbits = qpsk.demodulate_soft_bits(x, N0);
+		// Demodulate
+		vec softbits;
+	
+		switch ( modType )
+		{
+		case MOD_BPSK:
+			dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
+			dAWGN = chan(dMOD);
+			softbits = bpsk.demodulate_soft_bits(dAWGN, N0);
+			break;
+
+		case MOD_QPSK:
+			cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
+			cAWGN = chan(cMOD);
+			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
+			break;
+
+		default:
+			break;;
+		}
+
 
 		// step 7: ldpc Decode the received bits
 		QLLRvec llr;
