@@ -35,3 +35,4 @@
 /win32/diy/ldpc_bch_dvb-s2_build
 /win32/diy/bch_bersim_awgn_build
 /win32/itpp_mkl_tests/pulse_shape_test_build
+/win32/diy/qpsk_simulation_build

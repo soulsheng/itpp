@@ -38,6 +38,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bch_bersim_awgn", "diy\bch_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pulse_shape_test", "itpp_mkl_tests\pulse_shape_test.vcxproj", "{D4224715-8E45-41A0-9001-F543D76E1C08}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qpsk_simulation", "diy\qpsk_simulation.vcxproj", "{12F75145-38D7-4369-94C0-6EE51CA2F497}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -149,6 +151,12 @@ Global
 		{D4224715-8E45-41A0-9001-F543D76E1C08}.DebugN|Win32.Build.0 = Release|Win32
 		{D4224715-8E45-41A0-9001-F543D76E1C08}.Release|Win32.ActiveCfg = Release|Win32
 		{D4224715-8E45-41A0-9001-F543D76E1C08}.Release|Win32.Build.0 = Release|Win32
+		{12F75145-38D7-4369-94C0-6EE51CA2F497}.Debug|Win32.ActiveCfg = DebugN|Win32
+		{12F75145-38D7-4369-94C0-6EE51CA2F497}.Debug|Win32.Build.0 = DebugN|Win32
+		{12F75145-38D7-4369-94C0-6EE51CA2F497}.DebugN|Win32.ActiveCfg = DebugN|Win32
+		{12F75145-38D7-4369-94C0-6EE51CA2F497}.DebugN|Win32.Build.0 = DebugN|Win32
+		{12F75145-38D7-4369-94C0-6EE51CA2F497}.Release|Win32.ActiveCfg = Release|Win32
+		{12F75145-38D7-4369-94C0-6EE51CA2F497}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
