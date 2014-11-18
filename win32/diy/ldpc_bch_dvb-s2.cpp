@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 		bvec bitsinBCHEnc = randb(Kbch);
 
 		// step 2: bch encode
-		bvec bitsoutBCHEnc(Nbch);
+		bvec bitsoutBCHEnc = zeros_b(Nbch);
 		for (int j = 0; j < nSplit; j++)
 		{
 			bvec bitsinBCHOne = bitsinBCHEnc.mid(j*K_BCH, K_BCH);
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 		}
 
 
-		bvec bitsinLDPCEnc(kldpc);
+		bvec bitsinLDPCEnc = zeros_b(kldpc);
 		bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
 
 		// step 3: ldpc encode
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
 		// step 8: bch decode
-		bvec bitsoutBCHDec(Kbch);
+		bvec bitsoutBCHDec = zeros_b(Kbch);
 		for (int j = 0; j < nSplit; j++)
 		{
 			bvec bitsinBCHDecOne = bitsinBCHDec.mid(j*N_BCH, N_BCH);
