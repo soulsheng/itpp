@@ -30,6 +30,10 @@
 #include <iomanip>
 #include <sstream>
 
+#include <itpp/base/timing.h>
+#include <iostream>
+using namespace std;
+
 namespace itpp
 {
 
@@ -1412,6 +1416,10 @@ int LDPC_Code::bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout)
   QLLRvec ml(max_cnd);
   QLLRvec mr(max_cnd);
   
+  Real_Timer	timer;
+  timer.reset();
+  timer.start();
+
   // initial step
   for (int i = 0; i < nvar; i++) {
     int index = i;
@@ -1421,11 +1429,18 @@ int LDPC_Code::bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout)
     }
   }
 
+  timer.stop();
+  cout << timer.get_time() << " initial step " << endl;
+
   bool is_valid_codeword = false;
   int iter = 0;
   do {
     iter++;
     if (nvar >= 100000) { it_info_no_endl_debug("."); }
+
+	timer.reset();
+	timer.start();
+
     // --------- Step 1: check to variable nodes ----------
     for (int j = 0; j < ncheck; j++) {
       // The check node update calculations are hardcoded for degrees
@@ -1551,6 +1566,13 @@ int LDPC_Code::bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout)
       }  // switch statement
     }
     
+	timer.stop();
+	cout << timer.get_time() << " Step 1: check to variable nodes " << endl;
+
+
+	timer.reset();
+	timer.start();
+
     // step 2: variable to check nodes
     for (int i = 0; i < nvar; i++) {
       switch (sumX1(i)) {
@@ -1620,12 +1642,26 @@ int LDPC_Code::bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout)
       }
     }
 
+	timer.stop();
+	cout << timer.get_time() << " Step 2: variable to check nodes " << endl;
+
+	timer.reset();
+	timer.start();
+
     if (psc && syndrome_check(LLRout)) {
       is_valid_codeword = true;
       break;
     }
+
+	timer.stop();
+	cout << timer.get_time() << " Step 3: check syndrome " << endl;
+	
+	cout << iter << " iteration done " << endl;
+
   }
   while (iter < max_iters);
+
+  cout << iter << " iteration times " << endl;
 
   if (nvar >= 100000) { it_info_debug(""); }
   return (is_valid_codeword ? iter : -iter);
