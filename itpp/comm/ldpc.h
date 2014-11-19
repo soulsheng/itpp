@@ -923,7 +923,7 @@ public:
   //! Print some properties of the codec in plain text
   friend std::ostream &operator<<(std::ostream &os, const LDPC_Code &C);
 
-protected:
+public:
   bool H_defined;  //!< true if parity check matrix is defined
   bool G_defined;  //!< true if generator is defined
   int nvar;   //!< Number of variable nodes
@@ -946,7 +946,7 @@ protected:
   //! Initialize decoder
   void setup_decoder();
 
-private:
+public:
   // Parity check matrix parameterization
   ivec C, V, sumX1, sumX2, iind, jind;
 
