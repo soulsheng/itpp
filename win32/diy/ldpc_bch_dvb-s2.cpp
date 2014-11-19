@@ -5,7 +5,7 @@ using namespace std;
 using namespace itpp;
 
 #define		FILENAME_IT		"RU_16200.it"
-#define		EBNO			0.8
+#define		EBNO			1.8
 #define		COUNT_REPEAT	100	// repeat time 
 
 #define		N_BCH			31
@@ -114,19 +114,23 @@ int main(int argc, char **argv)
 
 
 
-		timerStep.reset();
-		timerStep.start();
 
 		// step 7: ldpc Decode the received bits
 		QLLRvec llr;
-		ldpc.bp_decode(ldpc.get_llrcalc().to_qllr(softbits), llr);
+		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
+		
+		timerStep.reset();
+		timerStep.start();
+
+		ldpc.bp_decode(llrIn, llr);
+
+		timerStep.stop();
+		timerStepValue[i] = timerStep.get_time() ;
+
 		bvec bitsoutLDPCDec = llr < 0;
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
 		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
-
-		timerStep.stop();
-		timerStepValue[i] = timerStep.get_time() ;
 
 		// step 8: bch decode
 		bvec bitsoutBCHDec = zeros_b(Kbch);
@@ -160,9 +164,15 @@ int main(int argc, char **argv)
 	{
 		cout << timerValue[i] << " s, " ;
 		timerAverageAll += timerValue[i];
+	}
+	cout << endl << endl ;
 
+	for (int i=0;i<COUNT_REPEAT;i++)
+	{
+		cout << timerStepValue[i] << " s, " ;
 		timerStepAverage += timerStepValue[i];
 	}
+	cout << endl << endl ;
 
 	cout << endl << timerAverageAll/COUNT_REPEAT << " s Average all" << endl ;
 	
