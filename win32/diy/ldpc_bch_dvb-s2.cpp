@@ -21,15 +21,6 @@ enum	MOD_TYPE
 	MOD_32APSK	//	4-
 };
 
-enum	STEP_TIMER
-{
-	STEP_ENC_BCH,	//	0-
-	STEP_ENC_LDPC,	//	1-
-	STEP_MOD,		//	2- MOD AWGN DEMOD
-	STEP_DEC_LDPC,	//	3-
-	STEP_DEC_BCH,	//	4-
-	COUNT_TIMER_STEP
-};
 
 int main(int argc, char **argv)
 {
@@ -53,12 +44,10 @@ int main(int argc, char **argv)
 
 	RNG_randomize();
 
-	Real_Timer	timer, timerStep[COUNT_TIMER_STEP];
+	Real_Timer	timer, timerStep;
 	vec			timerValue(COUNT_REPEAT);
 
-	Vec<vec>			timerStepValue(COUNT_TIMER_STEP);
-	for (int i=0;i<COUNT_TIMER_STEP;i++)
-		timerStepValue[i].set_size(COUNT_REPEAT);
+	vec			timerStepValue(COUNT_REPEAT);
 
 
 	int kldpc = ldpc.get_ninfo();             // number of bits per codeword
@@ -78,10 +67,6 @@ int main(int argc, char **argv)
 		// step 1: input message
 		bvec bitsinBCHEnc = randb(Kbch);
 
-		int nStep = STEP_ENC_BCH;
-		timerStep[nStep].reset();
-		timerStep[nStep].start();
-
 		// step 2: bch encode
 		bvec bitsoutBCHEnc = zeros_b(Nbch);
 		for (int j = 0; j < nSplit; j++)
@@ -91,27 +76,13 @@ int main(int argc, char **argv)
 			bitsoutBCHEnc.set_subvector(j*N_BCH, encodedBCHOne);
 		}
 
-		timerStep[nStep].stop();
-		timerStepValue[nStep][i] = timerStep[nStep].get_time() ;
-
 		bvec bitsinLDPCEnc = zeros_b(kldpc);
 		bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
 
-		nStep ++ ;
-		timerStep[nStep].reset();
-		timerStep[nStep].start();
 
 		// step 3: ldpc encode
 		bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
 		
-		timerStep[nStep].stop();
-		timerStepValue[nStep][i] = timerStep[nStep].get_time() ;
-
-
-		nStep ++ ;
-		timerStep[nStep].reset();
-		timerStep[nStep].start();
-
 		// step 4-6: modulate	-- awgn -- Demodulate
 		vec		dMOD;	// double vector
 		cvec	cMOD;	// complex vector
@@ -142,13 +113,9 @@ int main(int argc, char **argv)
 		}
 
 
-		timerStep[nStep].stop();
-		timerStepValue[nStep][i] = timerStep[nStep].get_time() ;
 
-
-		nStep ++ ;
-		timerStep[nStep].reset();
-		timerStep[nStep].start();
+		timerStep.reset();
+		timerStep.start();
 
 		// step 7: ldpc Decode the received bits
 		QLLRvec llr;
@@ -158,12 +125,8 @@ int main(int argc, char **argv)
 		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
 
-		timerStep[nStep].stop();
-		timerStepValue[nStep][i] = timerStep[nStep].get_time() ;
-
-		nStep ++ ;
-		timerStep[nStep].reset();
-		timerStep[nStep].start();
+		timerStep.stop();
+		timerStepValue[i] = timerStep.get_time() ;
 
 		// step 8: bch decode
 		bvec bitsoutBCHDec = zeros_b(Kbch);
@@ -173,9 +136,6 @@ int main(int argc, char **argv)
 			bvec bitsoutBCHDecOne = bch.decode(bitsinBCHDecOne);
 			bitsoutBCHDec.set_subvector(j*K_BCH, bitsoutBCHDecOne);
 		}
-
-		timerStep[nStep].stop();
-		timerStepValue[nStep][i] = timerStep[nStep].get_time() ;
 
 		// step 9: verify result, Count the number of errors
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
@@ -195,20 +155,18 @@ int main(int argc, char **argv)
 				<< endl << flush;
     }
 
-	double timerAverageAll = 0.0f, timerStepAverage[COUNT_TIMER_STEP]={0};
+	double timerAverageAll = 0.0f, timerStepAverage = 0.0f;
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
 		cout << timerValue[i] << " s, " ;
 		timerAverageAll += timerValue[i];
 
-		for (int j=0;j<COUNT_TIMER_STEP;j++)
-			timerStepAverage[j] += timerStepValue[j][i];
+		timerStepAverage += timerStepValue[i];
 	}
 
 	cout << endl << timerAverageAll/COUNT_REPEAT << " s Average all" << endl ;
 	
-	for (int j=0;j<COUNT_TIMER_STEP;j++)
-		cout << endl << timerStepAverage[j]/COUNT_REPEAT << " s Average step " << STEP_TIMER(j) << endl ;
+	cout << endl << timerStepAverage/COUNT_REPEAT << " s Average step decode ldpc" << endl ;
 
 	return 0;
 }
