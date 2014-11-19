@@ -48,6 +48,7 @@ int main(int argc, char **argv)
 	vec			timerValue(COUNT_REPEAT);
 
 	vec			timerStepValue(COUNT_REPEAT);
+	ivec		countIteration(COUNT_REPEAT);
 
 
 	int kldpc = ldpc.get_ninfo();             // number of bits per codeword
@@ -122,7 +123,7 @@ int main(int argc, char **argv)
 		timerStep.reset();
 		timerStep.start();
 
-		ldpc.bp_decode(llrIn, llr);
+		countIteration[i] = ldpc.bp_decode(llrIn, llr);
 
 		timerStep.stop();
 		timerStepValue[i] = timerStep.get_time() ;
@@ -174,9 +175,19 @@ int main(int argc, char **argv)
 	}
 	cout << endl << endl ;
 
+	double countIterationAverage = 0.0f;
+	for (int i=0;i<COUNT_REPEAT;i++)
+	{
+		cout << countIteration[i] << " iteration, " ;
+		countIterationAverage += countIteration[i];
+	}
+	cout << endl << endl ;
+
 	cout << endl << timerAverageAll/COUNT_REPEAT << " s Average all" << endl ;
 	
 	cout << endl << timerStepAverage/COUNT_REPEAT << " s Average step decode ldpc" << endl ;
+	
+	cout << endl << countIterationAverage/COUNT_REPEAT << " iteration Average in decode ldpc" << endl ;
 
 	return 0;
 }
