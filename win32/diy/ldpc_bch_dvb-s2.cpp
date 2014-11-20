@@ -21,15 +21,15 @@ enum	MOD_TYPE
 	MOD_32APSK	//	4-
 };
 
-bool syndrome_check(const QLLRvec &LLR,
+bool syndrome_check(int* LLR,
 	int ncheck, 
-	ivec& sumX2, 
+	int* sumX2, 
 	int* V) ;
 
 int bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
-	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
+	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	ivec& logexp_table,		//! The lookup tables for the decoder
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
 		countIteration[i] = bp_decode( llrIn._data(), llr._data(),
 			ldpc.nvar, ldpc.ncheck, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
-			ldpc.mvc, ldpc.mcv,	// temporary storage for decoder (memory allocated when codec defined)
+			ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
 			//ldpc.llrcalc );		//!< LLR calculation unit
 			ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
 			ldpc.llrcalc.logexp_table);		//! The lookup tables for the decoder
@@ -292,7 +292,7 @@ QLLR Boxplus(QLLR a, QLLR b,
 int bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
-	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
+	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	ivec& logexp_table,		//! The lookup tables for the decoder
