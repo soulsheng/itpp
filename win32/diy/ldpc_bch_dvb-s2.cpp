@@ -151,8 +151,7 @@ int main(int argc, char **argv)
 		timerStep.stop();
 		timerStepValue[i] = timerStep.get_time() ;
 
-		for (int i=0;i<nldpc;i++)
-			llr[i] = pIntLLROut[i];
+		memcpy( llr._data(), pIntLLROut, sizeof(int)*nldpc );
 
 		bvec bitsoutLDPCDec = llr < 0;
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
