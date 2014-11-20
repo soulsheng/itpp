@@ -24,11 +24,11 @@ enum	MOD_TYPE
 bool syndrome_check(const QLLRvec &LLR,
 	int ncheck, 
 	ivec& sumX2, 
-	ivec& V) ;
+	int* V) ;
 
 int bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
-	ivec& C, ivec& V, ivec& sumX1, ivec& sumX2, ivec& iind, ivec& jind,	// Parity check matrix parameterization
+	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
 	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
@@ -140,9 +140,9 @@ int main(int argc, char **argv)
 		timerStep.reset();
 		timerStep.start();
 
-		countIteration[i] = bp_decode((int*)llrIn._data(), pIntLLROut,
+		countIteration[i] = bp_decode( llrIn._data(), pIntLLROut,
 			ldpc.nvar, ldpc.ncheck, 
-			ldpc.C, ldpc.V, ldpc.sumX1, ldpc.sumX2, ldpc.iind, ldpc.jind,	// Parity check matrix parameterization
+			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
 			ldpc.mvc, ldpc.mcv,	// temporary storage for decoder (memory allocated when codec defined)
 			//ldpc.llrcalc );		//!< LLR calculation unit
 			ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
@@ -221,8 +221,8 @@ int main(int argc, char **argv)
 
 bool syndrome_check(int *LLR,
 	int ncheck, 
-	ivec& sumX2, 
-	ivec& V ) 
+	int* sumX2, 
+	int* V ) 
 {
 	// Please note the IT++ convention that a sure zero corresponds to
 	// LLR=+infinity
@@ -231,8 +231,8 @@ bool syndrome_check(int *LLR,
 	for (j = 0; j < ncheck; j++) {
 		synd = 0;
 		int vind = j; // tracks j+i*ncheck
-		for (i = 0; i < sumX2(j); i++) {
-			vi = V(vind);
+		for (i = 0; i < sumX2[j]; i++) {
+			vi = V[vind];
 			if (LLR[vi] < 0) {
 				synd++;
 			}
@@ -296,7 +296,7 @@ QLLR Boxplus(QLLR a, QLLR b,
 
 int bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
-	ivec& C, ivec& V, ivec& sumX1, ivec& sumX2, ivec& iind, ivec& jind,	// Parity check matrix parameterization
+	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
 	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
@@ -321,7 +321,7 @@ int bp_decode(int *LLRin, int *LLRout,
   // initial step
   for (int i = 0; i < nvar; i++) {
     int index = i;
-    for (int j = 0; j < sumX1(i); j++) {
+    for (int j = 0; j < sumX1[i]; j++) {
       mvc[index] = LLRin[i];
       index += nvar;
     }
@@ -336,11 +336,11 @@ int bp_decode(int *LLRin, int *LLRout,
     for (int j = 0; j < ncheck; j++) {
       // The check node update calculations are hardcoded for degrees
       // up to 6.  For larger degrees, a general algorithm is used.
-      switch (sumX2(j)) {
+      switch (sumX2[j]) {
       case 0:
-        it_error("LDPC_Code::bp_decode(): sumX2(j)=0");
+        it_error("LDPC_Code::bp_decode(): sumX2[j]=0");
       case 1:
-        it_error("LDPC_Code::bp_decode(): sumX2(j)=1");
+        it_error("LDPC_Code::bp_decode(): sumX2[j]=1");
       case 2: {
         mcv[j+ncheck] = mvc[jind[j]];
         mcv[j] = mvc[jind[j+ncheck]];
@@ -425,7 +425,7 @@ int bp_decode(int *LLRin, int *LLRout,
         break;
       }
       default: {
-        int nodes = sumX2(j);
+        int nodes = sumX2[j];
         if( nodes > max_cnd ) {
           std::ostringstream m_sout;
           m_sout << "check node degrees >" << max_cnd << " not supported in this version";
@@ -459,9 +459,9 @@ int bp_decode(int *LLRin, int *LLRout,
     
     // step 2: variable to check nodes
     for (int i = 0; i < nvar; i++) {
-      switch (sumX1(i)) {
+      switch (sumX1[i]) {
       case 0:
-        it_error("LDPC_Code::bp_decode(): sumX1(i)=0");
+        it_error("LDPC_Code::bp_decode(): sumX1[i]=0");
       case 1: {
         /* This case is rare but apparently occurs for codes used in
 	   the DVB-T2 standard.
@@ -512,7 +512,7 @@ int bp_decode(int *LLRin, int *LLRout,
       default:   { // differential update
         QLLR mvc_temp = LLRin[i];
         int index_iind = i; // tracks i+jp*nvar
-        for (int jp = 0; jp < sumX1(i); jp++) {
+        for (int jp = 0; jp < sumX1[i]; jp++) {
           mvc_temp +=  mcv[iind[index_iind]];
           index_iind += nvar;
         }
