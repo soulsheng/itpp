@@ -74,7 +74,6 @@ int main(int argc, char **argv)
 
 	ferc.set_blocksize(Kbch);
 
-	int*	pIntLLROut = (int*)malloc( nldpc*sizeof(int) );
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
@@ -135,12 +134,11 @@ int main(int argc, char **argv)
 		// step 7: ldpc Decode the received bits
 		QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
-		memset( pIntLLROut, 0, sizeof(int)*nldpc );
 
 		timerStep.reset();
 		timerStep.start();
 
-		countIteration[i] = bp_decode( llrIn._data(), pIntLLROut,
+		countIteration[i] = bp_decode( llrIn._data(), llr._data(),
 			ldpc.nvar, ldpc.ncheck, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
 			ldpc.mvc, ldpc.mcv,	// temporary storage for decoder (memory allocated when codec defined)
@@ -151,7 +149,6 @@ int main(int argc, char **argv)
 		timerStep.stop();
 		timerStepValue[i] = timerStep.get_time() ;
 
-		memcpy( llr._data(), pIntLLROut, sizeof(int)*nldpc );
 
 		bvec bitsoutLDPCDec = llr < 0;
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
@@ -213,8 +210,6 @@ int main(int argc, char **argv)
 	cout << endl << timerStepAverage/COUNT_REPEAT << " s Average step decode ldpc" << endl ;
 	
 	cout << endl << countIterationAverage/COUNT_REPEAT << " iteration Average in decode ldpc" << endl ;
-
-	free( pIntLLROut );
 
 	return 0;
 }
