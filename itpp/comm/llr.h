@@ -214,7 +214,7 @@ public:
   //! Print some properties of the LLR calculation unit in plain text
   friend std::ostream &operator<<(std::ostream &os, const LLR_calc_unit &l);
 
-private:
+public:
   //! Compute the table for \f[ f(x) = \log(1+\exp(-x)) \f]
   ivec construct_logexp_table();
 

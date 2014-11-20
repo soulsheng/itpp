@@ -30,7 +30,9 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
 	int nvar, int ncheck, 
 	ivec& C, ivec& V, ivec& sumX1, ivec& sumX2, ivec& iind, ivec& jind,	// Parity check matrix parameterization
 	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
-	LLR_calc_unit& llrcalc,		//!< LLR calculation unit
+	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
+	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
+	ivec& logexp_table,		//! The lookup tables for the decoder
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
 
@@ -139,7 +141,9 @@ int main(int argc, char **argv)
 			ldpc.nvar, ldpc.ncheck, 
 			ldpc.C, ldpc.V, ldpc.sumX1, ldpc.sumX2, ldpc.iind, ldpc.jind,	// Parity check matrix parameterization
 			ldpc.mvc, ldpc.mcv,	// temporary storage for decoder (memory allocated when codec defined)
-			ldpc.llrcalc );		//!< LLR calculation unit
+			//ldpc.llrcalc );		//!< LLR calculation unit
+			ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
+			ldpc.llrcalc.logexp_table);		//! The lookup tables for the decoder
 
 		timerStep.stop();
 		timerStepValue[i] = timerStep.get_time() ;
@@ -234,11 +238,62 @@ bool syndrome_check(const QLLRvec &LLR,
 	return true;   // codeword is valid
 }
 
+QLLR  logexp(QLLR x,
+	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
+	ivec& logexp_table )		//! The lookup tables for the decoder
+{
+	int ind = x >> Dint3;
+	if (ind >= Dint2) // outside table
+		return 0;
+
+	// Without interpolation
+	return logexp_table(ind);
+}
+
+QLLR Boxplus(QLLR a, QLLR b,
+	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
+	ivec& logexp_table )		//! The lookup tables for the decoder
+{
+	QLLR a_abs = (a > 0 ? a : -a);
+	QLLR b_abs = (b > 0 ? b : -b);
+	QLLR minabs = (a_abs > b_abs ? b_abs : a_abs);
+	QLLR term1 = (a > 0 ? (b > 0 ? minabs : -minabs)
+		: (b > 0 ? -minabs : minabs));
+
+	if (Dint2 == 0) {  // logmax approximation - avoid looking into empty table
+		// Don't abort when overflowing, just saturate the QLLR
+		if (term1 > QLLR_MAX) {
+			return QLLR_MAX;
+		}
+		if (term1 < -QLLR_MAX) {
+			return -QLLR_MAX;
+		}
+		return term1;
+	}
+
+	QLLR apb = a + b;
+	QLLR term2 = logexp((apb > 0 ? apb : -apb), Dint1, Dint2, Dint3, logexp_table);
+	QLLR amb = a - b;
+	QLLR term3 = logexp((amb > 0 ? amb : -amb), Dint1, Dint2, Dint3, logexp_table);
+	QLLR result = term1 + term2 - term3;
+
+	// Don't abort when overflowing, just saturate the QLLR
+	if (result > QLLR_MAX) {
+		return QLLR_MAX;
+	}
+	if (result < -QLLR_MAX) {
+		return -QLLR_MAX;
+	}
+	return result;
+}
+
 int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
 	int nvar, int ncheck, 
 	ivec& C, ivec& V, ivec& sumX1, ivec& sumX2, ivec& iind, ivec& jind,	// Parity check matrix parameterization
 	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
-	LLR_calc_unit& llrcalc,		//!< LLR calculation unit
+	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
+	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
+	ivec& logexp_table,		//! The lookup tables for the decoder
 	bool psc /*= true*/,			//!< check syndrom after each iteration
 	int max_iters /*= 50*/ )		//!< Maximum number of iterations
 {
@@ -291,9 +346,9 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         QLLR m1 = mvc[jind[j1]];
         int j2 = j1 + ncheck;
         QLLR m2 = mvc[jind[j2]];
-        mcv[j0] = llrcalc.Boxplus(m1, m2);
-        mcv[j1] = llrcalc.Boxplus(m0, m2);
-        mcv[j2] = llrcalc.Boxplus(m0, m1);
+        mcv[j0] = Boxplus(m1, m2, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j1] = Boxplus(m0, m2, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j2] = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
         break;
       }
       case 4: {
@@ -305,12 +360,12 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         QLLR m2 = mvc[jind[j2]];
         int j3 = j2 + ncheck;
         QLLR m3 = mvc[jind[j3]];
-        QLLR m01 = llrcalc.Boxplus(m0, m1);
-        QLLR m23 = llrcalc.Boxplus(m2, m3);
-        mcv[j0] = llrcalc.Boxplus(m1, m23);
-        mcv[j1] = llrcalc.Boxplus(m0, m23);
-        mcv[j2] = llrcalc.Boxplus(m01, m3);
-        mcv[j3] = llrcalc.Boxplus(m01, m2);
+        QLLR m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j0] = Boxplus(m1, m23, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j1] = Boxplus(m0, m23, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j2] = Boxplus(m01, m3, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j3] = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
         break;
       }
       case 5: {
@@ -324,15 +379,15 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         QLLR m3 = mvc[jind[j3]];
         int j4 = j3 + ncheck;
         QLLR m4 = mvc[jind[j4]];
-        QLLR m01 = llrcalc.Boxplus(m0, m1);
-        QLLR m02 = llrcalc.Boxplus(m01, m2);
-        QLLR m34 = llrcalc.Boxplus(m3, m4);
-        QLLR m24 = llrcalc.Boxplus(m2, m34);
-        mcv[j0] = llrcalc.Boxplus(m1, m24);
-        mcv[j1] = llrcalc.Boxplus(m0, m24);
-        mcv[j2] = llrcalc.Boxplus(m01, m34);
-        mcv[j3] = llrcalc.Boxplus(m02, m4);
-        mcv[j4] = llrcalc.Boxplus(m02, m3);
+        QLLR m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j0] = Boxplus(m1, m24, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j1] = Boxplus(m0, m24, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j2] = Boxplus(m01, m34, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j3] = Boxplus(m02, m4, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j4] = Boxplus(m02, m3, Dint1, Dint2, Dint3, logexp_table);
         break;
       }
       case 6: {
@@ -348,18 +403,18 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         QLLR m4 = mvc[jind[j4]];
         int j5 = j4 + ncheck;
         QLLR m5 = mvc[jind[j5]];
-        QLLR m01 = llrcalc.Boxplus(m0, m1);
-        QLLR m23 = llrcalc.Boxplus(m2, m3);
-        QLLR m45 = llrcalc.Boxplus(m4, m5);
-        QLLR m03 = llrcalc.Boxplus(m01, m23);
-        QLLR m25 = llrcalc.Boxplus(m23, m45);
-        QLLR m0145 = llrcalc.Boxplus(m01, m45);
-        mcv[j0] = llrcalc.Boxplus(m1, m25);
-        mcv[j1] = llrcalc.Boxplus(m0, m25);
-        mcv[j2] = llrcalc.Boxplus(m0145, m3);
-        mcv[j3] = llrcalc.Boxplus(m0145, m2);
-        mcv[j4] = llrcalc.Boxplus(m03, m5);
-        mcv[j5] = llrcalc.Boxplus(m03, m4);
+        QLLR m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, logexp_table);
+        QLLR m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j0] = Boxplus(m1, m25, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j1] = Boxplus(m0, m25, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j2] = Boxplus(m0145, m3, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j3] = Boxplus(m0145, m2, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j4] = Boxplus(m03, m5, Dint1, Dint2, Dint3, logexp_table);
+        mcv[j5] = Boxplus(m03, m4, Dint1, Dint2, Dint3, logexp_table);
         break;
       }
       default: {
@@ -382,15 +437,15 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         ml[0] = m[0];
         mr[0] = m[nodes];
         for(int i = 1; i < nodes; i++ ) {
-          ml[i] = llrcalc.Boxplus( ml[i-1], m[i] );
-          mr[i] = llrcalc.Boxplus( mr[i-1], m[nodes-i] );
+          ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, logexp_table );
+          mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, logexp_table );
         }
 
 	// merge partial sums
         mcv[jj[0]] = mr[nodes-1];
         mcv[jj[nodes]] = ml[nodes-1];
         for(int i = 1; i < nodes; i++ )
-          mcv[jj[i]] = llrcalc.Boxplus( ml[i-1], mr[nodes-1-i] );
+          mcv[jj[i]] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, logexp_table );
       }
       }  // switch statement
     }
