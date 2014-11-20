@@ -240,7 +240,7 @@ bool syndrome_check(int *LLR,
 	return true;   // codeword is valid
 }
 
-QLLR  logexp(QLLR x,
+int  logexp(int x,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	int* logexp_table )		//! The lookup tables for the decoder
 {
@@ -252,14 +252,14 @@ QLLR  logexp(QLLR x,
 	return logexp_table[ind];
 }
 
-QLLR Boxplus(QLLR a, QLLR b,
+int Boxplus(int a, int b,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	int* logexp_table )		//! The lookup tables for the decoder
 {
-	QLLR a_abs = (a > 0 ? a : -a);
-	QLLR b_abs = (b > 0 ? b : -b);
-	QLLR minabs = (a_abs > b_abs ? b_abs : a_abs);
-	QLLR term1 = (a > 0 ? (b > 0 ? minabs : -minabs)
+	int a_abs = (a > 0 ? a : -a);
+	int b_abs = (b > 0 ? b : -b);
+	int minabs = (a_abs > b_abs ? b_abs : a_abs);
+	int term1 = (a > 0 ? (b > 0 ? minabs : -minabs)
 		: (b > 0 ? -minabs : minabs));
 
 	if (Dint2 == 0) {  // logmax approximation - avoid looking into empty table
@@ -273,11 +273,11 @@ QLLR Boxplus(QLLR a, QLLR b,
 		return term1;
 	}
 
-	QLLR apb = a + b;
-	QLLR term2 = logexp((apb > 0 ? apb : -apb), Dint1, Dint2, Dint3, logexp_table);
-	QLLR amb = a - b;
-	QLLR term3 = logexp((amb > 0 ? amb : -amb), Dint1, Dint2, Dint3, logexp_table);
-	QLLR result = term1 + term2 - term3;
+	int apb = a + b;
+	int term2 = logexp((apb > 0 ? apb : -apb), Dint1, Dint2, Dint3, logexp_table);
+	int amb = a - b;
+	int term3 = logexp((amb > 0 ? amb : -amb), Dint1, Dint2, Dint3, logexp_table);
+	int result = term1 + term2 - term3;
 
 	// Don't abort when overflowing, just saturate the QLLR
 	if (result > QLLR_MAX) {
@@ -343,11 +343,11 @@ int bp_decode(int *LLRin, int *LLRout,
       }
       case 3: {
         int j0 = j;
-        QLLR m0 = mvc[jind[j0]];
+        int m0 = mvc[jind[j0]];
         int j1 = j0 + ncheck;
-        QLLR m1 = mvc[jind[j1]];
+        int m1 = mvc[jind[j1]];
         int j2 = j1 + ncheck;
-        QLLR m2 = mvc[jind[j2]];
+        int m2 = mvc[jind[j2]];
         mcv[j0] = Boxplus(m1, m2, Dint1, Dint2, Dint3, logexp_table);
         mcv[j1] = Boxplus(m0, m2, Dint1, Dint2, Dint3, logexp_table);
         mcv[j2] = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
@@ -355,15 +355,15 @@ int bp_decode(int *LLRin, int *LLRout,
       }
       case 4: {
         int j0 = j;
-        QLLR m0 = mvc[jind[j0]];
+        int m0 = mvc[jind[j0]];
         int j1 = j0 + ncheck;
-        QLLR m1 = mvc[jind[j1]];
+        int m1 = mvc[jind[j1]];
         int j2 = j1 + ncheck;
-        QLLR m2 = mvc[jind[j2]];
+        int m2 = mvc[jind[j2]];
         int j3 = j2 + ncheck;
-        QLLR m3 = mvc[jind[j3]];
-        QLLR m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
+        int m3 = mvc[jind[j3]];
+        int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+        int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
         mcv[j0] = Boxplus(m1, m23, Dint1, Dint2, Dint3, logexp_table);
         mcv[j1] = Boxplus(m0, m23, Dint1, Dint2, Dint3, logexp_table);
         mcv[j2] = Boxplus(m01, m3, Dint1, Dint2, Dint3, logexp_table);
@@ -372,19 +372,19 @@ int bp_decode(int *LLRin, int *LLRout,
       }
       case 5: {
         int j0 = j;
-        QLLR m0 = mvc[jind[j0]];
+        int m0 = mvc[jind[j0]];
         int j1 = j0 + ncheck;
-        QLLR m1 = mvc[jind[j1]];
+        int m1 = mvc[jind[j1]];
         int j2 = j1 + ncheck;
-        QLLR m2 = mvc[jind[j2]];
+        int m2 = mvc[jind[j2]];
         int j3 = j2 + ncheck;
-        QLLR m3 = mvc[jind[j3]];
+        int m3 = mvc[jind[j3]];
         int j4 = j3 + ncheck;
-        QLLR m4 = mvc[jind[j4]];
-        QLLR m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, logexp_table);
+        int m4 = mvc[jind[j4]];
+        int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+        int m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
+        int m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, logexp_table);
+        int m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, logexp_table);
         mcv[j0] = Boxplus(m1, m24, Dint1, Dint2, Dint3, logexp_table);
         mcv[j1] = Boxplus(m0, m24, Dint1, Dint2, Dint3, logexp_table);
         mcv[j2] = Boxplus(m01, m34, Dint1, Dint2, Dint3, logexp_table);
@@ -394,23 +394,23 @@ int bp_decode(int *LLRin, int *LLRout,
       }
       case 6: {
         int j0 = j;
-        QLLR m0 = mvc[jind[j0]];
+        int m0 = mvc[jind[j0]];
         int j1 = j0 + ncheck;
-        QLLR m1 = mvc[jind[j1]];
+        int m1 = mvc[jind[j1]];
         int j2 = j1 + ncheck;
-        QLLR m2 = mvc[jind[j2]];
+        int m2 = mvc[jind[j2]];
         int j3 = j2 + ncheck;
-        QLLR m3 = mvc[jind[j3]];
+        int m3 = mvc[jind[j3]];
         int j4 = j3 + ncheck;
-        QLLR m4 = mvc[jind[j4]];
+        int m4 = mvc[jind[j4]];
         int j5 = j4 + ncheck;
-        QLLR m5 = mvc[jind[j5]];
-        QLLR m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, logexp_table);
-        QLLR m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, logexp_table);
+        int m5 = mvc[jind[j5]];
+        int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+        int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
+        int m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, logexp_table);
+        int m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, logexp_table);
+        int m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, logexp_table);
+        int m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, logexp_table);
         mcv[j0] = Boxplus(m1, m25, Dint1, Dint2, Dint3, logexp_table);
         mcv[j1] = Boxplus(m0, m25, Dint1, Dint2, Dint3, logexp_table);
         mcv[j2] = Boxplus(m0145, m3, Dint1, Dint2, Dint3, logexp_table);
@@ -461,15 +461,15 @@ int bp_decode(int *LLRin, int *LLRout,
         /* This case is rare but apparently occurs for codes used in
 	   the DVB-T2 standard.
 	 */
-	QLLR m0 = mcv[iind[i]];
+	int m0 = mcv[iind[i]];
         mvc[i] = LLRin[i];
         LLRout[i] = LLRin[i] + m0;
         break;
       }
       case 2: {
-        QLLR m0 = mcv[iind[i]];
+        int m0 = mcv[iind[i]];
         int i1 = i + nvar;
-        QLLR m1 = mcv[iind[i1]];
+        int m1 = mcv[iind[i1]];
         mvc[i] = LLRin[i] + m1;
         mvc[i1] = LLRin[i] + m0;
         LLRout[i] = mvc[i1] + m1;
@@ -477,11 +477,11 @@ int bp_decode(int *LLRin, int *LLRout,
       }
       case 3: {
         int i0 = i;
-        QLLR m0 = mcv[iind[i0]];
+        int m0 = mcv[iind[i0]];
         int i1 = i0 + nvar;
-        QLLR m1 = mcv[iind[i1]];
+        int m1 = mcv[iind[i1]];
         int i2 = i1 + nvar;
-        QLLR m2 = mcv[iind[i2]];
+        int m2 = mcv[iind[i2]];
         LLRout[i] = LLRin[i] + m0 + m1 + m2;
         mvc[i0] = LLRout[i] - m0;
         mvc[i1] = LLRout[i] - m1;
@@ -490,13 +490,13 @@ int bp_decode(int *LLRin, int *LLRout,
       }
       case 4: {
         int i0 = i;
-        QLLR m0 = mcv[iind[i0]];
+        int m0 = mcv[iind[i0]];
         int i1 = i0 + nvar;
-        QLLR m1 = mcv[iind[i1]];
+        int m1 = mcv[iind[i1]];
         int i2 = i1 + nvar;
-        QLLR m2 = mcv[iind[i2]];
+        int m2 = mcv[iind[i2]];
         int i3 = i2 + nvar;
-        QLLR m3 = mcv[iind[i3]];
+        int m3 = mcv[iind[i3]];
         LLRout[i] = LLRin[i] + m0 + m1 + m2 + m3;
         mvc[i0] = LLRout[i] - m0;
         mvc[i1] = LLRout[i] - m1;
@@ -505,7 +505,7 @@ int bp_decode(int *LLRin, int *LLRout,
         break;
       }
       default:   { // differential update
-        QLLR mvc_temp = LLRin[i];
+        int mvc_temp = LLRin[i];
         int index_iind = i; // tracks i+jp*nvar
         for (int jp = 0; jp < sumX1[i]; jp++) {
           mvc_temp +=  mcv[iind[index_iind]];
