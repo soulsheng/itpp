@@ -26,7 +26,7 @@ bool syndrome_check(const QLLRvec &LLR,
 	ivec& sumX2, 
 	ivec& V) ;
 
-int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
+int bp_decode(const QLLRvec &LLRin, int *LLRout,
 	int nvar, int ncheck, 
 	ivec& C, ivec& V, ivec& sumX1, ivec& sumX2, ivec& iind, ivec& jind,	// Parity check matrix parameterization
 	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 	vec			timerStepValue(COUNT_REPEAT);
 	ivec		countIteration(COUNT_REPEAT);
 
-
+	int nldpc = ldpc.get_nvar();
 	int kldpc = ldpc.get_ninfo();             // number of bits per codeword
 
 	int nSplit = kldpc / N_BCH;
@@ -73,6 +73,8 @@ int main(int argc, char **argv)
 	int Kbch = nSplit * K_BCH;
 
 	ferc.set_blocksize(Kbch);
+
+	int*	pIntLLROut = (int*)malloc( nldpc*sizeof(int) );
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
@@ -131,13 +133,14 @@ int main(int argc, char **argv)
 
 
 		// step 7: ldpc Decode the received bits
-		QLLRvec llr;
+		QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
-		
+		memset( pIntLLROut, 0, sizeof(int)*nldpc );
+
 		timerStep.reset();
 		timerStep.start();
 
-		countIteration[i] = bp_decode(llrIn, llr,
+		countIteration[i] = bp_decode(llrIn, pIntLLROut,
 			ldpc.nvar, ldpc.ncheck, 
 			ldpc.C, ldpc.V, ldpc.sumX1, ldpc.sumX2, ldpc.iind, ldpc.jind,	// Parity check matrix parameterization
 			ldpc.mvc, ldpc.mcv,	// temporary storage for decoder (memory allocated when codec defined)
@@ -147,6 +150,9 @@ int main(int argc, char **argv)
 
 		timerStep.stop();
 		timerStepValue[i] = timerStep.get_time() ;
+
+		for (int i=0;i<nldpc;i++)
+			llr[i] = pIntLLROut[i];
 
 		bvec bitsoutLDPCDec = llr < 0;
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
@@ -209,10 +215,12 @@ int main(int argc, char **argv)
 	
 	cout << endl << countIterationAverage/COUNT_REPEAT << " iteration Average in decode ldpc" << endl ;
 
+	free( pIntLLROut );
+
 	return 0;
 }
 
-bool syndrome_check(const QLLRvec &LLR,
+bool syndrome_check(int *LLR,
 	int ncheck, 
 	ivec& sumX2, 
 	ivec& V ) 
@@ -226,7 +234,7 @@ bool syndrome_check(const QLLRvec &LLR,
 		int vind = j; // tracks j+i*ncheck
 		for (i = 0; i < sumX2(j); i++) {
 			vi = V(vind);
-			if (LLR(vi) < 0) {
+			if (LLR[vi] < 0) {
 				synd++;
 			}
 			vind += ncheck;
@@ -287,7 +295,7 @@ QLLR Boxplus(QLLR a, QLLR b,
 	return result;
 }
 
-int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
+int bp_decode(const QLLRvec &LLRin, int *LLRout,
 	int nvar, int ncheck, 
 	ivec& C, ivec& V, ivec& sumX1, ivec& sumX2, ivec& iind, ivec& jind,	// Parity check matrix parameterization
 	QLLRvec& mvc, QLLRvec&mcv,	// temporary storage for decoder (memory allocated when codec defined)
@@ -300,7 +308,7 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
   // Note the IT++ convention that a sure zero corresponds to
   // LLR=+infinity
 
-  LLRout.set_size(LLRin.size());
+  //LLRout.set_size(LLRin.size());
 
   //! Maximum check node degree that the class can handle
   static const int max_cnd = 200;
@@ -461,7 +469,7 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
 	 */
 	QLLR m0 = mcv[iind[i]];
         mvc[i] = LLRin(i);
-        LLRout(i) = LLRin(i) + m0;
+        LLRout[i] = LLRin(i) + m0;
         break;
       }
       case 2: {
@@ -470,7 +478,7 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         QLLR m1 = mcv[iind[i1]];
         mvc[i] = LLRin(i) + m1;
         mvc[i1] = LLRin(i) + m0;
-        LLRout(i) = mvc[i1] + m1;
+        LLRout[i] = mvc[i1] + m1;
         break;
       }
       case 3: {
@@ -480,10 +488,10 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         QLLR m1 = mcv[iind[i1]];
         int i2 = i1 + nvar;
         QLLR m2 = mcv[iind[i2]];
-        LLRout(i) = LLRin(i) + m0 + m1 + m2;
-        mvc[i0] = LLRout(i) - m0;
-        mvc[i1] = LLRout(i) - m1;
-        mvc[i2] = LLRout(i) - m2;
+        LLRout[i] = LLRin(i) + m0 + m1 + m2;
+        mvc[i0] = LLRout[i] - m0;
+        mvc[i1] = LLRout[i] - m1;
+        mvc[i2] = LLRout[i] - m2;
         break;
       }
       case 4: {
@@ -495,11 +503,11 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
         QLLR m2 = mcv[iind[i2]];
         int i3 = i2 + nvar;
         QLLR m3 = mcv[iind[i3]];
-        LLRout(i) = LLRin(i) + m0 + m1 + m2 + m3;
-        mvc[i0] = LLRout(i) - m0;
-        mvc[i1] = LLRout(i) - m1;
-        mvc[i2] = LLRout(i) - m2;
-        mvc[i3] = LLRout(i) - m3;
+        LLRout[i] = LLRin(i) + m0 + m1 + m2 + m3;
+        mvc[i0] = LLRout[i] - m0;
+        mvc[i1] = LLRout[i] - m1;
+        mvc[i2] = LLRout[i] - m2;
+        mvc[i3] = LLRout[i] - m3;
         break;
       }
       default:   { // differential update
@@ -509,7 +517,7 @@ int bp_decode(const QLLRvec &LLRin, QLLRvec &LLRout,
           mvc_temp +=  mcv[iind[index_iind]];
           index_iind += nvar;
         }
-        LLRout(i) = mvc_temp;
+        LLRout[i] = mvc_temp;
         index_iind = i;  // tracks i+j*nvar
         for (int j = 0; j < sumX1[i]; j++) {
           mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
