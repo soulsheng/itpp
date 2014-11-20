@@ -308,10 +308,10 @@ int bp_decode(int *LLRin, int *LLRout,
   static const int max_cnd = 200;
 
   // allocate temporary variables used for the check node update
-  ivec jj(max_cnd);
-  QLLRvec m(max_cnd);
-  QLLRvec ml(max_cnd);
-  QLLRvec mr(max_cnd);
+  int jj[max_cnd];
+  int m[max_cnd];
+  int ml[max_cnd];
+  int mr[max_cnd];
   
   // initial step
   for (int i = 0; i < nvar; i++) {
