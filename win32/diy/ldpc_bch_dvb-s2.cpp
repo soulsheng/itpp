@@ -32,7 +32,7 @@ int bp_decode(int *LLRin, int *LLRout,
 	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
-	ivec& logexp_table,		//! The lookup tables for the decoder
+	int* logexp_table,		//! The lookup tables for the decoder
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
 
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 			ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
 			//ldpc.llrcalc );		//!< LLR calculation unit
 			ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
-			ldpc.llrcalc.logexp_table);		//! The lookup tables for the decoder
+			ldpc.llrcalc.logexp_table._data());		//! The lookup tables for the decoder
 
 		timerStep.stop();
 		timerStepValue[i] = timerStep.get_time() ;
@@ -242,19 +242,19 @@ bool syndrome_check(int *LLR,
 
 QLLR  logexp(QLLR x,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
-	ivec& logexp_table )		//! The lookup tables for the decoder
+	int* logexp_table )		//! The lookup tables for the decoder
 {
 	int ind = x >> Dint3;
 	if (ind >= Dint2) // outside table
 		return 0;
 
 	// Without interpolation
-	return logexp_table(ind);
+	return logexp_table[ind];
 }
 
 QLLR Boxplus(QLLR a, QLLR b,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
-	ivec& logexp_table )		//! The lookup tables for the decoder
+	int* logexp_table )		//! The lookup tables for the decoder
 {
 	QLLR a_abs = (a > 0 ? a : -a);
 	QLLR b_abs = (b > 0 ? b : -b);
@@ -295,7 +295,7 @@ int bp_decode(int *LLRin, int *LLRout,
 	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
-	ivec& logexp_table,		//! The lookup tables for the decoder
+	int* logexp_table,		//! The lookup tables for the decoder
 	bool psc /*= true*/,			//!< check syndrom after each iteration
 	int max_iters /*= 50*/ )		//!< Maximum number of iterations
 {
