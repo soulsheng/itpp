@@ -7,6 +7,7 @@ using namespace std;
 #include "ldpc_bp_decode.cuh"
 
 #define USE_GPU		1
+#define USE_GPU_TEST	0
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -344,7 +345,12 @@ int bp_decode(int *LLRin, int *LLRout,
 
     
     // step 2: variable to check nodes
+#if USE_GPU_TEST
+	updateVariableNode_gpu(nvar, ncheck, nmaxX1, nmaxX2, 
+		sumX1, mcv, mvc, iind, LLRin, LLRout);
+#else
 	updateVariableNode(nvar, sumX1, mcv, mvc, iind, LLRin, LLRout);
+#endif
 
 #if USE_GPU
 	if (psc && syndrome_check_gpu(LLRout, nvar, sumX2, ncheck, V, nmaxX2)) {
