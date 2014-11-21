@@ -150,3 +150,61 @@ void updateCheckNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2,
 	cudaFree( d_jj );	cudaFree( d_m );	cudaFree( d_ml );	cudaFree( d_mr );
 	
 }
+
+
+int bp_decode_gpu(int *LLRin, int *LLRout,
+	int nvar, int ncheck, 
+	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
+	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
+	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
+	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
+	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
+	int* logexp_table,		//! The lookup tables for the decoder
+	bool psc /*= true*/,			//!< check syndrom after each iteration
+	int max_iters /*= 50*/ )		//!< Maximum number of iterations
+{
+
+  // initial step
+  for (int i = 0; i < nvar; i++) {
+    int index = i;
+    for (int j = 0; j < sumX1[i]; j++) {
+      mvc[index] = LLRin[i];
+      index += nvar;
+    }
+  }
+
+  const int QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
+
+  //! Maximum check node degree that the class can handle
+  static const int max_cnd = 200;
+
+  // allocate temporary variables used for the check node update
+  int jj[max_cnd];
+  int m[max_cnd];
+  int ml[max_cnd];
+  int mr[max_cnd];
+
+
+  bool is_valid_codeword = false;
+  int iter = 0;
+  do {
+    iter++;
+    //if (nvar >= 100000) { it_info_no_endl_debug("."); }
+    // --------- Step 1: check to variable nodes ----------
+	updateCheckNode_gpu(nvar, ncheck, nmaxX1, nmaxX2, 
+		sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table,
+		jj, m, ml, mr, max_cnd, QLLR_MAX );
+
+    // step 2: variable to check nodes
+	updateVariableNode_gpu(nvar, ncheck, nmaxX1, nmaxX2, 
+		sumX1, mcv, mvc, iind, LLRin, LLRout);
+
+	if (psc && syndrome_check_gpu(LLRout, nvar, sumX2, ncheck, V, nmaxX2)) {
+	  is_valid_codeword = true;
+      break;
+    }
+  }
+  while (iter < max_iters);
+
+  return (is_valid_codeword ? iter : -iter);
+}

@@ -1,6 +1,7 @@
 #include <itpp/itcomm.h>
 #include <sstream>
 #include "ldpc_bp_decode.h"
+#include "ldpc_bp_decode.cuh"
 
 using namespace std;
 using namespace itpp;
@@ -152,7 +153,7 @@ int main(int argc, char **argv)
 		timerStep.reset();
 		timerStep.start();
 
-		countIteration[i] = bp_decode( llrIn._data(), llr._data(), 
+		countIteration[i] = bp_decode_gpu( llrIn._data(), llr._data(), 
 			ldpc.nvar, ldpc.ncheck, 
 			nmaxX1, nmaxX2, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
