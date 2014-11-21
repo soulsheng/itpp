@@ -71,6 +71,7 @@ void updateVariableNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2,
 
 	int* d_LLRout ;
 	cudaMalloc( (void**)&d_LLRout, nvar * sizeof(int) );
+	cudaMemcpy( d_LLRout, LLRout, nvar * sizeof(int), cudaMemcpyHostToDevice );
 
 	dim3 block( 256 );
 	dim3 grid( (nvar + block.x - 1) / block.x );
@@ -78,5 +79,13 @@ void updateVariableNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2,
 	updateVariableNode_kernel<<< grid, block >>>( nvar, d_sumX1, d_mcv, d_mvc, d_iind, d_LLRin, d_LLRout );
 	
 	cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(int), cudaMemcpyDeviceToHost );
+	cudaMemcpy( mvc, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyDeviceToHost );
+
+	cudaFree( d_sumX1 );
+	cudaFree( d_mcv );
+	cudaFree( d_mvc );
+	cudaFree( d_iind );
+	cudaFree( d_LLRin );
+	cudaFree( d_LLRout );
 
 }
