@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 		timerStep.reset();
 		timerStep.start();
 
-		countIteration[i] = bp_decode( llrIn._data(), llr._data(),
+		countIteration[i] = bp_decode( llrIn._data(), llr._data(), 
 			ldpc.nvar, ldpc.ncheck, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
 			ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
