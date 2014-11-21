@@ -155,8 +155,9 @@ int main(int argc, char **argv)
 		timerStep.reset();
 		timerStep.start();
 
+		ldpc_gpu	ldpc_gpu_diy;
 #if		USE_GPU
-		countIteration[i] = bp_decode_gpu( llrIn._data(), llr._data(), 
+		countIteration[i] = ldpc_gpu_diy.bp_decode( llrIn._data(), llr._data(), 
 			ldpc.nvar, ldpc.ncheck, 
 			nmaxX1, nmaxX2, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization

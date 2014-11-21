@@ -6,7 +6,7 @@
 #include <thrust/reduce.h>
 #include <thrust/device_vector.h>
 
-bool syndrome_check_gpu(int *LLR, int nvar, 
+bool ldpc_gpu::syndrome_check_gpu(int *LLR, int nvar, 
 	int* sumX2, int ncheck, 
 	int* V, int nmaxX2 ) 
 {
@@ -45,7 +45,7 @@ bool syndrome_check_gpu(int *LLR, int nvar,
 	return sum == ncheck;   // codeword is valid
 }
 
-void updateVariableNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2, 
+void ldpc_gpu::updateVariableNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2, 
 	int* sumX1, int* mcv, int* mvc, int* iind, int * LLRin, int * LLRout ) 
 {
 
@@ -90,7 +90,7 @@ void updateVariableNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2,
 
 }
 
-void updateCheckNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2, 
+void ldpc_gpu::updateCheckNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2, 
 	int* sumX2, int* mcv, int* mvc, int* jind, 
 	short int Dint1, short int Dint2, short int Dint3, int* logexp_table,
 	int* jj, int* m, int* ml, int* mr, int max_cnd, int QLLR_MAX )
@@ -152,7 +152,7 @@ void updateCheckNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2,
 }
 
 
-int bp_decode_gpu(int *LLRin, int *LLRout,
+int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
 	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
