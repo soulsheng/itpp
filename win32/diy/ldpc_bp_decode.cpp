@@ -4,10 +4,6 @@
 #include <iostream>
 #include <sstream>
 using namespace std;
-#include "ldpc_bp_decode.cuh"
-
-#define USE_GPU		1
-#define USE_GPU_TEST	1
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -340,29 +336,14 @@ int bp_decode(int *LLRin, int *LLRout,
     iter++;
     //if (nvar >= 100000) { it_info_no_endl_debug("."); }
     // --------- Step 1: check to variable nodes ----------
-#if USE_GPU_TEST
-	updateCheckNode_gpu(nvar, ncheck, nmaxX1, nmaxX2, 
-		sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table,
-		jj, m, ml, mr, max_cnd, QLLR_MAX );
-#else
 	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table,
 		jj, m, ml, mr );
-#endif
 
     
     // step 2: variable to check nodes
-#if USE_GPU
-	updateVariableNode_gpu(nvar, ncheck, nmaxX1, nmaxX2, 
-		sumX1, mcv, mvc, iind, LLRin, LLRout);
-#else
 	updateVariableNode(nvar, sumX1, mcv, mvc, iind, LLRin, LLRout);
-#endif
 
-#if USE_GPU
-	if (psc && syndrome_check_gpu(LLRout, nvar, sumX2, ncheck, V, nmaxX2)) {
-#else
 	if (psc && syndrome_check(LLRout, ncheck, sumX2, V)) {
-#endif
 	  is_valid_codeword = true;
       break;
     }
