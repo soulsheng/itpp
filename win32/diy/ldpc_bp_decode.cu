@@ -33,14 +33,14 @@ bool syndrome_check_gpu(int *LLR, int nvar,
 
 	syndrome_check_kernel<<< grid, block >>>( d_LLR, d_sumX2, ncheck, d_V, d_synd );
 
-	int bValid = thrust::reduce( thrust::device_ptr<int>( d_synd ),
+	int sum = thrust::reduce( thrust::device_ptr<int>( d_synd ),
 		thrust::device_ptr<int>( d_synd + ncheck ), 
-		(int) 0, thrust::multiplies<int>());
+		(int) 0, thrust::plus<int>());
 
 	cudaFree( d_synd );
 	cudaFree( d_LLR );
 	cudaFree( d_sumX2 );
 	cudaFree( d_V );
 
-	return bValid;   // codeword is valid
+	return sum == ncheck;   // codeword is valid
 }

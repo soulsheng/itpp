@@ -23,6 +23,6 @@ void syndrome_check_kernel(int *d_LLR,
 		vind += ncheck;
 	}
 	
-	d_synd[j] = ~(d_synd[j]&1);	// d_synd[j] is even ?
+	d_synd[j] = !(d_synd[j]&1);	// d_synd[j] is even ?
 }
 
