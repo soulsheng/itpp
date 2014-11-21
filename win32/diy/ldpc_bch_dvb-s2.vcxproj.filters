@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ldpc_bch_dvb-s2.cpp" />
+    <ClCompile Include="ldpc_bp_decode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ldpc_bp_decode.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="cuda">
+      <UniqueIdentifier>{693d02f6-f689-423b-8a23-831be0de9b58}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ldpc_bp_decode_kernel.cuh">
+      <Filter>cuda</Filter>
+    </None>
+    <None Include="ldpc_bp_decode.cuh">
+      <Filter>cuda</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="ldpc_bp_decode.cu">
+      <Filter>cuda</Filter>
+    </CudaCompile>
+  </ItemGroup>
+</Project>

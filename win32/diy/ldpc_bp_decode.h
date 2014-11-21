@@ -21,6 +21,7 @@ int Boxplus(int a, int b,
 
 int bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
+	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
 	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit

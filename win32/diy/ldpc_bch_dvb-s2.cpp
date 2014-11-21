@@ -59,14 +59,19 @@ int main(int argc, char **argv)
 	int Kbch = nSplit * K_BCH;
 
 	// print parameter value
+	int nmaxX1 = max(ldpc.sumX1._data(), ldpc.sumX1.size());
+	int nmaxX2 = max(ldpc.sumX2._data(), ldpc.sumX2.size());
+	int nminX1 = min(ldpc.sumX1._data(), ldpc.sumX1.size());
+	int nminX2 = min(ldpc.sumX2._data(), ldpc.sumX2.size());
+
 	cout << "ldpc.nvar = " << ldpc.nvar << endl;		// nvar = 16200
 	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8073 
 	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;	// = nvar
 	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;	// = ncheck
-	cout << "max(sumX1) = " << max(ldpc.sumX1._data(), ldpc.sumX1.size()) << endl;// max(sumX1) = 19
-	cout << "max(sumX2) = " << max(ldpc.sumX2._data(), ldpc.sumX2.size()) << endl;// max(sumX2) = 10
-	cout << "min(sumX1) = " << min(ldpc.sumX1._data(), ldpc.sumX1.size()) << endl;// min(sumX1) = 2
-	cout << "min(sumX2) = " << min(ldpc.sumX2._data(), ldpc.sumX2.size()) << endl;// min(sumX2) = 7
+	cout << "max(sumX1) = " << nmaxX1 << endl;// max(sumX1) = 19
+	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 10
+	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 2
+	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 7
 	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;			// = ncheck * max(sumX2)
 	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;		// = nvar * max(sumX1)
 	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;		// = ncheck * max(sumX2)
@@ -149,6 +154,7 @@ int main(int argc, char **argv)
 
 		countIteration[i] = bp_decode( llrIn._data(), llr._data(), 
 			ldpc.nvar, ldpc.ncheck, 
+			nmaxX1, nmaxX2, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
 			ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
 			//ldpc.llrcalc );		//!< LLR calculation unit
