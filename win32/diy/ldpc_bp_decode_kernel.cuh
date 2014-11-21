@@ -13,17 +13,17 @@ void syndrome_check_kernel(int *d_LLR,
 		return;
 
 	int i, vi;
-
+	int synd = 0;
 	int vind = j; // tracks j+i*ncheck
 	for (i = 0; i < d_sumX2[j]; i++) {
 		vi = d_V[vind];
 		if (d_LLR[vi] < 0) {
-			d_synd[j]++;
+			synd++;
 		}
 		vind += ncheck;
 	}
 	
-	d_synd[j] = !(d_synd[j]&1);	// d_synd[j] is even ?
+	d_synd[j] = !(synd&1);	// d_synd[j] is even ?
 }
 
 __global__ 
