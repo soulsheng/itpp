@@ -7,7 +7,7 @@ using namespace std;
 #include "ldpc_bp_decode.cuh"
 
 #define USE_GPU		1
-#define USE_GPU_TEST	1
+#define USE_GPU_TEST	0
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -106,17 +106,9 @@ int Boxplus(int a, int b,
 	return result;
 }
 
-void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table ) 
+void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table,
+	int* jj, int* m, int* ml, int* mr ) 
 {
-
-	//! Maximum check node degree that the class can handle
-	static const int max_cnd = 200;
-
-	// allocate temporary variables used for the check node update
-	int jj[max_cnd];
-	int m[max_cnd];
-	int ml[max_cnd];
-	int mr[max_cnd];
 
 	for (int j = 0; j < ncheck; j++) {
 		// The check node update calculations are hardcoded for degrees
@@ -211,11 +203,6 @@ void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, sho
 				}
 		default: {
 			int nodes = sumX2[j];
-			if( nodes > max_cnd ) {
-				std::ostringstream m_sout;
-				m_sout << "check node degrees >" << max_cnd << " not supported in this version";
-				cout << m_sout.str() << endl;
-			}
 
 			nodes--;
 			jj[0] = j;
@@ -335,17 +322,36 @@ int bp_decode(int *LLRin, int *LLRout,
     }
   }
 
+  const int QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
+
+  //! Maximum check node degree that the class can handle
+  static const int max_cnd = 200;
+
+  // allocate temporary variables used for the check node update
+  int jj[max_cnd];
+  int m[max_cnd];
+  int ml[max_cnd];
+  int mr[max_cnd];
+
+
   bool is_valid_codeword = false;
   int iter = 0;
   do {
     iter++;
     //if (nvar >= 100000) { it_info_no_endl_debug("."); }
     // --------- Step 1: check to variable nodes ----------
-	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table );
+#if USE_GPU_TEST
+	updateCheckNode_gpu(nvar, ncheck, nmaxX1, nmaxX2, 
+		sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table,
+		jj, m, ml, mr, QLLR_MAX );
+#else
+	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table,
+		jj, m, ml, mr );
+#endif
 
     
     // step 2: variable to check nodes
-#if USE_GPU_TEST
+#if USE_GPU
 	updateVariableNode_gpu(nvar, ncheck, nmaxX1, nmaxX2, 
 		sumX1, mcv, mvc, iind, LLRin, LLRout);
 #else
