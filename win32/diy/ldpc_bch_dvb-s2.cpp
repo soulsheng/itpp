@@ -157,9 +157,6 @@ int main(int argc, char **argv)
 		QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
 
-		cout << "llrIn.size() = " << llrIn.size() << endl;
-		cout << "llrOut.size() = " << llr.size() << endl;
-
 		timerStep.reset();
 		timerStep.start();
 
