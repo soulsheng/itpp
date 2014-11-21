@@ -58,6 +58,23 @@ int main(int argc, char **argv)
 
 	int Kbch = nSplit * K_BCH;
 
+	// print parameter value
+	cout << "ldpc.nvar = " << ldpc.nvar << endl;
+	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;
+	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;
+	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;
+	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;
+	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;
+	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;
+
+	cout << "ldpc.mvc.size() = " << ldpc.mvc.size() << endl;
+	cout << "ldpc.mcv.size() = " << ldpc.mcv.size() << endl;
+
+	cout << "ldpc.llrcalc.Dint1 = " << ldpc.llrcalc.Dint1 << endl;
+	cout << "ldpc.llrcalc.Dint2 = " << ldpc.llrcalc.Dint2 << endl;
+	cout << "ldpc.llrcalc.Dint3 = " << ldpc.llrcalc.Dint3 << endl;
+
+	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;
 
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
@@ -119,6 +136,9 @@ int main(int argc, char **argv)
 		// step 7: ldpc Decode the received bits
 		QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
+
+		cout << "llrIn.size() = " << llrIn.size() << endl;
+		cout << "llrOut.size() = " << llr.size() << endl;
 
 		timerStep.reset();
 		timerStep.start();
