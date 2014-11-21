@@ -105,6 +105,204 @@ int Boxplus(int a, int b,
 	return result;
 }
 
+void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table, const int max_cnd, int * jj, int * m, int * ml, int * mr ) 
+{
+	for (int j = 0; j < ncheck; j++) {
+		// The check node update calculations are hardcoded for degrees
+		// up to 6.  For larger degrees, a general algorithm is used.
+		switch (sumX2[j]) {
+		case 0:
+			cout << "LDPC_Code::bp_decode(): sumX2[j]=0" << endl;
+		case 1:
+			cout << "LDPC_Code::bp_decode(): sumX2[j]=1" << endl;
+		case 2: {
+			mcv[j+ncheck] = mvc[jind[j]];
+			mcv[j] = mvc[jind[j+ncheck]];
+			break;
+				}
+		case 3: {
+			int j0 = j;
+			int m0 = mvc[jind[j0]];
+			int j1 = j0 + ncheck;
+			int m1 = mvc[jind[j1]];
+			int j2 = j1 + ncheck;
+			int m2 = mvc[jind[j2]];
+			mcv[j0] = Boxplus(m1, m2, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j1] = Boxplus(m0, m2, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j2] = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+			break;
+				}
+		case 4: {
+			int j0 = j;
+			int m0 = mvc[jind[j0]];
+			int j1 = j0 + ncheck;
+			int m1 = mvc[jind[j1]];
+			int j2 = j1 + ncheck;
+			int m2 = mvc[jind[j2]];
+			int j3 = j2 + ncheck;
+			int m3 = mvc[jind[j3]];
+			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j0] = Boxplus(m1, m23, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j1] = Boxplus(m0, m23, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j2] = Boxplus(m01, m3, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j3] = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
+			break;
+				}
+		case 5: {
+			int j0 = j;
+			int m0 = mvc[jind[j0]];
+			int j1 = j0 + ncheck;
+			int m1 = mvc[jind[j1]];
+			int j2 = j1 + ncheck;
+			int m2 = mvc[jind[j2]];
+			int j3 = j2 + ncheck;
+			int m3 = mvc[jind[j3]];
+			int j4 = j3 + ncheck;
+			int m4 = mvc[jind[j4]];
+			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+			int m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
+			int m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, logexp_table);
+			int m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j0] = Boxplus(m1, m24, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j1] = Boxplus(m0, m24, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j2] = Boxplus(m01, m34, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j3] = Boxplus(m02, m4, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j4] = Boxplus(m02, m3, Dint1, Dint2, Dint3, logexp_table);
+			break;
+				}
+		case 6: {
+			int j0 = j;
+			int m0 = mvc[jind[j0]];
+			int j1 = j0 + ncheck;
+			int m1 = mvc[jind[j1]];
+			int j2 = j1 + ncheck;
+			int m2 = mvc[jind[j2]];
+			int j3 = j2 + ncheck;
+			int m3 = mvc[jind[j3]];
+			int j4 = j3 + ncheck;
+			int m4 = mvc[jind[j4]];
+			int j5 = j4 + ncheck;
+			int m5 = mvc[jind[j5]];
+			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
+			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
+			int m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, logexp_table);
+			int m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, logexp_table);
+			int m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, logexp_table);
+			int m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j0] = Boxplus(m1, m25, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j1] = Boxplus(m0, m25, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j2] = Boxplus(m0145, m3, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j3] = Boxplus(m0145, m2, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j4] = Boxplus(m03, m5, Dint1, Dint2, Dint3, logexp_table);
+			mcv[j5] = Boxplus(m03, m4, Dint1, Dint2, Dint3, logexp_table);
+			break;
+				}
+		default: {
+			int nodes = sumX2[j];
+			if( nodes > max_cnd ) {
+				std::ostringstream m_sout;
+				m_sout << "check node degrees >" << max_cnd << " not supported in this version";
+				cout << m_sout.str() << endl;
+			}
+
+			nodes--;
+			jj[0] = j;
+			m[0] = mvc[jind[jj[0]]];
+			for(int i = 1; i <= nodes; i++ ) {
+				jj[i] = jj[i-1] + ncheck;
+				m[i] = mvc[jind[jj[i]]];
+			}
+
+			// compute partial sums from the left and from the right
+			ml[0] = m[0];
+			mr[0] = m[nodes];
+			for(int i = 1; i < nodes; i++ ) {
+				ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, logexp_table );
+				mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, logexp_table );
+			}
+
+			// merge partial sums
+			mcv[jj[0]] = mr[nodes-1];
+			mcv[jj[nodes]] = ml[nodes-1];
+			for(int i = 1; i < nodes; i++ )
+				mcv[jj[i]] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, logexp_table );
+				 }
+		}  // switch statement
+	}
+}
+
+void updateVariableNode( int nvar, int* sumX1, int* mcv, int* iind, int* mvc, int * LLRin, int * LLRout ) 
+{
+	for (int i = 0; i < nvar; i++) {
+		switch (sumX1[i]) {
+		case 0:
+			cout << "LDPC_Code::bp_decode(): sumX1[i]=0" << endl;
+		case 1: {
+			/* This case is rare but apparently occurs for codes used in
+			the DVB-T2 standard.
+			*/
+			int m0 = mcv[iind[i]];
+			mvc[i] = LLRin[i];
+			LLRout[i] = LLRin[i] + m0;
+			break;
+				}
+		case 2: {
+			int m0 = mcv[iind[i]];
+			int i1 = i + nvar;
+			int m1 = mcv[iind[i1]];
+			mvc[i] = LLRin[i] + m1;
+			mvc[i1] = LLRin[i] + m0;
+			LLRout[i] = mvc[i1] + m1;
+			break;
+				}
+		case 3: {
+			int i0 = i;
+			int m0 = mcv[iind[i0]];
+			int i1 = i0 + nvar;
+			int m1 = mcv[iind[i1]];
+			int i2 = i1 + nvar;
+			int m2 = mcv[iind[i2]];
+			LLRout[i] = LLRin[i] + m0 + m1 + m2;
+			mvc[i0] = LLRout[i] - m0;
+			mvc[i1] = LLRout[i] - m1;
+			mvc[i2] = LLRout[i] - m2;
+			break;
+				}
+		case 4: {
+			int i0 = i;
+			int m0 = mcv[iind[i0]];
+			int i1 = i0 + nvar;
+			int m1 = mcv[iind[i1]];
+			int i2 = i1 + nvar;
+			int m2 = mcv[iind[i2]];
+			int i3 = i2 + nvar;
+			int m3 = mcv[iind[i3]];
+			LLRout[i] = LLRin[i] + m0 + m1 + m2 + m3;
+			mvc[i0] = LLRout[i] - m0;
+			mvc[i1] = LLRout[i] - m1;
+			mvc[i2] = LLRout[i] - m2;
+			mvc[i3] = LLRout[i] - m3;
+			break;
+				}
+		default:   { // differential update
+			int mvc_temp = LLRin[i];
+			int index_iind = i; // tracks i+jp*nvar
+			for (int jp = 0; jp < sumX1[i]; jp++) {
+				mvc_temp +=  mcv[iind[index_iind]];
+				index_iind += nvar;
+			}
+			LLRout[i] = mvc_temp;
+			index_iind = i;  // tracks i+j*nvar
+			for (int j = 0; j < sumX1[i]; j++) {
+				mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
+				index_iind += nvar;
+			}
+				   }
+		}
+	}
+}
+
 int bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
 	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
@@ -145,198 +343,12 @@ int bp_decode(int *LLRin, int *LLRout,
     iter++;
     //if (nvar >= 100000) { it_info_no_endl_debug("."); }
     // --------- Step 1: check to variable nodes ----------
-    for (int j = 0; j < ncheck; j++) {
-      // The check node update calculations are hardcoded for degrees
-      // up to 6.  For larger degrees, a general algorithm is used.
-      switch (sumX2[j]) {
-      case 0:
-        cout << "LDPC_Code::bp_decode(): sumX2[j]=0" << endl;
-      case 1:
-        cout << "LDPC_Code::bp_decode(): sumX2[j]=1" << endl;
-      case 2: {
-        mcv[j+ncheck] = mvc[jind[j]];
-        mcv[j] = mvc[jind[j+ncheck]];
-        break;
-      }
-      case 3: {
-        int j0 = j;
-        int m0 = mvc[jind[j0]];
-        int j1 = j0 + ncheck;
-        int m1 = mvc[jind[j1]];
-        int j2 = j1 + ncheck;
-        int m2 = mvc[jind[j2]];
-        mcv[j0] = Boxplus(m1, m2, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j1] = Boxplus(m0, m2, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j2] = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
-        break;
-      }
-      case 4: {
-        int j0 = j;
-        int m0 = mvc[jind[j0]];
-        int j1 = j0 + ncheck;
-        int m1 = mvc[jind[j1]];
-        int j2 = j1 + ncheck;
-        int m2 = mvc[jind[j2]];
-        int j3 = j2 + ncheck;
-        int m3 = mvc[jind[j3]];
-        int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
-        int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j0] = Boxplus(m1, m23, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j1] = Boxplus(m0, m23, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j2] = Boxplus(m01, m3, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j3] = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
-        break;
-      }
-      case 5: {
-        int j0 = j;
-        int m0 = mvc[jind[j0]];
-        int j1 = j0 + ncheck;
-        int m1 = mvc[jind[j1]];
-        int j2 = j1 + ncheck;
-        int m2 = mvc[jind[j2]];
-        int j3 = j2 + ncheck;
-        int m3 = mvc[jind[j3]];
-        int j4 = j3 + ncheck;
-        int m4 = mvc[jind[j4]];
-        int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
-        int m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table);
-        int m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, logexp_table);
-        int m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j0] = Boxplus(m1, m24, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j1] = Boxplus(m0, m24, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j2] = Boxplus(m01, m34, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j3] = Boxplus(m02, m4, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j4] = Boxplus(m02, m3, Dint1, Dint2, Dint3, logexp_table);
-        break;
-      }
-      case 6: {
-        int j0 = j;
-        int m0 = mvc[jind[j0]];
-        int j1 = j0 + ncheck;
-        int m1 = mvc[jind[j1]];
-        int j2 = j1 + ncheck;
-        int m2 = mvc[jind[j2]];
-        int j3 = j2 + ncheck;
-        int m3 = mvc[jind[j3]];
-        int j4 = j3 + ncheck;
-        int m4 = mvc[jind[j4]];
-        int j5 = j4 + ncheck;
-        int m5 = mvc[jind[j5]];
-        int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table);
-        int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table);
-        int m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, logexp_table);
-        int m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, logexp_table);
-        int m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, logexp_table);
-        int m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j0] = Boxplus(m1, m25, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j1] = Boxplus(m0, m25, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j2] = Boxplus(m0145, m3, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j3] = Boxplus(m0145, m2, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j4] = Boxplus(m03, m5, Dint1, Dint2, Dint3, logexp_table);
-        mcv[j5] = Boxplus(m03, m4, Dint1, Dint2, Dint3, logexp_table);
-        break;
-      }
-      default: {
-        int nodes = sumX2[j];
-        if( nodes > max_cnd ) {
-          std::ostringstream m_sout;
-          m_sout << "check node degrees >" << max_cnd << " not supported in this version";
-          cout << m_sout.str() << endl;
-        }
+	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table, max_cnd, jj, m, ml, mr);
 
-        nodes--;
-        jj[0] = j;
-        m[0] = mvc[jind[jj[0]]];
-        for(int i = 1; i <= nodes; i++ ) {
-          jj[i] = jj[i-1] + ncheck;
-          m[i] = mvc[jind[jj[i]]];
-        }
-
-	// compute partial sums from the left and from the right
-        ml[0] = m[0];
-        mr[0] = m[nodes];
-        for(int i = 1; i < nodes; i++ ) {
-          ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, logexp_table );
-          mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, logexp_table );
-        }
-
-	// merge partial sums
-        mcv[jj[0]] = mr[nodes-1];
-        mcv[jj[nodes]] = ml[nodes-1];
-        for(int i = 1; i < nodes; i++ )
-          mcv[jj[i]] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, logexp_table );
-      }
-      }  // switch statement
-    }
     
     // step 2: variable to check nodes
-    for (int i = 0; i < nvar; i++) {
-      switch (sumX1[i]) {
-      case 0:
-        cout << "LDPC_Code::bp_decode(): sumX1[i]=0" << endl;
-      case 1: {
-        /* This case is rare but apparently occurs for codes used in
-	   the DVB-T2 standard.
-	 */
-	int m0 = mcv[iind[i]];
-        mvc[i] = LLRin[i];
-        LLRout[i] = LLRin[i] + m0;
-        break;
-      }
-      case 2: {
-        int m0 = mcv[iind[i]];
-        int i1 = i + nvar;
-        int m1 = mcv[iind[i1]];
-        mvc[i] = LLRin[i] + m1;
-        mvc[i1] = LLRin[i] + m0;
-        LLRout[i] = mvc[i1] + m1;
-        break;
-      }
-      case 3: {
-        int i0 = i;
-        int m0 = mcv[iind[i0]];
-        int i1 = i0 + nvar;
-        int m1 = mcv[iind[i1]];
-        int i2 = i1 + nvar;
-        int m2 = mcv[iind[i2]];
-        LLRout[i] = LLRin[i] + m0 + m1 + m2;
-        mvc[i0] = LLRout[i] - m0;
-        mvc[i1] = LLRout[i] - m1;
-        mvc[i2] = LLRout[i] - m2;
-        break;
-      }
-      case 4: {
-        int i0 = i;
-        int m0 = mcv[iind[i0]];
-        int i1 = i0 + nvar;
-        int m1 = mcv[iind[i1]];
-        int i2 = i1 + nvar;
-        int m2 = mcv[iind[i2]];
-        int i3 = i2 + nvar;
-        int m3 = mcv[iind[i3]];
-        LLRout[i] = LLRin[i] + m0 + m1 + m2 + m3;
-        mvc[i0] = LLRout[i] - m0;
-        mvc[i1] = LLRout[i] - m1;
-        mvc[i2] = LLRout[i] - m2;
-        mvc[i3] = LLRout[i] - m3;
-        break;
-      }
-      default:   { // differential update
-        int mvc_temp = LLRin[i];
-        int index_iind = i; // tracks i+jp*nvar
-        for (int jp = 0; jp < sumX1[i]; jp++) {
-          mvc_temp +=  mcv[iind[index_iind]];
-          index_iind += nvar;
-        }
-        LLRout[i] = mvc_temp;
-        index_iind = i;  // tracks i+j*nvar
-        for (int j = 0; j < sumX1[i]; j++) {
-          mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
-          index_iind += nvar;
-        }
-      }
-      }
-    }
+	updateVariableNode(nvar, sumX1, mcv, iind, mvc, LLRin, LLRout);
+
 #if USE_GPU
 	if (psc && syndrome_check_gpu(LLRout, nvar, sumX2, ncheck, V, nmaxX2)) {
 #else
