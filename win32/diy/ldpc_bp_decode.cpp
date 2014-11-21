@@ -105,8 +105,18 @@ int Boxplus(int a, int b,
 	return result;
 }
 
-void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table, const int max_cnd, int * jj, int * m, int * ml, int * mr ) 
+void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table ) 
 {
+
+	//! Maximum check node degree that the class can handle
+	static const int max_cnd = 200;
+
+	// allocate temporary variables used for the check node update
+	int jj[max_cnd];
+	int m[max_cnd];
+	int ml[max_cnd];
+	int mr[max_cnd];
+
 	for (int j = 0; j < ncheck; j++) {
 		// The check node update calculations are hardcoded for degrees
 		// up to 6.  For larger degrees, a general algorithm is used.
@@ -232,7 +242,7 @@ void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, sho
 	}
 }
 
-void updateVariableNode( int nvar, int* sumX1, int* mcv, int* iind, int* mvc, int * LLRin, int * LLRout ) 
+void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, int * LLRin, int * LLRout ) 
 {
 	for (int i = 0; i < nvar; i++) {
 		switch (sumX1[i]) {
@@ -314,20 +324,7 @@ int bp_decode(int *LLRin, int *LLRout,
 	bool psc /*= true*/,			//!< check syndrom after each iteration
 	int max_iters /*= 50*/ )		//!< Maximum number of iterations
 {
-  // Note the IT++ convention that a sure zero corresponds to
-  // LLR=+infinity
 
-  //LLRout.set_size(LLRin.size());
-
-  //! Maximum check node degree that the class can handle
-  static const int max_cnd = 200;
-
-  // allocate temporary variables used for the check node update
-  int jj[max_cnd];
-  int m[max_cnd];
-  int ml[max_cnd];
-  int mr[max_cnd];
-  
   // initial step
   for (int i = 0; i < nvar; i++) {
     int index = i;
@@ -343,11 +340,11 @@ int bp_decode(int *LLRin, int *LLRout,
     iter++;
     //if (nvar >= 100000) { it_info_no_endl_debug("."); }
     // --------- Step 1: check to variable nodes ----------
-	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table, max_cnd, jj, m, ml, mr);
+	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table );
 
     
     // step 2: variable to check nodes
-	updateVariableNode(nvar, sumX1, mcv, iind, mvc, LLRin, LLRout);
+	updateVariableNode(nvar, sumX1, mcv, mvc, iind, LLRin, LLRout);
 
 #if USE_GPU
 	if (psc && syndrome_check_gpu(LLRout, nvar, sumX2, ncheck, V, nmaxX2)) {
