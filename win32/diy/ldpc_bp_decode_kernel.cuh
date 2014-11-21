@@ -156,12 +156,17 @@ __global__
 void updateCheckNode_kernel( int ncheck, 
 	int* sumX2, int* mcv, int* mvc, int* jind, 
 	short int Dint1, short int Dint2, short int Dint3, int* logexp_table,
-	int* jj, int* m, int* ml, int* mr, int QLLR_MAX )
+	int* d_jj, int* d_m, int* d_ml, int* d_mr, int max_cnd, int QLLR_MAX )
 {
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if( j>= ncheck )
 		return;
+
+	int* jj	= d_jj	+ j * max_cnd;
+	int* m	= d_m	+ j * max_cnd;
+	int* ml	= d_ml	+ j * max_cnd;
+	int* mr	= d_mr	+ j * max_cnd;
 
 	switch (sumX2[j]) {
 		case 0:

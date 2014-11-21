@@ -117,27 +117,27 @@ void updateCheckNode_gpu( int nvar, int ncheck, int nmaxX1, int nmaxX2,
 	cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
 	
 	int* d_jj ;
-	cudaMalloc( (void**)&d_jj, max_cnd * sizeof(int) );
-	cudaMemset( d_jj, 0, max_cnd * sizeof(int) );
+	cudaMalloc( (void**)&d_jj, ncheck * max_cnd * sizeof(int) );
+	cudaMemset( d_jj, 0, ncheck * max_cnd * sizeof(int) );
 	
 	int* d_m ;
-	cudaMalloc( (void**)&d_m, max_cnd * sizeof(int) );
-	cudaMemset( d_m, 0, max_cnd * sizeof(int) );
+	cudaMalloc( (void**)&d_m, ncheck * max_cnd * sizeof(int) );
+	cudaMemset( d_m, 0, ncheck * max_cnd * sizeof(int) );
 	
 	int* d_ml ;
-	cudaMalloc( (void**)&d_ml, max_cnd * sizeof(int) );
-	cudaMemset( d_ml, 0, max_cnd * sizeof(int) );
+	cudaMalloc( (void**)&d_ml, ncheck * max_cnd * sizeof(int) );
+	cudaMemset( d_ml, 0, ncheck * max_cnd * sizeof(int) );
 	
 	int* d_mr ;
-	cudaMalloc( (void**)&d_mr, max_cnd * sizeof(int) );
-	cudaMemset( d_mr, 0, max_cnd * sizeof(int) );
+	cudaMalloc( (void**)&d_mr, ncheck * max_cnd * sizeof(int) );
+	cudaMemset( d_mr, 0, ncheck * max_cnd * sizeof(int) );
 
 	dim3 block( 256 );
 	dim3 grid( (ncheck + block.x - 1) / block.x );
 
 	updateCheckNode_kernel<<< grid, block >>>(ncheck, 
 		d_sumX2, d_mcv, d_mvc, d_jind, Dint1, Dint2, Dint3, d_logexp_table,
-		d_jj, d_m, d_ml, d_mr, QLLR_MAX );
+		d_jj, d_m, d_ml, d_mr, max_cnd, QLLR_MAX );
 
 	cudaMemcpy( mcv, d_mcv, ncheck * nmaxX2 * sizeof(int), cudaMemcpyDeviceToHost );
 	cudaMemcpy( mvc, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyDeviceToHost );
