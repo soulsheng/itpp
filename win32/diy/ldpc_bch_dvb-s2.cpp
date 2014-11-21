@@ -89,6 +89,14 @@ int main(int argc, char **argv)
 	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;// = 300
 
 
+	ldpc_gpu	ldpc_gpu_diy;
+	ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
+		nmaxX1, nmaxX2, 
+		ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(), ldpc.V._data(), 	// Parity check matrix parameterization
+		ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
+		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
+		ldpc.llrcalc.logexp_table._data());
+
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 		timer.reset();
@@ -155,16 +163,9 @@ int main(int argc, char **argv)
 		timerStep.reset();
 		timerStep.start();
 
-		ldpc_gpu	ldpc_gpu_diy;
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode( llrIn._data(), llr._data(), 
-			ldpc.nvar, ldpc.ncheck, 
-			nmaxX1, nmaxX2, 
-			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
-			ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
-			//ldpc.llrcalc );		//!< LLR calculation unit
-			ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
-			ldpc.llrcalc.logexp_table._data());		//! The lookup tables for the decoder
+			ldpc.sumX1._data(), ldpc.mvc._data() );		//! The lookup tables for the decoder
 #else
 		countIteration[i] = bp_decode( llrIn._data(), llr._data(), 
 			ldpc.nvar, ldpc.ncheck, 
