@@ -59,22 +59,26 @@ int main(int argc, char **argv)
 	int Kbch = nSplit * K_BCH;
 
 	// print parameter value
-	cout << "ldpc.nvar = " << ldpc.nvar << endl;
-	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;
-	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;
-	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;
-	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;
-	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;
-	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;
+	cout << "ldpc.nvar = " << ldpc.nvar << endl;		// nvar = 16200
+	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8073 
+	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;	// = nvar
+	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;	// = ncheck
+	cout << "max(sumX1) = " << max(ldpc.sumX1._data(), ldpc.sumX1.size()) << endl;// max(sumX1) = 19
+	cout << "max(sumX2) = " << max(ldpc.sumX2._data(), ldpc.sumX2.size()) << endl;// max(sumX2) = 10
+	cout << "min(sumX1) = " << min(ldpc.sumX1._data(), ldpc.sumX1.size()) << endl;// min(sumX1) = 2
+	cout << "min(sumX2) = " << min(ldpc.sumX2._data(), ldpc.sumX2.size()) << endl;// min(sumX2) = 7
+	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;			// = ncheck * max(sumX2)
+	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;		// = nvar * max(sumX1)
+	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;		// = ncheck * max(sumX2)
 
-	cout << "ldpc.mvc.size() = " << ldpc.mvc.size() << endl;
-	cout << "ldpc.mcv.size() = " << ldpc.mcv.size() << endl;
+	cout << "ldpc.mvc.size() = " << ldpc.mvc.size() << endl;		// = nvar * max(sumX1)
+	cout << "ldpc.mcv.size() = " << ldpc.mcv.size() << endl;		// = ncheck * max(sumX2)
 
-	cout << "ldpc.llrcalc.Dint1 = " << ldpc.llrcalc.Dint1 << endl;
-	cout << "ldpc.llrcalc.Dint2 = " << ldpc.llrcalc.Dint2 << endl;
-	cout << "ldpc.llrcalc.Dint3 = " << ldpc.llrcalc.Dint3 << endl;
+	cout << "ldpc.llrcalc.Dint1 = " << ldpc.llrcalc.Dint1 << endl;	// Dint1 = 12
+	cout << "ldpc.llrcalc.Dint2 = " << ldpc.llrcalc.Dint2 << endl;	// Dint2 = 300
+	cout << "ldpc.llrcalc.Dint3 = " << ldpc.llrcalc.Dint3 << endl;	// Dint3 = 7
 
-	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;
+	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;// = 300
 
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 

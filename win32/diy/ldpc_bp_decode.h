@@ -1,6 +1,10 @@
 
 #pragma once
 
+//! Maximum value of vector
+int max(int *v, int N);
+//! Minimum value of vector
+int min(int *v, int N);
 
 bool syndrome_check(int* LLR,
 	int ncheck, 
