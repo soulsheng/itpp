@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 	AWGN_Channel chan(N0 / 2);
 
 	BERC berc;  // Counters for coded and uncoded BER
-	BLERC ferc; // Counter for coded FER
+	//BLERC ferc; // Counter for coded FER
 
 	RNG_randomize();
 
@@ -58,7 +58,6 @@ int main(int argc, char **argv)
 
 	int Kbch = nSplit * K_BCH;
 
-	ferc.set_blocksize(Kbch);
 
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
@@ -152,19 +151,15 @@ int main(int argc, char **argv)
 
 		// step 9: verify result, Count the number of errors
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
-		ferc.count(bitsinBCHEnc, bitsoutBCHDec);
 
 		timer.stop();
 		timerValue[i] = timer.get_time() ;
         
 		cout << "Eb/N0 = " << EBNO << "  Simulated "
-				<< ferc.get_total_blocks() << " frames and "
+				<< i << " frames and "
 				<< berc.get_total_bits() << " bits. " << endl
 				<< "Obtained " << berc.get_errors() << " bit errors. "
 				<< " BER: " << berc.get_errorrate() << " . "
-				<< " FER: " << ferc.get_errorrate() << " . "
-				<< ferc.get_errors() << " bit errors. "
-				<< ferc.get_corrects() << " bit corrects. "
 				<< endl << flush;
     }
 
@@ -187,6 +182,10 @@ int main(int argc, char **argv)
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
 		cout << countIteration[i] << " iteration, " ;
+
+		if (countIteration[i]<0)
+			countIteration[i] *= -1;
+
 		countIterationAverage += countIteration[i];
 	}
 	cout << endl << endl ;
