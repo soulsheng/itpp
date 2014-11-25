@@ -175,7 +175,6 @@ void updateCheckNode_kernel( const int ncheck,
 	if( j>= ncheck )
 		return;
 
-	int m[MAX_CHECK_NODE];//int* m	= d_m	+ j * max_cnd;
 	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
 	int mr[MAX_CHECK_NODE];//int* mr	= d_mr	+ j * max_cnd;
 
@@ -272,18 +271,12 @@ void updateCheckNode_kernel( const int ncheck,
 
 			nodes--;
 
-
-			for(int i = 0; i <= nodes; i++ ) {
-
-				m[i] = mvc[jind[j+i*ncheck]];
-			}
-
 			// compute partial sums from the left and from the right
-			ml[0] = m[0];
-			mr[0] = m[nodes];
+			ml[0] = mvc[jind[j]];
+			mr[0] = mvc[jind[j+nodes*ncheck]];
 			for(int i = 1; i < nodes; i++ ) {
-				ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX );
-				mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX );
+				ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
+				mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
 			}
 
 			// merge partial sums
