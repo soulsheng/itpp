@@ -1,5 +1,6 @@
 #include <itpp/itcomm.h>
 #include <sstream>
+#include <cuda_runtime.h>
 #include "ldpc_bp_decode.h"
 #include "ldpc_bp_decode.cuh"
 
@@ -8,7 +9,7 @@ using namespace itpp;
 
 #define		FILENAME_IT		"RU_16200.it"
 #define		EBNO			1.8
-#define		COUNT_REPEAT	100	// repeat time 
+#define		COUNT_REPEAT	10	// repeat time 
 
 #define		N_BCH			31
 #define		T_BCH			2
@@ -239,6 +240,8 @@ int main(int argc, char **argv)
 	cout << endl << timerStepAverage/COUNT_REPEAT << " s Average step decode ldpc" << endl ;
 	
 	cout << endl << countIterationAverage/COUNT_REPEAT << " iteration Average in decode ldpc" << endl ;
+
+	cudaDeviceReset();
 
 	return 0;
 }
