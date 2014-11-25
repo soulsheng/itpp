@@ -34,7 +34,7 @@ void ldpc_gpu::updateCheckNode_gpu()
 	dim3 grid( (ncheck + block.x - 1) / block.x );
 
 	updateCheckNode_kernel<<< grid, block >>>(ncheck, 
-		d_sumX2, d_mcv, d_mvc, d_jind, Dint1, Dint2, Dint3, d_logexp_table,
+		d_sumX2, d_mcv, d_mvc, d_jind, Dint1, Dint2, Dint3,
 		d_jj, d_m, d_ml, d_mr, max_cnd, QLLR_MAX );
 }
 
@@ -102,19 +102,19 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMalloc( (void**)&d_synd, ncheck * sizeof(int) );
 	cudaMemset( d_synd, 0, ncheck * sizeof(int) );
 	
-	cudaMalloc( (void**)&d_sumX1, nvar * sizeof(int) );
+	cudaMalloc( (void**)&d_sumX1, nvar * sizeof(int) );		// const 64 K
 	cudaMemcpy( d_sumX1, sumX1, nvar * sizeof(int), cudaMemcpyHostToDevice );
 
-	cudaMalloc( (void**)&d_sumX2, ncheck * sizeof(int) );
+	cudaMalloc( (void**)&d_sumX2, ncheck * sizeof(int) );	// const 32 K
 	cudaMemcpy( d_sumX2, sumX2, ncheck * sizeof(int), cudaMemcpyHostToDevice );
 
-	cudaMalloc( (void**)&d_iind, nvar * nmaxX1 * sizeof(int) );
+	cudaMalloc( (void**)&d_iind, nvar * nmaxX1 * sizeof(int) );		// const 1.2 M
 	cudaMemcpy( d_iind, iind, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
 	
-	cudaMalloc( (void**)&d_jind, ncheck * nmaxX2 * sizeof(int) );
+	cudaMalloc( (void**)&d_jind, ncheck * nmaxX2 * sizeof(int) );	// const 300 K
 	cudaMemcpy( d_jind, jind, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 
-	cudaMalloc( (void**)&d_V, ncheck * nmaxX2 * sizeof(int) );
+	cudaMalloc( (void**)&d_V, ncheck * nmaxX2 * sizeof(int) );		// const 300 K
 	cudaMemcpy( d_V, V, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 	
 	cudaMalloc( (void**)&d_mcv, ncheck * nmaxX2 * sizeof(int) );
@@ -123,10 +123,11 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMalloc( (void**)&d_mvc, nvar * nmaxX1 * sizeof(int) );
 	cudaMemcpy( d_mvc, mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
 
-	cudaMalloc( (void**)&d_logexp_table, Dint2 * sizeof(int) );
-	cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
+	//cudaMalloc( (void**)&d_logexp_table, Dint2 * sizeof(int) );		// const 1.2 K
+	//cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
 
-	
+	initConstantMemory(logexp_table);
+
 	cudaMalloc( (void**)&d_jj, ncheck * max_cnd * sizeof(int) );
 	cudaMemset( d_jj, 0, ncheck * max_cnd * sizeof(int) );
 	
@@ -156,7 +157,7 @@ bool ldpc_gpu::release()
 
 	cudaFree( d_mcv );		cudaFree( d_mvc );
 	
-	cudaFree( d_logexp_table );	
+	//cudaFree( d_logexp_table );	
 
 	cudaFree( d_jj );	cudaFree( d_m );	cudaFree( d_ml );	cudaFree( d_mr );
 

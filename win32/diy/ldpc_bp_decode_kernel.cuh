@@ -1,6 +1,15 @@
 
 #pragma once
 
+#define		TABLE_SIZE_DINT2	300
+
+__device__ __constant__ int const_logexp_table[TABLE_SIZE_DINT2];
+
+void initConstantMemory(int *logexp_table)
+{
+	cudaMemcpyToSymbol( const_logexp_table, logexp_table, TABLE_SIZE_DINT2 * sizeof(int), 0, cudaMemcpyHostToDevice );
+}
+
 __global__ 
 void syndrome_check_kernel(const int *d_LLR,
 	const int* d_sumX2, const int ncheck, 
@@ -103,21 +112,21 @@ void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv
 
 __device__
 int  logexp_device(const int x,
-	const short int Dint1, const short int Dint2, const short int Dint3,	//! Decoder (lookup-table) parameters
-	const int* logexp_table )		//! The lookup tables for the decoder
+	const short int Dint1, const short int Dint2, const short int Dint3	//! Decoder (lookup-table) parameters
+	)		
 {
 	int ind = x >> Dint3;
 	if (ind >= Dint2) // outside table
 		return 0;
 
 	// Without interpolation
-	return logexp_table[ind];
+	return const_logexp_table[ind];
 }
 
 __device__
 int Boxplus(const int a, const int b,
 	const short int Dint1, const short int Dint2, const short int Dint3,	//! Decoder (lookup-table) parameters
-	const int* logexp_table, const int QLLR_MAX )		//! The lookup tables for the decoder
+	const int QLLR_MAX )		//! The lookup tables for the decoder
 {
 	int a_abs = (a > 0 ? a : -a);
 	int b_abs = (b > 0 ? b : -b);
@@ -137,9 +146,9 @@ int Boxplus(const int a, const int b,
 	}
 
 	int apb = a + b;
-	int term2 = logexp_device((apb > 0 ? apb : -apb), Dint1, Dint2, Dint3, logexp_table);
+	int term2 = logexp_device((apb > 0 ? apb : -apb), Dint1, Dint2, Dint3);
 	int amb = a - b;
-	int term3 = logexp_device((amb > 0 ? amb : -amb), Dint1, Dint2, Dint3, logexp_table);
+	int term3 = logexp_device((amb > 0 ? amb : -amb), Dint1, Dint2, Dint3);
 	int result = term1 + term2 - term3;
 
 	// Don't abort when overflowing, just saturate the QLLR
@@ -155,7 +164,7 @@ int Boxplus(const int a, const int b,
 __global__ 
 void updateCheckNode_kernel( const int ncheck, 
 	const int* sumX2, int* mcv, int* mvc, const int* jind, 
-	const short int Dint1, const short int Dint2, const short int Dint3, const int* logexp_table,
+	const short int Dint1, const short int Dint2, const short int Dint3, 
 	int* d_jj, int* d_m, int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX )
 {
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
@@ -185,9 +194,9 @@ void updateCheckNode_kernel( const int ncheck,
 			int m1 = mvc[jind[j1]];
 			int j2 = j1 + ncheck;
 			int m2 = mvc[jind[j2]];
-			mcv[j0] = Boxplus(m1, m2, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m2, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j2] = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
+			mcv[j0] = Boxplus(m1, m2, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j1] = Boxplus(m0, m2, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j2] = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
 			break;
 				}
 		case 4: {
@@ -199,12 +208,12 @@ void updateCheckNode_kernel( const int ncheck,
 			int m2 = mvc[jind[j2]];
 			int j3 = j2 + ncheck;
 			int m3 = mvc[jind[j3]];
-			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j0] = Boxplus(m1, m23, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m23, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j2] = Boxplus(m01, m3, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j3] = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
+			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j0] = Boxplus(m1, m23, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j1] = Boxplus(m0, m23, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j2] = Boxplus(m01, m3, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j3] = Boxplus(m01, m2, Dint1, Dint2, Dint3, QLLR_MAX);
 			break;
 				}
 		case 5: {
@@ -218,15 +227,15 @@ void updateCheckNode_kernel( const int ncheck,
 			int m3 = mvc[jind[j3]];
 			int j4 = j3 + ncheck;
 			int m4 = mvc[jind[j4]];
-			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j0] = Boxplus(m1, m24, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m24, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j2] = Boxplus(m01, m34, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j3] = Boxplus(m02, m4, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j4] = Boxplus(m02, m3, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
+			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j0] = Boxplus(m1, m24, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j1] = Boxplus(m0, m24, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j2] = Boxplus(m01, m34, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j3] = Boxplus(m02, m4, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j4] = Boxplus(m02, m3, Dint1, Dint2, Dint3, QLLR_MAX);
 			break;
 				}
 		case 6: {
@@ -242,18 +251,18 @@ void updateCheckNode_kernel( const int ncheck,
 			int m4 = mvc[jind[j4]];
 			int j5 = j4 + ncheck;
 			int m5 = mvc[jind[j5]];
-			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			int m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j0] = Boxplus(m1, m25, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m25, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j2] = Boxplus(m0145, m3, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j3] = Boxplus(m0145, m2, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j4] = Boxplus(m03, m5, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
-			mcv[j5] = Boxplus(m03, m4, Dint1, Dint2, Dint3, logexp_table, QLLR_MAX);
+			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, QLLR_MAX);
+			int m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j0] = Boxplus(m1, m25, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j1] = Boxplus(m0, m25, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j2] = Boxplus(m0145, m3, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j3] = Boxplus(m0145, m2, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j4] = Boxplus(m03, m5, Dint1, Dint2, Dint3, QLLR_MAX);
+			mcv[j5] = Boxplus(m03, m4, Dint1, Dint2, Dint3, QLLR_MAX);
 			break;
 				}
 		default: {
@@ -271,15 +280,15 @@ void updateCheckNode_kernel( const int ncheck,
 			ml[0] = m[0];
 			mr[0] = m[nodes];
 			for(int i = 1; i < nodes; i++ ) {
-				ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, logexp_table, QLLR_MAX );
-				mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, logexp_table, QLLR_MAX );
+				ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX );
+				mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX );
 			}
 
 			// merge partial sums
 			mcv[jj[0]] = mr[nodes-1];
 			mcv[jj[nodes]] = ml[nodes-1];
 			for(int i = 1; i < nodes; i++ )
-				mcv[jj[i]] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, logexp_table, QLLR_MAX );
+				mcv[jj[i]] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
 				 }
 		}  // switch statement
 
