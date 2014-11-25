@@ -2,6 +2,7 @@
 #pragma once
 
 #define		TABLE_SIZE_DINT2	300
+#define		MAX_CHECK_NODE		100
 
 __device__ __constant__ int const_logexp_table[TABLE_SIZE_DINT2];
 
@@ -174,9 +175,9 @@ void updateCheckNode_kernel( const int ncheck,
 	if( j>= ncheck )
 		return;
 
-	int* m	= d_m	+ j * max_cnd;
-	int* ml	= d_ml	+ j * max_cnd;
-	int* mr	= d_mr	+ j * max_cnd;
+	int m[MAX_CHECK_NODE];//int* m	= d_m	+ j * max_cnd;
+	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
+	int mr[MAX_CHECK_NODE];//int* mr	= d_mr	+ j * max_cnd;
 
 	switch (sumX2[j]) {
 		case 0:
