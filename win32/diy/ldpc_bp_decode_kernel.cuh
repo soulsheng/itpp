@@ -2,9 +2,9 @@
 #pragma once
 
 __global__ 
-void syndrome_check_kernel(int *d_LLR,
-	int* d_sumX2, int ncheck, 
-	int* d_V,
+void syndrome_check_kernel(const int *d_LLR,
+	const int* d_sumX2, const int ncheck, 
+	const int* d_V,
 	int* d_synd) 
 {
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
@@ -27,7 +27,7 @@ void syndrome_check_kernel(int *d_LLR,
 }
 
 __global__ 
-void updateVariableNode_kernel( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, int * LLRin, int * LLRout ) 
+void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv, int* mvc, const int* iind, const int * LLRin, int * LLRout ) 
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	
@@ -102,9 +102,9 @@ void updateVariableNode_kernel( int nvar, int* sumX1, int* mcv, int* mvc, int* i
 }
 
 __device__
-int  logexp_device(int x,
-	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
-	int* logexp_table )		//! The lookup tables for the decoder
+int  logexp_device(const int x,
+	const short int Dint1, const short int Dint2, const short int Dint3,	//! Decoder (lookup-table) parameters
+	const int* logexp_table )		//! The lookup tables for the decoder
 {
 	int ind = x >> Dint3;
 	if (ind >= Dint2) // outside table
@@ -115,9 +115,9 @@ int  logexp_device(int x,
 }
 
 __device__
-int Boxplus(int a, int b,
-	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
-	int* logexp_table, int QLLR_MAX )		//! The lookup tables for the decoder
+int Boxplus(const int a, const int b,
+	const short int Dint1, const short int Dint2, const short int Dint3,	//! Decoder (lookup-table) parameters
+	const int* logexp_table, const int QLLR_MAX )		//! The lookup tables for the decoder
 {
 	int a_abs = (a > 0 ? a : -a);
 	int b_abs = (b > 0 ? b : -b);
@@ -153,10 +153,10 @@ int Boxplus(int a, int b,
 }
 
 __global__ 
-void updateCheckNode_kernel( int ncheck, 
-	int* sumX2, int* mcv, int* mvc, int* jind, 
-	short int Dint1, short int Dint2, short int Dint3, int* logexp_table,
-	int* d_jj, int* d_m, int* d_ml, int* d_mr, int max_cnd, int QLLR_MAX )
+void updateCheckNode_kernel( const int ncheck, 
+	const int* sumX2, int* mcv, int* mvc, const int* jind, 
+	const short int Dint1, const short int Dint2, const short int Dint3, const int* logexp_table,
+	int* d_jj, int* d_m, int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX )
 {
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -286,10 +286,10 @@ void updateCheckNode_kernel( int ncheck,
 }
 
 __global__ 
-void initializeMVC_kernel(int nvar, 
-	int* sumX1, 
+void initializeMVC_kernel(const int nvar, 
+	const int* sumX1, 
 	int* mvc,
-	int* LLRin) 
+	const int* LLRin) 
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
