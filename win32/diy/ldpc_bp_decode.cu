@@ -38,6 +38,13 @@ void ldpc_gpu::updateCheckNode_gpu()
 		d_jj, d_m, d_ml, d_mr, max_cnd, QLLR_MAX );
 }
 
+void ldpc_gpu::initializeMVC_gpu( )
+{
+	dim3 block( 256 );
+	dim3 grid( (nvar + block.x - 1) / block.x );
+
+	initializeMVC_kernel<<< grid, block >>>( nvar, d_sumX1, d_mvc, d_LLRin );
+}
 
 int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
 	int* sumX1,	int* mvc, 
@@ -47,14 +54,7 @@ int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
 	cudaMemcpy( d_LLRin, LLRin, nvar * sizeof(int), cudaMemcpyHostToDevice );
 
   // initial step
-  for (int i = 0; i < nvar; i++) {
-    int index = i;
-    for (int j = 0; j < sumX1[i]; j++) {
-      mvc[index] = LLRin[i];
-      index += nvar;
-    }
-  }
-	cudaMemcpy( d_mvc, mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
+	initializeMVC_gpu();
 
   bool is_valid_codeword = false;
   int iter = 0;

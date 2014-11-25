@@ -297,6 +297,17 @@ void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, in
 	}
 }
 
+void initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin ) 
+{
+	for (int i = 0; i < nvar; i++) {
+		int index = i;
+		for (int j = 0; j < sumX1[i]; j++) {
+			mvc[index] = LLRin[i];
+			index += nvar;
+		}
+	}
+}
+
 int bp_decode(int *LLRin, int *LLRout,
 	int nvar, int ncheck, 
 	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
@@ -310,13 +321,7 @@ int bp_decode(int *LLRin, int *LLRout,
 {
 
   // initial step
-  for (int i = 0; i < nvar; i++) {
-    int index = i;
-    for (int j = 0; j < sumX1[i]; j++) {
-      mvc[index] = LLRin[i];
-      index += nvar;
-    }
-  }
+	initializeMVC(nvar, sumX1, mvc, LLRin);
 
   const int QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
 

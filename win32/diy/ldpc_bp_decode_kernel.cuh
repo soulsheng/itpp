@@ -284,3 +284,21 @@ void updateCheckNode_kernel( int ncheck,
 		}  // switch statement
 
 }
+
+__global__ 
+void initializeMVC_kernel(int nvar, 
+	int* sumX1, 
+	int* mvc,
+	int* LLRin) 
+{
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if( i>= nvar )
+		return;
+
+	int index = i;
+    for (int j = 0; j < sumX1[i]; j++) {
+      mvc[index] = LLRin[i];
+      index += nvar;
+    }
+}

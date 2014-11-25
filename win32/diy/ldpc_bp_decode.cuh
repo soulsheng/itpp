@@ -10,6 +10,8 @@ void updateVariableNode_gpu( ) ;
 
 void updateCheckNode_gpu( );
 
+void initializeMVC_gpu( );
+
 public:
 int bp_decode(int *LLRin, int *LLRout,
 	int* sumX1,	int* mvc, 
