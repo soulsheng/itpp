@@ -25,7 +25,7 @@ void ldpc_gpu::updateVariableNode_gpu()
 	dim3 block( 256 );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	updateVariableNode_kernel<<< grid, block >>>( nvar, d_sumX1, d_mcv, d_mvc, d_iind, d_LLRin, d_LLRout );
+	updateVariableNode_kernel<<< grid, block >>>( nvar, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc );
 }
 
 void ldpc_gpu::updateCheckNode_gpu()
@@ -34,8 +34,8 @@ void ldpc_gpu::updateCheckNode_gpu()
 	dim3 grid( (ncheck + block.x - 1) / block.x );
 
 	updateCheckNode_kernel<<< grid, block >>>(ncheck, 
-		d_sumX2, d_mcv, d_mvc, d_jind, Dint1, Dint2, Dint3,
-		d_m, d_ml, d_mr, max_cnd, QLLR_MAX );
+		d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,
+		d_m, d_ml, d_mr, max_cnd, QLLR_MAX, d_mcv );
 }
 
 void ldpc_gpu::initializeMVC_gpu( )
@@ -43,7 +43,7 @@ void ldpc_gpu::initializeMVC_gpu( )
 	dim3 block( 256 );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	initializeMVC_kernel<<< grid, block >>>( nvar, d_sumX1, d_mvc, d_LLRin );
+	initializeMVC_kernel<<< grid, block >>>( nvar, d_sumX1, d_LLRin, d_mvc );
 }
 
 int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,

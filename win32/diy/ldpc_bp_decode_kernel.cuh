@@ -36,7 +36,8 @@ void syndrome_check_kernel(const int *d_LLR,
 }
 
 __global__ 
-void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv, int* mvc, const int* iind, const int * LLRin, int * LLRout ) 
+void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
+	int * LLRout, int* mvc ) 
 {	//	mcv const(input)-> mvc (output)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	
@@ -163,9 +164,10 @@ int Boxplus(const int a, const int b,
 
 __global__ 
 void updateCheckNode_kernel( const int ncheck, 
-	const int* sumX2, int* mcv, const int* mvc, const int* jind, 
+	const int* sumX2, const int* mvc, const int* jind, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
-	int* d_m, int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX )
+	int* d_m, int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX,
+	int* mcv )
 {	//	mvc const(input)-> mcv (output)
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -295,9 +297,9 @@ void updateCheckNode_kernel( const int ncheck,
 
 __global__ 
 void initializeMVC_kernel(const int nvar, 
-	const int* sumX1, 
-	int* mvc,
-	const int* LLRin) 
+	const int* sumX1,
+	const int* LLRin,
+	int* mvc) 
 {
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 
