@@ -13,11 +13,10 @@ bool ldpc_gpu::syndrome_check_gpu()
 
 	syndrome_check_kernel<<< grid, block >>>( d_LLRout, d_sumX2, ncheck, d_V, d_synd );
 
-	int sum = thrust::reduce( thrust::device_ptr<int>( d_synd ),
-		thrust::device_ptr<int>( d_synd + ncheck ), 
-		(int) 0, thrust::plus<int>());
+	int h_synd=0;
+	cudaMemcpy( &h_synd, d_synd, sizeof(int), cudaMemcpyDeviceToHost );
 
-	return sum == ncheck;   // codeword is valid
+	return h_synd == 0;   // codeword is valid
 }
 
 void ldpc_gpu::updateVariableNode_gpu() 
@@ -99,8 +98,8 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMalloc( (void**)&d_LLRout, nvar * sizeof(int) );
 	cudaMemset( d_LLRout, 0, nvar * sizeof(int) );
 
-	cudaMalloc( (void**)&d_synd, ncheck * sizeof(int) );
-	cudaMemset( d_synd, 0, ncheck * sizeof(int) );
+	cudaMalloc( (void**)&d_synd, 1 * sizeof(int) );
+	cudaMemset( d_synd, 0, 1 * sizeof(int) );
 	
 	cudaMalloc( (void**)&d_sumX1, nvar * sizeof(int) );		// const 64 K
 	cudaMemcpy( d_sumX1, sumX1, nvar * sizeof(int), cudaMemcpyHostToDevice );

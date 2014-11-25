@@ -22,6 +22,11 @@ void syndrome_check_kernel(const int *d_LLR,
 	if( j>= ncheck )
 		return;
 
+	if( j == 0 )
+		*d_synd = 0;
+
+	__syncthreads();
+
 	int i, vi;
 	int synd = 0;
 	int vind = j; // tracks j+i*ncheck
@@ -33,7 +38,7 @@ void syndrome_check_kernel(const int *d_LLR,
 		vind += ncheck;
 	}
 	
-	d_synd[j] = !(synd&1);	// d_synd[j] is even ?
+	atomicAdd( d_synd,  synd&1 );	// synd is even ?
 }
 
 __global__ 
