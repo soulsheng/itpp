@@ -165,14 +165,13 @@ __global__
 void updateCheckNode_kernel( const int ncheck, 
 	const int* sumX2, int* mcv, int* mvc, const int* jind, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
-	int* d_jj, int* d_m, int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX )
+	int* d_m, int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX )
 {
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if( j>= ncheck )
 		return;
 
-	int* jj	= d_jj	+ j * max_cnd;
 	int* m	= d_m	+ j * max_cnd;
 	int* ml	= d_ml	+ j * max_cnd;
 	int* mr	= d_mr	+ j * max_cnd;
@@ -269,11 +268,11 @@ void updateCheckNode_kernel( const int ncheck,
 			int nodes = sumX2[j];
 
 			nodes--;
-			jj[0] = j;
-			m[0] = mvc[jind[jj[0]]];
-			for(int i = 1; i <= nodes; i++ ) {
-				jj[i] = jj[i-1] + ncheck;
-				m[i] = mvc[jind[jj[i]]];
+
+
+			for(int i = 0; i <= nodes; i++ ) {
+
+				m[i] = mvc[jind[j+i*ncheck]];
 			}
 
 			// compute partial sums from the left and from the right
@@ -285,10 +284,10 @@ void updateCheckNode_kernel( const int ncheck,
 			}
 
 			// merge partial sums
-			mcv[jj[0]] = mr[nodes-1];
-			mcv[jj[nodes]] = ml[nodes-1];
+			mcv[j] = mr[nodes-1];
+			mcv[j+nodes*ncheck] = ml[nodes-1];
 			for(int i = 1; i < nodes; i++ )
-				mcv[jj[i]] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
+				mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
 				 }
 		}  // switch statement
 

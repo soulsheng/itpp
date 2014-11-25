@@ -35,7 +35,7 @@ void ldpc_gpu::updateCheckNode_gpu()
 
 	updateCheckNode_kernel<<< grid, block >>>(ncheck, 
 		d_sumX2, d_mcv, d_mvc, d_jind, Dint1, Dint2, Dint3,
-		d_jj, d_m, d_ml, d_mr, max_cnd, QLLR_MAX );
+		d_m, d_ml, d_mr, max_cnd, QLLR_MAX );
 }
 
 void ldpc_gpu::initializeMVC_gpu( )
@@ -128,9 +128,6 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 
 	initConstantMemory(logexp_table);
 
-	cudaMalloc( (void**)&d_jj, ncheck * max_cnd * sizeof(int) );
-	cudaMemset( d_jj, 0, ncheck * max_cnd * sizeof(int) );
-	
 	cudaMalloc( (void**)&d_m, ncheck * max_cnd * sizeof(int) );
 	cudaMemset( d_m, 0, ncheck * max_cnd * sizeof(int) );
 	
@@ -159,7 +156,7 @@ bool ldpc_gpu::release()
 	
 	//cudaFree( d_logexp_table );	
 
-	cudaFree( d_jj );	cudaFree( d_m );	cudaFree( d_ml );	cudaFree( d_mr );
+	cudaFree( d_m );	cudaFree( d_ml );	cudaFree( d_mr );
 
 	return true;
 }

@@ -44,7 +44,7 @@ private:
 
 	//int* d_logexp_table ;
 	
-	int* d_jj, *d_m, *d_ml, *d_mr ;
+	int *d_m, *d_ml, *d_mr ;
 	
 	int* d_LLRin ;
 	int* d_LLRout ;
