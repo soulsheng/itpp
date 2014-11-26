@@ -5,6 +5,11 @@
 #define		MAX_CHECK_NODE		100
 #define		TABLE_SIZE_CODE		16200
 #define		USE_TABLE_CODE		0
+#define		USE_TEXTURE_ADDRESS	0
+
+#if USE_TEXTURE_ADDRESS
+texture<int, 2, cudaReadModeElementType> texMCV;
+#endif
 
 __device__ __constant__ int const_logexp_table[TABLE_SIZE_DINT2];
 
@@ -57,7 +62,7 @@ void syndrome_check_kernel(const int *d_LLR,
 }
 
 __global__ 
-void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
+void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
 	int * LLRout, int* mvc, char* bLLR ) 
 {	//	mcv const(input)-> mvc (output)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -118,13 +123,16 @@ void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv
 		default:   { // differential update
 #endif
 			int mvc_temp = LLRin[i];
-			int index_iind = i; // tracks i+jp*nvar
 			for (int jp = 0; jp < sumX1[i]; jp++) {
-				mvc_temp +=  mcv[iind[index_iind]];
-				index_iind += nvar;
+				int index = iind[i + jp*nvar];
+#if USE_TEXTURE_ADDRESS
+				mvc_temp +=  tex2D(texMCV, index%ncheck, index/ncheck);
+#else
+				mvc_temp +=  mcv[index];
+#endif
 			}
 			LLRout[i] = mvc_temp;
-			index_iind = i;  // tracks i+j*nvar
+			int index_iind = i;  // tracks i+j*nvar
 			for (int j = 0; j < sumX1[i]; j++) {
 				mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
 				index_iind += nvar;

@@ -6,6 +6,11 @@
 #include <thrust/reduce.h>
 #include <thrust/device_vector.h>
 
+#if USE_TEXTURE_ADDRESS
+	cudaArray* arr_mcv;
+	cudaChannelFormatDesc channelDesc;
+#endif
+
 bool ldpc_gpu::syndrome_check_gpu() 
 {
 	dim3 block( 256 );
@@ -24,7 +29,7 @@ void ldpc_gpu::updateVariableNode_gpu()
 	dim3 block( 256 );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	updateVariableNode_kernel<<< grid, block >>>( nvar, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc, d_bLLR );
+	updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc, d_bLLR );
 }
 
 void ldpc_gpu::updateCheckNode_gpu()
@@ -61,6 +66,11 @@ int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
     //if (nvar >= 100000) { it_info_no_endl_debug("."); }
     // --------- Step 1: check to variable nodes ----------
 	updateCheckNode_gpu();
+
+#if USE_TEXTURE_ADDRESS
+    // update the array to the texture
+    cudaMemcpyToArray(arr_mcv, 0, 0, d_mcv, ncheck * nmaxX2 * sizeof(int), cudaMemcpyDeviceToDevice);
+#endif
 
     // step 2: variable to check nodes
 	updateVariableNode_gpu();
@@ -137,6 +147,20 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	
 	cudaMalloc( (void**)&d_mr, ncheck * max_cnd * sizeof(int) );
 	cudaMemset( d_mr, 0, ncheck * max_cnd * sizeof(int) );
+
+#if USE_TEXTURE_ADDRESS
+	// cuda texture ------------------------------------------------------------------------------------------
+	channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindSigned);
+    cudaError_t err = cudaMallocArray(&arr_mcv, &channelDesc, ncheck, nmaxX2);
+    cudaMemcpyToArray(arr_mcv, 0, 0, d_mcv, ncheck * nmaxX2 * sizeof(int), cudaMemcpyDeviceToDevice);
+
+	texMCV.addressMode[0] = cudaAddressModeClamp;
+	texMCV.addressMode[1] = cudaAddressModeClamp;
+    texMCV.filterMode = cudaFilterModePoint;
+    texMCV.normalized = false;
+
+	cudaBindTextureToArray(texMCV, arr_mcv, channelDesc);
+#endif
 
 	return true;
 }
