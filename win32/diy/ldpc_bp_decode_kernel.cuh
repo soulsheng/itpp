@@ -172,7 +172,7 @@ __global__
 void updateCheckNode_kernel( const int ncheck, 
 	const int* sumX2, const int* mvc, const int* jind, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
-	int* d_m, int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX,
+	int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX,
 	int* mcv )
 {	//	mvc const(input)-> mcv (output)
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
