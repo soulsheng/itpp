@@ -64,7 +64,7 @@ void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv
 	
 	if( i>= nvar )
 		return;
-
+#if 0
 	switch (sumX1[i]) {
 		case 0:
 			return;// cout << "LDPC_Code::bp_decode(): sumX1[i]=0" << endl;
@@ -116,6 +116,7 @@ void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv
 			break;
 				}
 		default:   { // differential update
+#endif
 			int mvc_temp = LLRin[i];
 			int index_iind = i; // tracks i+jp*nvar
 			for (int jp = 0; jp < sumX1[i]; jp++) {
@@ -128,8 +129,8 @@ void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv
 				mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
 				index_iind += nvar;
 			}
-				   }
-		}
+		//		   }
+		//}
 	
 	bLLR[i] = LLRout[i]<0;
 }
