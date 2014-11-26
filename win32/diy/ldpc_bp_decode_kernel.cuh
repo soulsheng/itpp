@@ -3,12 +3,20 @@
 
 #define		TABLE_SIZE_DINT2	300
 #define		MAX_CHECK_NODE		100
+#define		TABLE_SIZE_CODE		16200
+#define		USE_TABLE_CODE		0
 
 __device__ __constant__ int const_logexp_table[TABLE_SIZE_DINT2];
+__device__ __constant__ char const_llr_byte[TABLE_SIZE_CODE];	// char
 
-void initConstantMemory(int *logexp_table)
+void initConstantMemoryLogExp(int *logexp_table)
 {
 	cudaMemcpyToSymbol( const_logexp_table, logexp_table, TABLE_SIZE_DINT2 * sizeof(int), 0, cudaMemcpyHostToDevice );
+}
+
+void updateConstantMemoryLLRByte(char *bLLR)
+{
+	cudaMemcpyToSymbol( const_llr_byte, bLLR, TABLE_SIZE_CODE * sizeof(char), 0, cudaMemcpyDeviceToDevice );
 }
 
 __global__ 
@@ -32,7 +40,11 @@ void syndrome_check_kernel(const int *d_LLR,
 	int vind = j; // tracks j+i*ncheck
 	for (i = 0; i < d_sumX2[j]; i++) {
 		vi = d_V[vind];
+#if	USE_TABLE_CODE
+		if ( const_llr_byte[vi] ) {
+#else
 		if (d_LLR[vi] < 0) {
+#endif
 			synd++;
 		}
 		vind += ncheck;
@@ -43,7 +55,7 @@ void syndrome_check_kernel(const int *d_LLR,
 
 __global__ 
 void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
-	int * LLRout, int* mvc ) 
+	int * LLRout, int* mvc, char* bLLR ) 
 {	//	mcv const(input)-> mvc (output)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	
@@ -115,6 +127,8 @@ void updateVariableNode_kernel( const int nvar, const int* sumX1, const int* mcv
 			}
 				   }
 		}
+	
+	bLLR[i] = LLRout[i]<0;
 }
 
 __device__

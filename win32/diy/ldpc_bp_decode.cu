@@ -24,7 +24,7 @@ void ldpc_gpu::updateVariableNode_gpu()
 	dim3 block( 256 );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	updateVariableNode_kernel<<< grid, block >>>( nvar, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc );
+	updateVariableNode_kernel<<< grid, block >>>( nvar, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc, d_bLLR );
 }
 
 void ldpc_gpu::updateCheckNode_gpu()
@@ -65,6 +65,10 @@ int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
     // step 2: variable to check nodes
 	updateVariableNode_gpu();
 
+#if	USE_TABLE_CODE
+	updateConstantMemoryLLRByte( d_bLLR );
+#endif
+
 	if (psc && syndrome_check_gpu()) {
 	  is_valid_codeword = true;
       break;
@@ -97,6 +101,8 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMalloc( (void**)&d_LLRout, nvar * sizeof(int) );
 	cudaMemset( d_LLRout, 0, nvar * sizeof(int) );
 
+	cudaMalloc( (void**)&d_bLLR, nvar * sizeof(char) );
+
 	cudaMalloc( (void**)&d_synd, 1 * sizeof(int) );
 	cudaMemset( d_synd, 0, 1 * sizeof(int) );
 	
@@ -124,7 +130,7 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	//cudaMalloc( (void**)&d_logexp_table, Dint2 * sizeof(int) );		// const 1.2 K
 	//cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
 
-	initConstantMemory(logexp_table);
+	initConstantMemoryLogExp(logexp_table);
 	
 	cudaMalloc( (void**)&d_ml, ncheck * max_cnd * sizeof(int) );
 	cudaMemset( d_ml, 0, ncheck * max_cnd * sizeof(int) );
@@ -138,7 +144,7 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 
 bool ldpc_gpu::release()
 {
-	cudaFree( d_LLRin );	cudaFree( d_LLRout );
+	cudaFree( d_LLRin );	cudaFree( d_LLRout );	cudaFree( d_bLLR );
 	
 	cudaFree( d_synd );
 

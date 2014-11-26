@@ -47,6 +47,8 @@ private:
 	
 	int* d_LLRin ;
 	int* d_LLRout ;
+	
+	char*	d_bLLR;	// 1 (LLR < 0),  0 (LLR >= 0)
 
 private:
 	int nvar, ncheck;
