@@ -14,7 +14,6 @@ void initializeMVC_gpu( );
 
 public:
 int bp_decode(int *LLRin, int *LLRout,
-	int* sumX1,	int* mvc, 
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
 

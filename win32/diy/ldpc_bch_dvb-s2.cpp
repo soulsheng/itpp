@@ -162,8 +162,7 @@ int main(int argc, char **argv)
 		timerStep.start();
 
 #if		USE_GPU
-		countIteration[i] = ldpc_gpu_diy.bp_decode( llrIn._data(), llr._data(), 
-			ldpc.sumX1._data(), ldpc.mvc._data() );		//! The lookup tables for the decoder
+		countIteration[i] = ldpc_gpu_diy.bp_decode( llrIn._data(), llr._data() ); 
 #else
 		countIteration[i] = bp_decode( llrIn._data(), llr._data(), 
 			ldpc.nvar, ldpc.ncheck, 
