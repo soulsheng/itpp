@@ -7,16 +7,19 @@
 #define		USE_TABLE_CODE		0
 
 __device__ __constant__ int const_logexp_table[TABLE_SIZE_DINT2];
-__device__ __constant__ char const_llr_byte[TABLE_SIZE_CODE];	// char
 
-void initConstantMemoryLogExp(int *logexp_table)
-{
-	cudaMemcpyToSymbol( const_logexp_table, logexp_table, TABLE_SIZE_DINT2 * sizeof(int), 0, cudaMemcpyHostToDevice );
-}
+#if		USE_TABLE_CODE
+__device__ __constant__ char const_llr_byte[TABLE_SIZE_CODE];	// char
 
 void updateConstantMemoryLLRByte(char *bLLR)
 {
 	cudaMemcpyToSymbol( const_llr_byte, bLLR, TABLE_SIZE_CODE * sizeof(char), 0, cudaMemcpyDeviceToDevice );
+}
+#endif
+
+void initConstantMemoryLogExp(int *logexp_table)
+{
+	cudaMemcpyToSymbol( const_logexp_table, logexp_table, TABLE_SIZE_DINT2 * sizeof(int), 0, cudaMemcpyHostToDevice );
 }
 
 __global__ 
