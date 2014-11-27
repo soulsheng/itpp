@@ -98,6 +98,39 @@ int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
   return (is_valid_codeword ? iter : -iter);
 }
 
+int ldpc_gpu::bp_decode_once(int *LLRin, int *LLRout,
+	bool psc /*= true*/,			//!< check syndrom after each iteration
+	int max_iters /*= 50*/ )		//!< Maximum number of iterations
+{
+	cudaMemcpy( d_LLRin, LLRin, nvar * sizeof(int), cudaMemcpyHostToDevice );
+
+  // initial step
+	initializeMVC_gpu();
+
+  bool is_valid_codeword = false;
+  int iter = 0;
+  do {
+    iter++;
+
+	updateCheckNode_gpu();
+
+    // step 2: variable to check nodes
+	updateVariableNode_gpu();
+
+	is_valid_codeword = syndrome_check_gpu();
+
+	if ( is_valid_codeword ) {
+      break;
+    }
+  }
+  while (iter < max_iters);
+
+  cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(int), cudaMemcpyDeviceToHost );
+
+
+  return (is_valid_codeword ? iter : -iter);
+}
+
 bool ldpc_gpu::initialize( int nvar, int ncheck,
 	int nmaxX1, int nmaxX2,
 	int* sumX1, int* sumX2, int* iind, int* jind, int* V, 	// Parity check matrix parameterization

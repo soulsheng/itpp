@@ -17,6 +17,10 @@ int bp_decode(int *LLRin, int *LLRout,
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
 
+int bp_decode_once(int *LLRin, int *LLRout,
+	bool psc = true,			//!< check syndrom after each iteration
+	int max_iters = 50 );		//!< Maximum number of iterations
+
 	bool	initialize( int nvar, int ncheck,
 	int nmaxX1, int nmaxX2,
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
