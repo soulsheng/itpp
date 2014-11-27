@@ -8,6 +8,7 @@
 
 #if USE_TEXTURE_ADDRESS
 	cudaArray* arr_mcv;
+	cudaArray* arr_mvc;
 	cudaChannelFormatDesc channelDesc;
 #endif
 
@@ -37,7 +38,7 @@ void ldpc_gpu::updateCheckNode_gpu()
 	dim3 block( 256 );
 	dim3 grid( (ncheck + block.x - 1) / block.x );
 
-	updateCheckNode_kernel<<< grid, block >>>(ncheck, 
+	updateCheckNode_kernel<<< grid, block >>>(ncheck, nvar, 
 		d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,
 		d_ml, d_mr, max_cnd, QLLR_MAX, d_mcv );
 }
@@ -74,6 +75,11 @@ int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
 
     // step 2: variable to check nodes
 	updateVariableNode_gpu();
+
+#if USE_TEXTURE_ADDRESS
+    // update the array to the texture
+    cudaMemcpyToArray(arr_mvc, 0, 0, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyDeviceToDevice);
+#endif
 
 #if	USE_TABLE_CODE
 	updateConstantMemoryLLRByte( d_bLLR );
@@ -160,6 +166,11 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
     texMCV.normalized = false;
 
 	cudaBindTextureToArray(texMCV, arr_mcv, channelDesc);
+
+	cudaMallocArray(&arr_mvc, &channelDesc, nvar, nmaxX1);
+    cudaMemcpyToArray(arr_mvc, 0, 0, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyDeviceToDevice);
+	cudaBindTextureToArray(texMVC, arr_mvc, channelDesc);
+
 #endif
 
 	return true;

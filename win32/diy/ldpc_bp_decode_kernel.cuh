@@ -9,6 +9,7 @@
 
 #if USE_TEXTURE_ADDRESS
 texture<int, 2, cudaReadModeElementType> texMCV;
+texture<int, 2, cudaReadModeElementType> texMVC;
 #endif
 
 __device__ __constant__ int const_logexp_table[TABLE_SIZE_DINT2];
@@ -195,7 +196,7 @@ int Boxplus(const int a, const int b,
 }
 
 __global__ 
-void updateCheckNode_kernel( const int ncheck, 
+void updateCheckNode_kernel( const int ncheck, const int nvar, 
 	const int* sumX2, const int* mvc, const int* jind, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
 	int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX,
@@ -304,13 +305,28 @@ void updateCheckNode_kernel( const int ncheck,
 			nodes--;
 
 			// compute partial sums from the left and from the right
+#if USE_TEXTURE_ADDRESS
+			int indexL = jind[j];
+			ml[0] = tex2D(texMVC, indexL%nvar, indexL/nvar);
+			int indexR = jind[j+nodes*ncheck];
+			mr[0] = tex2D(texMVC, indexR%nvar, indexR/nvar);
+			for(int i = 1; i < nodes; i++ ) {
+				indexL = jind[j+i*ncheck];
+				int valueL = tex2D(texMVC, indexL%nvar, indexL/nvar);;
+				indexR = jind[j+(nodes-i)*ncheck];
+				int valueR = tex2D(texMVC, indexR%nvar, indexR/nvar);;
+
+				ml[i] = Boxplus( ml[i-1], valueL, Dint1, Dint2, Dint3, QLLR_MAX );
+				mr[i] = Boxplus( mr[i-1], valueR, Dint1, Dint2, Dint3, QLLR_MAX );
+			}
+#else
 			ml[0] = mvc[jind[j]];
 			mr[0] = mvc[jind[j+nodes*ncheck]];
 			for(int i = 1; i < nodes; i++ ) {
 				ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
 				mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
 			}
-
+#endif
 			// merge partial sums
 			mcv[j] = mr[nodes-1];
 			mcv[j+nodes*ncheck] = ml[nodes-1];
