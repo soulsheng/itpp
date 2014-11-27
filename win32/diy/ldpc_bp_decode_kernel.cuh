@@ -70,76 +70,22 @@ void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sum
 	
 	if( i>= nvar )
 		return;
-#if 0
-	switch (sumX1[i]) {
-		case 0:
-			return;// cout << "LDPC_Code::bp_decode(): sumX1[i]=0" << endl;
-		case 1: {
-			/* This case is rare but apparently occurs for codes used in
-			the DVB-T2 standard.
-			*/
-			int m0 = mcv[iind[i]];
-			mvc[i] = LLRin[i];
-			LLRout[i] = LLRin[i] + m0;
-			break;
-				}
-		case 2: {
-			int m0 = mcv[iind[i]];
-			int i1 = i + nvar;
-			int m1 = mcv[iind[i1]];
-			mvc[i] = LLRin[i] + m1;
-			mvc[i1] = LLRin[i] + m0;
-			LLRout[i] = mvc[i1] + m1;
-			break;
-				}
-		case 3: {
-			int i0 = i;
-			int m0 = mcv[iind[i0]];
-			int i1 = i0 + nvar;
-			int m1 = mcv[iind[i1]];
-			int i2 = i1 + nvar;
-			int m2 = mcv[iind[i2]];
-			LLRout[i] = LLRin[i] + m0 + m1 + m2;
-			mvc[i0] = LLRout[i] - m0;
-			mvc[i1] = LLRout[i] - m1;
-			mvc[i2] = LLRout[i] - m2;
-			break;
-				}
-		case 4: {
-			int i0 = i;
-			int m0 = mcv[iind[i0]];
-			int i1 = i0 + nvar;
-			int m1 = mcv[iind[i1]];
-			int i2 = i1 + nvar;
-			int m2 = mcv[iind[i2]];
-			int i3 = i2 + nvar;
-			int m3 = mcv[iind[i3]];
-			LLRout[i] = LLRin[i] + m0 + m1 + m2 + m3;
-			mvc[i0] = LLRout[i] - m0;
-			mvc[i1] = LLRout[i] - m1;
-			mvc[i2] = LLRout[i] - m2;
-			mvc[i3] = LLRout[i] - m3;
-			break;
-				}
-		default:   { // differential update
-#endif
-			int mvc_temp = LLRin[i];
-			for (int jp = 0; jp < sumX1[i]; jp++) {
-				int index = iind[i + jp*nvar];
+
+	int mvc_temp = LLRin[i];
+	for (int jp = 0; jp < sumX1[i]; jp++) {
+		int index = iind[i + jp*nvar];
 #if USE_TEXTURE_ADDRESS
-				mvc_temp +=  tex2D(texMCV, index%ncheck, index/ncheck);
+		mvc_temp +=  tex2D(texMCV, index%ncheck, index/ncheck);
 #else
-				mvc_temp +=  mcv[index];
+		mvc_temp +=  mcv[index];
 #endif
-			}
-			LLRout[i] = mvc_temp;
-			int index_iind = i;  // tracks i+j*nvar
-			for (int j = 0; j < sumX1[i]; j++) {
-				mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
-				index_iind += nvar;
-			}
-		//		   }
-		//}
+	}
+	LLRout[i] = mvc_temp;
+	int index_iind = i;  // tracks i+j*nvar
+	for (int j = 0; j < sumX1[i]; j++) {
+		mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
+		index_iind += nvar;
+	}
 	
 	bLLR[i] = LLRout[i]<0;
 }
@@ -209,131 +155,39 @@ void updateCheckNode_kernel( const int ncheck, const int nvar,
 
 	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
 	int mr[MAX_CHECK_NODE];//int* mr	= d_mr	+ j * max_cnd;
-#if 0
-	switch (sumX2[j]) {
-		case 0:
-			return;//cout << "LDPC_Code::bp_decode(): sumX2[j]=0" << endl;
-		case 1:
-			return;//cout << "LDPC_Code::bp_decode(): sumX2[j]=1" << endl;
-		case 2: {
-			mcv[j+ncheck] = mvc[jind[j]];
-			mcv[j] = mvc[jind[j+ncheck]];
-			break;
-				}
-		case 3: {
-			int j0 = j;
-			int m0 = mvc[jind[j0]];
-			int j1 = j0 + ncheck;
-			int m1 = mvc[jind[j1]];
-			int j2 = j1 + ncheck;
-			int m2 = mvc[jind[j2]];
-			mcv[j0] = Boxplus(m1, m2, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m2, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j2] = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
-			break;
-				}
-		case 4: {
-			int j0 = j;
-			int m0 = mvc[jind[j0]];
-			int j1 = j0 + ncheck;
-			int m1 = mvc[jind[j1]];
-			int j2 = j1 + ncheck;
-			int m2 = mvc[jind[j2]];
-			int j3 = j2 + ncheck;
-			int m3 = mvc[jind[j3]];
-			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j0] = Boxplus(m1, m23, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m23, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j2] = Boxplus(m01, m3, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j3] = Boxplus(m01, m2, Dint1, Dint2, Dint3, QLLR_MAX);
-			break;
-				}
-		case 5: {
-			int j0 = j;
-			int m0 = mvc[jind[j0]];
-			int j1 = j0 + ncheck;
-			int m1 = mvc[jind[j1]];
-			int j2 = j1 + ncheck;
-			int m2 = mvc[jind[j2]];
-			int j3 = j2 + ncheck;
-			int m3 = mvc[jind[j3]];
-			int j4 = j3 + ncheck;
-			int m4 = mvc[jind[j4]];
-			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m02 = Boxplus(m01, m2, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m34 = Boxplus(m3, m4, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m24 = Boxplus(m2, m34, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j0] = Boxplus(m1, m24, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m24, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j2] = Boxplus(m01, m34, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j3] = Boxplus(m02, m4, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j4] = Boxplus(m02, m3, Dint1, Dint2, Dint3, QLLR_MAX);
-			break;
-				}
-		case 6: {
-			int j0 = j;
-			int m0 = mvc[jind[j0]];
-			int j1 = j0 + ncheck;
-			int m1 = mvc[jind[j1]];
-			int j2 = j1 + ncheck;
-			int m2 = mvc[jind[j2]];
-			int j3 = j2 + ncheck;
-			int m3 = mvc[jind[j3]];
-			int j4 = j3 + ncheck;
-			int m4 = mvc[jind[j4]];
-			int j5 = j4 + ncheck;
-			int m5 = mvc[jind[j5]];
-			int m01 = Boxplus(m0, m1, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m23 = Boxplus(m2, m3, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m45 = Boxplus(m4, m5, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m03 = Boxplus(m01, m23, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m25 = Boxplus(m23, m45, Dint1, Dint2, Dint3, QLLR_MAX);
-			int m0145 = Boxplus(m01, m45, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j0] = Boxplus(m1, m25, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j1] = Boxplus(m0, m25, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j2] = Boxplus(m0145, m3, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j3] = Boxplus(m0145, m2, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j4] = Boxplus(m03, m5, Dint1, Dint2, Dint3, QLLR_MAX);
-			mcv[j5] = Boxplus(m03, m4, Dint1, Dint2, Dint3, QLLR_MAX);
-			break;
-				}
-		default: {
-#endif
-			int nodes = sumX2[j];
 
-			nodes--;
+	int nodes = sumX2[j];
 
-			// compute partial sums from the left and from the right
+	nodes--;
+
+	// compute partial sums from the left and from the right
 #if USE_TEXTURE_ADDRESS
-			int indexL = jind[j];
-			ml[0] = tex2D(texMVC, indexL%nvar, indexL/nvar);
-			int indexR = jind[j+nodes*ncheck];
-			mr[0] = tex2D(texMVC, indexR%nvar, indexR/nvar);
-			for(int i = 1; i < nodes; i++ ) {
-				indexL = jind[j+i*ncheck];
-				int valueL = tex2D(texMVC, indexL%nvar, indexL/nvar);;
-				indexR = jind[j+(nodes-i)*ncheck];
-				int valueR = tex2D(texMVC, indexR%nvar, indexR/nvar);;
+	int indexL = jind[j];
+	ml[0] = tex2D(texMVC, indexL%nvar, indexL/nvar);
+	int indexR = jind[j+nodes*ncheck];
+	mr[0] = tex2D(texMVC, indexR%nvar, indexR/nvar);
+	for(int i = 1; i < nodes; i++ ) {
+		indexL = jind[j+i*ncheck];
+		int valueL = tex2D(texMVC, indexL%nvar, indexL/nvar);;
+		indexR = jind[j+(nodes-i)*ncheck];
+		int valueR = tex2D(texMVC, indexR%nvar, indexR/nvar);;
 
-				ml[i] = Boxplus( ml[i-1], valueL, Dint1, Dint2, Dint3, QLLR_MAX );
-				mr[i] = Boxplus( mr[i-1], valueR, Dint1, Dint2, Dint3, QLLR_MAX );
-			}
+		ml[i] = Boxplus( ml[i-1], valueL, Dint1, Dint2, Dint3, QLLR_MAX );
+		mr[i] = Boxplus( mr[i-1], valueR, Dint1, Dint2, Dint3, QLLR_MAX );
+	}
 #else
-			ml[0] = mvc[jind[j]];
-			mr[0] = mvc[jind[j+nodes*ncheck]];
-			for(int i = 1; i < nodes; i++ ) {
-				ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
-				mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
-			}
+	ml[0] = mvc[jind[j]];
+	mr[0] = mvc[jind[j+nodes*ncheck]];
+	for(int i = 1; i < nodes; i++ ) {
+		ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
+		mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
+	}
 #endif
-			// merge partial sums
-			mcv[j] = mr[nodes-1];
-			mcv[j+nodes*ncheck] = ml[nodes-1];
-			for(int i = 1; i < nodes; i++ )
-				mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
-				 //}
-		//}  // switch statement
+	// merge partial sums
+	mcv[j] = mr[nodes-1];
+	mcv[j+nodes*ncheck] = ml[nodes-1];
+	for(int i = 1; i < nodes; i++ )
+		mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
 
 }
 
