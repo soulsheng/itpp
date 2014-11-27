@@ -208,7 +208,7 @@ void updateCheckNode_kernel( const int ncheck,
 
 	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
 	int mr[MAX_CHECK_NODE];//int* mr	= d_mr	+ j * max_cnd;
-
+#if 0
 	switch (sumX2[j]) {
 		case 0:
 			return;//cout << "LDPC_Code::bp_decode(): sumX2[j]=0" << endl;
@@ -298,6 +298,7 @@ void updateCheckNode_kernel( const int ncheck,
 			break;
 				}
 		default: {
+#endif
 			int nodes = sumX2[j];
 
 			nodes--;
@@ -315,8 +316,8 @@ void updateCheckNode_kernel( const int ncheck,
 			mcv[j+nodes*ncheck] = ml[nodes-1];
 			for(int i = 1; i < nodes; i++ )
 				mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
-				 }
-		}  // switch statement
+				 //}
+		//}  // switch statement
 
 }
 
