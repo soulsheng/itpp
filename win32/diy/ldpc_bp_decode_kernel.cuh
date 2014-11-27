@@ -58,8 +58,9 @@ void syndrome_check_kernel(const int *d_LLR,
 		}
 		vind += ncheck;
 	}
-	
-	atomicAdd( d_synd,  synd&1 );	// synd is even ?
+
+	if( synd&1 )
+		atomicAdd( d_synd, 1 );	// synd is even ?
 }
 
 __global__ 
