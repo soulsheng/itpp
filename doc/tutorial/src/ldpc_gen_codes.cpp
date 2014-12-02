@@ -41,6 +41,10 @@ int main(int argc, char **argv)
     C1.save_code("../../data/mackay_204.33.484_opt.it");
   }
 
+#if _DEBUG
+  cout << endl << "Debug is too slow, so run Release please!" << endl << endl;
+#else
+
   // Irregular 1/2-rate codes optimized for the AWGN channel. The
   // degree distributions are taken from Richardson & Urbanke,
   // Trans. IT 2001.
@@ -73,6 +77,8 @@ int main(int argc, char **argv)
 	LDPC_Code C(&H, &G);
     C.save_code("../../data/RU_16200.it");
   }
+
+#endif
 
   return 0;
 
