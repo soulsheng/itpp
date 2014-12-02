@@ -37,3 +37,4 @@
 /win32/itpp_mkl_tests/pulse_shape_test_build
 /win32/diy/qpsk_simulation_build
 /win32/diy/*.pdb
+/win32/itpp_build
