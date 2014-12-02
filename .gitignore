@@ -1,7 +1,6 @@
 /win32/bin
 /win32/ipch
 /win32/*.sdf
-/win32/*.suo
 /win32/itpp_mkl_tests/ipch
 /win32/itpp_mkl_tests/ldpc_test_build
 /win32/itpp_mkl_tests/timer_test_build
