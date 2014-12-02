@@ -24,7 +24,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vec_test", "itpp_mkl_tests\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "specmat_test", "itpp_mkl_tests\specmat_test.vcxproj", "{363A6A3B-3D91-43C8-A6EA-A274E4BC0A29}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "itpp_mkl", "itpp_mkl.vcxproj", "{C069ECD3-26E8-437C-8B20-3A5D68B22F2A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "itpp", "itpp.vcxproj", "{C069ECD3-26E8-437C-8B20-3A5D68B22F2A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_bersim_awgn", "diy\ldpc_bersim_awgn.vcxproj", "{753DEFCE-A759-40A4-93C6-DD2772DBF5C7}"
 EndProject
