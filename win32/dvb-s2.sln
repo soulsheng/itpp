@@ -32,7 +32,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_gen_codes", "diy\ldpc_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bch_test", "itpp_mkl_tests\bch_test.vcxproj", "{4AF082AF-33FD-44F7-915D-7D9041BA51CC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_bch_dvb-s2", "diy\ldpc_bch_dvb-s2.vcxproj", "{C407E548-5783-431D-9F14-0E4D02D95549}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dvb-s2", "dvb-s2.vcxproj", "{C407E548-5783-431D-9F14-0E4D02D95549}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bch_bersim_awgn", "diy\bch_bersim_awgn.vcxproj", "{6DF9DDB0-8D69-4BA9-ACBE-BADAE75C0B0E}"
 EndProject
