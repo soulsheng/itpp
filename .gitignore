@@ -38,3 +38,5 @@
 /win32/diy/qpsk_simulation_build
 /win32/diy/*.pdb
 /win32/itpp_build
+/win32/dvb-s2_build
+/win32/*.pdb
