@@ -234,11 +234,11 @@ int main(int argc, char **argv)
 	}
 	cout << endl << endl ;
 
-	cout << endl << timerAverageAll/COUNT_REPEAT << " s Average all" << endl ;
+	cout << endl << "DVB S-2 totally costs time: "<< timerAverageAll/COUNT_REPEAT << " s for each code with length of 16200" << endl ;
 	
-	cout << endl << timerStepAverage/COUNT_REPEAT << " s Average step decode ldpc" << endl ;
+	cout << endl << timerStepAverage/COUNT_REPEAT << " s for decoding ldpc" << endl ;
 	
-	cout << endl << countIterationAverage/COUNT_REPEAT << " iteration Average in decode ldpc" << endl ;
+	cout << endl << (int)(countIterationAverage/COUNT_REPEAT+0.5) << " iterations in decode ldpc" << endl << endl ;
 
 	cudaDeviceReset();
 
