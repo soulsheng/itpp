@@ -7,7 +7,7 @@
 using namespace std;
 using namespace itpp;
 
-#define		FILENAME_IT		"RU_16200.it"
+#define		FILENAME_IT		"../data/RU_16200.it"
 #define		EBNO			1.8
 #define		COUNT_REPEAT	10	// repeat time 
 

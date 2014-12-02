@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\dvb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -64,7 +64,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>itpp.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib;$(LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>lib;$(LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>uuid.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -118,18 +118,18 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ldpc_bch_dvb-s2.cpp" />
-    <ClCompile Include="ldpc_bp_decode.cpp" />
+    <ClCompile Include="..\dvb\dvb-s2.cpp" />
+    <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ldpc_bp_decode.h" />
+    <CudaCompile Include="..\dvb\ldpc_bp_decode.cu" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="ldpc_bp_decode.cu">
-      <FileType>Document</FileType>
-    </CudaCompile>
-    <None Include="ldpc_bp_decode.cuh" />
-    <None Include="ldpc_bp_decode_kernel.cuh" />
+    <None Include="..\dvb\ldpc_bp_decode.cuh" />
+    <None Include="..\dvb\ldpc_bp_decode_kernel.cuh" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
