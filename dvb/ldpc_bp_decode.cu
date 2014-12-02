@@ -115,9 +115,19 @@ int ldpc_gpu::bp_decode_once(int *LLRin, int *LLRout,
 	updateCheckNode_gpu();
 
     // step 2: variable to check nodes
-	updateVariableNode_gpu();
+	dim3 block( SIZE_BLOCK );
+	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	is_valid_codeword = syndrome_check_gpu();
+	updateVariableNodeAndCheck_kernel<<< grid, block >>>( nvar, ncheck, 
+		d_sumX1, d_sumX2, d_iind, d_V,
+		d_LLRin, d_mcv, 
+		d_LLRout, d_mvc, 
+		d_synd );
+
+	int h_synd=0;
+	cudaMemcpy( &h_synd, d_synd, sizeof(int), cudaMemcpyDeviceToHost );
+
+	is_valid_codeword = h_synd == 0;   // codeword is valid
 
 	if ( is_valid_codeword ) {
       break;
