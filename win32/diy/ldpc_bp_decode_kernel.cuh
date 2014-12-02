@@ -2,10 +2,13 @@
 #pragma once
 
 #define		TABLE_SIZE_DINT2	300
-#define		MAX_CHECK_NODE		100
+#define		MAX_CHECK_NODE		10
 #define		TABLE_SIZE_CODE		16200
 #define		USE_TABLE_CODE		0
 #define		USE_TEXTURE_ADDRESS	0
+#define		USE_SHARED_MLR		0
+#define		USE_SHARED_MVC		0
+#define		SIZE_BLOCK			256
 
 #if USE_TEXTURE_ADDRESS
 texture<int, 2, cudaReadModeElementType> texMCV;
@@ -184,6 +187,61 @@ void updateCheckNode_kernel( const int ncheck, const int nvar,
 		mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
 	}
 #endif
+	// merge partial sums
+	mcv[j] = mr[nodes-1];
+	mcv[j+nodes*ncheck] = ml[nodes-1];
+	for(int i = 1; i < nodes; i++ )
+		mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
+
+}
+
+__global__ 
+void updateCheckNodeShared_kernel( const int ncheck, const int nvar, 
+	const int* sumX2, const int* mvc, const int* jind, 
+	const short int Dint1, const short int Dint2, const short int Dint3, 
+	int* d_ml, int* d_mr, const int max_cnd, const int QLLR_MAX,
+	int* mcv )
+{	//	mvc const(input)-> mcv (output)
+	int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if( j>= ncheck )
+		return;
+#if USE_SHARED_MLR
+	__shared__ int s_ml[MAX_CHECK_NODE*SIZE_BLOCK];
+	int* ml	= s_ml	+ threadIdx.x * MAX_CHECK_NODE;
+	__shared__ int s_mr[MAX_CHECK_NODE*SIZE_BLOCK];
+	int* mr	= s_mr	+ threadIdx.x * MAX_CHECK_NODE;
+#else
+	int ml[MAX_CHECK_NODE];
+	int mr[MAX_CHECK_NODE];
+#endif
+
+	int nodes = sumX2[j];
+
+	nodes--;
+
+	// compute partial sums from the left and from the right
+#if USE_SHARED_MVC
+	__shared__ int s_mvc[MAX_CHECK_NODE*SIZE_BLOCK];
+	for(int i = 0; i < sumX2[j]; i++ ) {
+		s_mvc[threadIdx.x+i*SIZE_BLOCK] = mvc[ jind[j+i*ncheck] ];
+	}
+
+	ml[0] = s_mvc[threadIdx.x];
+	mr[0] = s_mvc[threadIdx.x+nodes*SIZE_BLOCK];
+	for(int i = 1; i < nodes; i++ ) {
+		ml[i] = Boxplus( ml[i-1], s_mvc[threadIdx.x+i*SIZE_BLOCK], Dint1, Dint2, Dint3, QLLR_MAX );
+		mr[i] = Boxplus( mr[i-1], s_mvc[threadIdx.x+(nodes-i)*SIZE_BLOCK], Dint1, Dint2, Dint3, QLLR_MAX );
+	}
+#else
+	ml[0] = mvc[jind[j]];
+	mr[0] = mvc[jind[j+nodes*ncheck]];
+	for(int i = 1; i < nodes; i++ ) {
+		ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
+		mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
+	}
+#endif
+
 	// merge partial sums
 	mcv[j] = mr[nodes-1];
 	mcv[j+nodes*ncheck] = ml[nodes-1];

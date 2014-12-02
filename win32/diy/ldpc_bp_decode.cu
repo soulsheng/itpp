@@ -14,7 +14,7 @@
 
 bool ldpc_gpu::syndrome_check_gpu() 
 {
-	dim3 block( 256 );
+	dim3 block( SIZE_BLOCK );
 	dim3 grid( (ncheck + block.x - 1) / block.x );
 
 	syndrome_check_kernel<<< grid, block >>>( d_LLRout, d_sumX2, ncheck, d_V, d_synd );
@@ -27,7 +27,7 @@ bool ldpc_gpu::syndrome_check_gpu()
 
 void ldpc_gpu::updateVariableNode_gpu() 
 {
-	dim3 block( 256 );
+	dim3 block( SIZE_BLOCK );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
 	updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc, d_bLLR );
@@ -35,12 +35,12 @@ void ldpc_gpu::updateVariableNode_gpu()
 
 void ldpc_gpu::updateCheckNode_gpu()
 {
-	dim3 block( 256 );
+	dim3 block( SIZE_BLOCK );
 	dim3 grid( (ncheck + block.x - 1) / block.x );
 
 	updateCheckNode_kernel<<< grid, block >>>(ncheck, nvar, 
 		d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,
-		d_ml, d_mr, max_cnd, QLLR_MAX, d_mcv );
+		d_ml, d_mr, max_cnd, QLLR_MAX, d_mcv );	// Shared not faster
 }
 
 void ldpc_gpu::initializeMVC_gpu( )
