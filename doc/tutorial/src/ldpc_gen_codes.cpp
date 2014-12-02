@@ -15,7 +15,7 @@ int main(int argc, char **argv)
                "500 10");   // optimize girth
     H.display_stats();
     LDPC_Code C1(&H);
-    C1.save_code("random_3_6_code.it");
+    C1.save_code("../../data/random_3_6_code.it");
   }
 
   { // This is the code "204.33.484 (N=204, K=102, M=102, R=0.5)" from
@@ -24,11 +24,11 @@ int main(int argc, char **argv)
     // http://www.inference.phy.cam.ac.uk/mackay/codes/EN/C/204.33.484
     cout << "========= MACKAY CODE ==========" << endl;
     LDPC_Parity_Regular H;
-    H.load_alist("204.33.484");
+    H.load_alist("../../data/204.33.484");
     H.display_stats();
     LDPC_Generator_Systematic G(&H);
     LDPC_Code C(&H, &G);
-    C.save_code("mackay_204.33.484.it");
+    C.save_code("../../data/mackay_204.33.484.it");
 
     // Now produce a girth-optimized version of this code by removing
     // cycles. This slightly improves the performance at high SNR.
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     H.cycle_removal_MGW(12);
     LDPC_Generator_Systematic G1(&H);
     LDPC_Code C1(&H, &G1);
-    C1.save_code("mackay_204.33.484_opt.it");
+    C1.save_code("../../data/mackay_204.33.484_opt.it");
   }
 
   // Irregular 1/2-rate codes optimized for the AWGN channel. The
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     //LDPC_Code C(&H);
 	LDPC_Generator_Systematic G(&H);
 	LDPC_Code C(&H, &G);
-    C.save_code("RU_1000.it");
+    C.save_code("../../data/RU_1000.it");
   }
 
   {  // 16200 bits (takes a few minutes to run)
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 	//LDPC_Code C(&H);
 	LDPC_Generator_Systematic G(&H);
 	LDPC_Code C(&H, &G);
-    C.save_code("RU_16200.it");
+    C.save_code("../../data/RU_16200.it");
   }
 
   return 0;
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     //LDPC_Code C(&H);
 	LDPC_Generator_Systematic G(&H);
 	LDPC_Code C(&H, &G);
-    C.save_code("RU_100000.it");
+    C.save_code("../../data/RU_100000.it");
   }
 
 
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
                "rand",
                "0 0");  // no optimization here
     LDPC_Code C(&H);
-    C.save_code("RU_1000000.it");
+    C.save_code("../../data/RU_1000000.it");
   }
 
 }
