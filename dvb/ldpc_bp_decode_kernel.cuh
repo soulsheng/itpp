@@ -77,19 +77,18 @@ void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sum
 
 	int mvc_temp = LLRin[i];
 	for (int jp = 0; jp < sumX1[i]; jp++) {
-		int index = iind[i + jp*nvar];
 #if USE_TEXTURE_ADDRESS
+		int index = iind[i + jp*nvar];
 		mvc_temp +=  tex2D(texMCV, index%ncheck, index/ncheck);
 #else
-		mvc_temp +=  mcv[index];
+		mvc_temp +=  mcv[ iind[i + jp*nvar] ];
 #endif
 	}
 	LLRout[i] = mvc_temp<0;
-	int index_iind = i;  // tracks i+j*nvar
-	for (int j = 0; j < sumX1[i]; j++) {
-		mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
-		index_iind += nvar;
-	}
+
+	for (int jp = 0; jp < sumX1[i]; jp++)
+		mvc[i + jp*nvar] = mvc_temp - mcv[ iind[i + jp*nvar] ];
+	
 }
 
 __device__
