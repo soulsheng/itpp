@@ -30,7 +30,7 @@ void ldpc_gpu::updateVariableNode_gpu()
 	dim3 block( SIZE_BLOCK );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc, d_bLLR );
+	updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, d_sumX1, d_mcv, d_iind, d_LLRin, d_LLRout, d_mvc );
 }
 
 void ldpc_gpu::updateCheckNode_gpu()
@@ -104,41 +104,44 @@ int ldpc_gpu::bp_decode_once(int *LLRin, int *LLRout,
 {
 	cudaMemcpy( d_LLRin, LLRin, nvar * sizeof(int), cudaMemcpyHostToDevice );
 
-  // initial step
-	initializeMVC_gpu();
-
-  bool is_valid_codeword = false;
-  int iter = 0;
-  do {
-    iter++;
-
-	updateCheckNode_gpu();
-
-    // step 2: variable to check nodes
-	dim3 block( SIZE_BLOCK );
+ 	dim3 block( SIZE_BLOCK );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	updateVariableNodeAndCheck_kernel<<< grid, block >>>( nvar, ncheck, 
-		d_sumX1, d_sumX2, d_iind, d_V,
-		d_LLRin, d_mcv, 
-		d_LLRout, d_mvc, 
-		d_synd );
+	// initial step
+	initializeMVC_kernel<<< grid, block >>>( nvar, d_sumX1, d_LLRin, d_mvc );
 
-	int h_synd=0;
-	cudaMemcpy( &h_synd, d_synd, sizeof(int), cudaMemcpyDeviceToHost );
+	int not_valid_codeword = true;
+	int iter = 0;
+	for( ; iter < max_iters && not_valid_codeword; iter ++ )
+	{
+		// --------- Step 1: check to variable nodes ----------
+		updateCheckNode_kernel<<< grid, block >>>(ncheck, nvar, 
+			d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,QLLR_MAX, 
+			d_mcv );	// Shared not faster
+#if 0
+		// --------- Step 2: variable to check nodes ----------
+		updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, 
+			d_sumX1, d_mcv, d_iind, d_LLRin, 
+			d_LLRout, d_mvc );
 
-	is_valid_codeword = h_synd == 0;   // codeword is valid
+		// --------- Step 3: check syndrome ∆Ê≈º–£—È ----------
+		syndrome_check_kernel<<< grid, block >>>( d_LLRout, d_sumX2, ncheck, d_V, 
+			d_synd );
+#else
+		updateVariableNodeAndCheckParity_kernel<<< grid, block >>>( nvar, ncheck, 
+			d_sumX1, d_sumX2, d_iind, d_V, 
+			d_LLRin, d_mcv, 
+			d_LLRout, d_mvc,
+			d_synd );
+#endif
+		cudaMemcpy( &not_valid_codeword, d_synd, sizeof(int), cudaMemcpyDeviceToHost );
 
-	if ( is_valid_codeword ) {
-      break;
-    }
-  }
-  while (iter < max_iters);
-
+	}
+  
   cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(int), cudaMemcpyDeviceToHost );
 
 
-  return (is_valid_codeword ? iter : -iter);
+  return (!not_valid_codeword ? iter : -iter);
 }
 
 bool ldpc_gpu::initialize( int nvar, int ncheck,

@@ -68,7 +68,7 @@ void syndrome_check_kernel(const int *d_LLR,
 
 __global__ 
 void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
-	int * LLRout, int* mvc, char* bLLR ) 
+	int * LLRout, int* mvc ) 
 {	//	mcv const(input)-> mvc (output)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	
@@ -90,8 +90,6 @@ void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sum
 		mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
 		index_iind += nvar;
 	}
-	
-	bLLR[i] = LLRout[i]<0;
 }
 
 __device__
@@ -270,7 +268,7 @@ void initializeMVC_kernel(const int nvar,
 
 
 __global__ 
-void updateVariableNodeAndCheck_kernel( const int nvar, const int ncheck, 
+void updateVariableNodeAndCheckParity_kernel( const int nvar, const int ncheck, 
 	const int* sumX1, const int* sumX2, const int* iind, const int* d_V, 
 	const int * LLRin, const int* mcv, 
 	int * LLRout, int* mvc,
