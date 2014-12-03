@@ -118,7 +118,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 		updateCheckNode_kernel<<< grid, block >>>(ncheck, nvar, 
 			d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,QLLR_MAX, 
 			d_mcv );	// Shared not faster
-#if 1
+
 		// --------- Step 2: variable to check nodes ----------
 		updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, 
 			d_sumX1, d_mcv, d_iind, d_LLRin, 
@@ -127,13 +127,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 		// --------- Step 3: check syndrome ∆Ê≈º–£—È ----------
 		syndrome_check_kernel<<< grid, block >>>( d_LLRout, d_sumX2, ncheck, d_V, 
 			d_synd );
-#else
-		updateVariableNodeAndCheckParity_kernel<<< grid, block >>>( nvar, ncheck, 
-			d_sumX1, d_sumX2, d_iind, d_V, 
-			d_LLRin, d_mcv, 
-			d_LLRout, d_mvc,
-			d_synd );
-#endif
+
 		cudaMemcpy( &not_valid_codeword, d_synd, sizeof(int), cudaMemcpyDeviceToHost );
 
 	}
