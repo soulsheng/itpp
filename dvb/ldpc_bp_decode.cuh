@@ -47,7 +47,7 @@ private:
 
 	//int* d_logexp_table ;
 	
-	int *d_ml, *d_mr ;
+	//int *d_ml, *d_mr ;
 	
 	int* d_LLRin ;
 	int* d_LLRout ;
@@ -58,6 +58,6 @@ private:
 	int nvar, ncheck;
 	int nmaxX1, nmaxX2; // max(sumX1) max(sumX2)
 	short int Dint1, Dint2, Dint3;	//! Decoder (lookup-table) parameters
-	int max_cnd;	//! Maximum check node degree that the class can handle
+	//int max_cnd;	//! Maximum check node degree that the class can handle
 	int QLLR_MAX;
 };

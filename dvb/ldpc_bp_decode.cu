@@ -40,7 +40,7 @@ void ldpc_gpu::updateCheckNode_gpu()
 
 	updateCheckNode_kernel<<< grid, block >>>(ncheck, nvar, 
 		d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,
-		d_ml, d_mr, max_cnd, QLLR_MAX, d_mcv );	// Shared not faster
+		QLLR_MAX, d_mcv );	// Shared not faster
 }
 
 void ldpc_gpu::initializeMVC_gpu( )
@@ -153,7 +153,7 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	this->nmaxX1 = nmaxX1;	this->nmaxX2 = nmaxX2; // max(sumX1) max(sumX2)
 	this->Dint1 = Dint1;	this->Dint2 = Dint2;	this->Dint3 = Dint3;	//! Decoder (lookup-table) parameters
 	
-	max_cnd = 200;
+	//max_cnd = 200;
 	QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
 
 	cudaMalloc( (void**)&d_LLRin, nvar * sizeof(int) );
@@ -190,12 +190,6 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	//cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
 
 	initConstantMemoryLogExp(logexp_table);
-	
-	cudaMalloc( (void**)&d_ml, ncheck * max_cnd * sizeof(int) );
-	cudaMemset( d_ml, 0, ncheck * max_cnd * sizeof(int) );
-	
-	cudaMalloc( (void**)&d_mr, ncheck * max_cnd * sizeof(int) );
-	cudaMemset( d_mr, 0, ncheck * max_cnd * sizeof(int) );
 
 #if USE_TEXTURE_ADDRESS
 	// cuda texture ------------------------------------------------------------------------------------------
@@ -234,8 +228,6 @@ bool ldpc_gpu::release()
 	cudaFree( d_mcv );		cudaFree( d_mvc );
 	
 	//cudaFree( d_logexp_table );	
-
-	cudaFree( d_ml );	cudaFree( d_mr );
 
 	return true;
 }
