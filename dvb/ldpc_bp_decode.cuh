@@ -17,7 +17,7 @@ int bp_decode(int *LLRin, int *LLRout,
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
 
-int bp_decode_once(int *LLRin, int *LLRout,
+int bp_decode_once(int *LLRin, char *LLRout,
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
 
@@ -50,10 +50,8 @@ private:
 	//int *d_ml, *d_mr ;
 	
 	int* d_LLRin ;
-	int* d_LLRout ;
+	char* d_LLRout ;
 	
-	char*	d_bLLR;	// 1 (LLR < 0),  0 (LLR >= 0)
-
 private:
 	int nvar, ncheck;
 	int nmaxX1, nmaxX2; // max(sumX1) max(sumX2)

@@ -32,7 +32,7 @@ void initConstantMemoryLogExp(int *logexp_table)
 }
 
 __global__ 
-void syndrome_check_kernel(const int *d_LLR,
+void syndrome_check_kernel(const char *d_LLR,
 	const int* d_sumX2, const int ncheck, 
 	const int* d_V,
 	int* d_synd) 
@@ -55,7 +55,7 @@ void syndrome_check_kernel(const int *d_LLR,
 #if	USE_TABLE_CODE
 		if ( const_llr_byte[vi] ) {
 #else
-		if (d_LLR[vi] < 0) {
+		if (d_LLR[vi]) {
 #endif
 			synd++;
 		}
@@ -68,7 +68,7 @@ void syndrome_check_kernel(const int *d_LLR,
 
 __global__ 
 void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
-	int * LLRout, int* mvc ) 
+	char * LLRout, int* mvc ) 
 {	//	mcv const(input)-> mvc (output)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	
@@ -84,7 +84,7 @@ void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sum
 		mvc_temp +=  mcv[index];
 #endif
 	}
-	LLRout[i] = mvc_temp;
+	LLRout[i] = mvc_temp<0;
 	int index_iind = i;  // tracks i+j*nvar
 	for (int j = 0; j < sumX1[i]; j++) {
 		mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
@@ -271,7 +271,7 @@ __global__
 void updateVariableNodeAndCheckParity_kernel( const int nvar, const int ncheck, 
 	const int* sumX1, const int* sumX2, const int* iind, const int* d_V, 
 	const int * LLRin, const int* mcv, 
-	int * LLRout, int* mvc,
+	char * LLRout, int* mvc,
 	int* d_synd ) 
 {	//	mcv const(input)-> mvc (output)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -284,7 +284,7 @@ void updateVariableNodeAndCheckParity_kernel( const int nvar, const int ncheck,
 		int index = iind[i + jp*nvar];
 		mvc_temp +=  mcv[index];
 	}
-	LLRout[i] = mvc_temp;
+	LLRout[i] = mvc_temp<0;
 	int index_iind = i;  // tracks i+j*nvar
 	for (int jj = 0; jj < sumX1[i]; jj++) {
 		mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
@@ -309,7 +309,7 @@ void updateVariableNodeAndCheckParity_kernel( const int nvar, const int ncheck,
 	int vind = j; // tracks j+i*ncheck
 	for (ii = 0; ii < sumX2[j]; ii++) {
 		vi = d_V[vind];
-		if (LLRout[vi] < 0) {
+		if (LLRout[vi]) {
 			synd++;
 		}
 		vind += ncheck;

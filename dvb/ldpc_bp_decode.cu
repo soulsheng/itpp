@@ -82,7 +82,7 @@ int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
 #endif
 
 #if	USE_TABLE_CODE
-	updateConstantMemoryLLRByte( d_bLLR );
+	updateConstantMemoryLLRByte( d_LLRout );
 #endif
 
 	if (psc && syndrome_check_gpu()) {
@@ -98,7 +98,7 @@ int ldpc_gpu::bp_decode(int *LLRin, int *LLRout,
   return (is_valid_codeword ? iter : -iter);
 }
 
-int ldpc_gpu::bp_decode_once(int *LLRin, int *LLRout,
+int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 	bool psc /*= true*/,			//!< check syndrom after each iteration
 	int max_iters /*= 50*/ )		//!< Maximum number of iterations
 {
@@ -138,7 +138,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, int *LLRout,
 
 	}
   
-  cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(int), cudaMemcpyDeviceToHost );
+  cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(char), cudaMemcpyDeviceToHost );
 
 
   return (!not_valid_codeword ? iter : -iter);
@@ -160,10 +160,8 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
 
 	cudaMalloc( (void**)&d_LLRin, nvar * sizeof(int) );
-	cudaMalloc( (void**)&d_LLRout, nvar * sizeof(int) );
-	cudaMemset( d_LLRout, 0, nvar * sizeof(int) );
-
-	cudaMalloc( (void**)&d_bLLR, nvar * sizeof(char) );
+	cudaMalloc( (void**)&d_LLRout, nvar * sizeof(char) );
+	cudaMemset( d_LLRout, 0, nvar * sizeof(char) );
 
 	cudaMalloc( (void**)&d_synd, 1 * sizeof(int) );
 	cudaMemset( d_synd, 0, 1 * sizeof(int) );
@@ -219,7 +217,7 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 
 bool ldpc_gpu::release()
 {
-	cudaFree( d_LLRin );	cudaFree( d_LLRout );	cudaFree( d_bLLR );
+	cudaFree( d_LLRin );	cudaFree( d_LLRout );
 	
 	cudaFree( d_synd );
 

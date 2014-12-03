@@ -9,7 +9,7 @@ using namespace itpp;
 
 #define		FILENAME_IT		"../data/RU_16200.it"
 #define		EBNO			1.8
-#define		COUNT_REPEAT	10	// repeat time 
+#define		COUNT_REPEAT	100	// repeat time 
 
 #define		N_BCH			31
 #define		T_BCH			2
@@ -98,6 +98,8 @@ int main(int argc, char **argv)
 		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
 		ldpc.llrcalc.logexp_table._data());
 
+	char * llrOut = (char*)malloc( nldpc * sizeof(char) );
+
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 		timer.reset();
@@ -155,14 +157,14 @@ int main(int argc, char **argv)
 
 
 		// step 7: ldpc Decode the received bits
-		QLLRvec llr(nldpc);
+		//QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
 
 		timerStep.reset();
 		timerStep.start();
 
 #if		USE_GPU
-		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), llr._data() ); 
+		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), llrOut ); 
 #else
 		countIteration[i] = bp_decode( llrIn._data(), llr._data(), 
 			ldpc.nvar, ldpc.ncheck, 
@@ -179,7 +181,10 @@ int main(int argc, char **argv)
 		timerStepValue[i] = timerStep.get_time() ;
 
 
-		bvec bitsoutLDPCDec = llr < 0;
+		bvec bitsoutLDPCDec(nldpc);
+		for (int j=0;j<nldpc;j++)
+			bitsoutLDPCDec[j] = llrOut[j];
+
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
 		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
@@ -239,6 +244,8 @@ int main(int argc, char **argv)
 	cout << endl << timerStepAverage/COUNT_REPEAT << " s for decoding ldpc" << endl ;
 	
 	cout << endl << (int)(countIterationAverage/COUNT_REPEAT+0.5) << " iterations in decode ldpc" << endl << endl ;
+
+	free( llrOut );
 
 	cudaDeviceReset();
 
