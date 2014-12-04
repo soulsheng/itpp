@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 using namespace std;
+#include "helper_timer.h"
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -332,6 +333,9 @@ int bp_decode(int *LLRin, char *LLRout,
 	bool psc /*= true*/,			//!< check syndrom after each iteration
 	int max_iters /*= 50*/ )		//!< Maximum number of iterations
 {
+	StopWatchInterface	*timerStep;
+	sdkCreateTimer( &timerStep );
+	vector<float>	timerStepValue( (max_iters+1)*3 );
 
   // initial step
 	initializeMVC(nvar, sumX1, mvc, LLRin);
@@ -342,18 +346,43 @@ int bp_decode(int *LLRin, char *LLRout,
     iter++;
     //if (nvar >= 100000) { it_info_no_endl_debug("."); }
     // --------- Step 1: check to variable nodes ----------
+	sdkResetTimer( &timerStep );
+	sdkStartTimer( &timerStep );
+
 	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table );
 
-    
+	sdkStopTimer( &timerStep );
+	timerStepValue[iter*3] = sdkGetTimerValue( &timerStep );
+
+	sdkResetTimer( &timerStep );
+	sdkStartTimer( &timerStep );
+ 
     // step 2: variable to check nodes
 	updateVariableNode(nvar, sumX1, mcv, mvc, iind, LLRin, LLRout);
+
+	sdkStopTimer( &timerStep );
+	timerStepValue[iter*3+1] = sdkGetTimerValue( &timerStep );
+
+	sdkResetTimer( &timerStep );
+	sdkStartTimer( &timerStep );
 
 	if (psc && syndrome_check(LLRout, ncheck, sumX2, V)) {
 	  is_valid_codeword = true;
       break;
     }
+
+	sdkStopTimer( &timerStep );
+	timerStepValue[iter*3+2] = sdkGetTimerValue( &timerStep );
+
   }
   while (iter < max_iters);
+
+  for (int i=1;i<iter*3;i++)
+  {
+	//  cout  << "timerStepValue[ " << i << " ] = "<< timerStepValue[i] << " ms, " << endl;
+  }
+  cout << endl << endl ;
+  sdkDeleteTimer( &timerStep );
 
   return (is_valid_codeword ? iter : -iter);
 }
