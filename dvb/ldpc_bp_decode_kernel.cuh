@@ -3,6 +3,7 @@
 
 #define		TABLE_SIZE_DINT2	300
 #define		MAX_CHECK_NODE		10
+#define		MAX_VAR_NODE		19
 #define		TABLE_SIZE_CODE		16200
 #define		USE_TABLE_CODE		0
 #define		USE_TEXTURE_ADDRESS	0
@@ -263,4 +264,29 @@ void initializeMVC_kernel(const int nvar,
       mvc[index] = LLRin[i];
       index += nvar;
     }
+}
+
+__global__ 
+void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
+	char * LLRout, int* mvc ) 
+{	//	mcv const(input)-> mvc (output)
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	if( i>= nvar )
+		return;
+
+	int mvc_temp = LLRin[i];
+
+	int m[MAX_VAR_NODE];
+	for (int jp = 0; jp < sumX1[i]; jp++) 
+		m[jp] = mcv[ iind[i + jp*nvar] ];
+
+	for (int jp = 0; jp < sumX1[i]; jp++) 
+		mvc_temp += m[jp];
+
+	LLRout[i] = mvc_temp<0;
+
+	for (int jp = 0; jp < sumX1[i]; jp++)
+		mvc[i + jp*nvar] = mvc_temp - m[jp];
+	
 }
