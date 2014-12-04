@@ -25,7 +25,7 @@ int min(int *v, int N)
 	return tmp;
 }
 
-bool syndrome_check(int *LLR,
+bool syndrome_check(char *LLR,
 	int ncheck, 
 	int* sumX2, 
 	int* V ) 
@@ -39,7 +39,7 @@ bool syndrome_check(int *LLR,
 		int vind = j; // tracks j+i*ncheck
 		for (i = 0; i < sumX2[j]; i++) {
 			vi = V[vind];
-			if (LLR[vi] < 0) {
+			if (LLR[vi]) {
 				synd++;
 			}
 			vind += ncheck;
@@ -226,9 +226,12 @@ void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, sho
 	}
 }
 
-void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, int * LLRin, int * LLRout ) 
+void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, int * LLRin, char * LLRout ) 
 {
 	for (int i = 0; i < nvar; i++) {
+		
+		int mvc_temp = LLRin[i];
+
 		switch (sumX1[i]) {
 		case 0:
 			cout << "LDPC_Code::bp_decode(): sumX1[i]=0" << endl;
@@ -238,7 +241,7 @@ void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, in
 			*/
 			int m0 = mcv[iind[i]];
 			mvc[i] = LLRin[i];
-			LLRout[i] = LLRin[i] + m0;
+			mvc_temp = LLRin[i] + m0;
 			break;
 				}
 		case 2: {
@@ -247,7 +250,7 @@ void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, in
 			int m1 = mcv[iind[i1]];
 			mvc[i] = LLRin[i] + m1;
 			mvc[i1] = LLRin[i] + m0;
-			LLRout[i] = mvc[i1] + m1;
+			mvc_temp = mvc[i1] + m1;
 			break;
 				}
 		case 3: {
@@ -257,10 +260,10 @@ void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, in
 			int m1 = mcv[iind[i1]];
 			int i2 = i1 + nvar;
 			int m2 = mcv[iind[i2]];
-			LLRout[i] = LLRin[i] + m0 + m1 + m2;
-			mvc[i0] = LLRout[i] - m0;
-			mvc[i1] = LLRout[i] - m1;
-			mvc[i2] = LLRout[i] - m2;
+			mvc_temp = LLRin[i] + m0 + m1 + m2;
+			mvc[i0] = mvc_temp - m0;
+			mvc[i1] = mvc_temp - m1;
+			mvc[i2] = mvc_temp - m2;
 			break;
 				}
 		case 4: {
@@ -272,21 +275,19 @@ void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, in
 			int m2 = mcv[iind[i2]];
 			int i3 = i2 + nvar;
 			int m3 = mcv[iind[i3]];
-			LLRout[i] = LLRin[i] + m0 + m1 + m2 + m3;
-			mvc[i0] = LLRout[i] - m0;
-			mvc[i1] = LLRout[i] - m1;
-			mvc[i2] = LLRout[i] - m2;
-			mvc[i3] = LLRout[i] - m3;
+			mvc_temp = LLRin[i] + m0 + m1 + m2 + m3;
+			mvc[i0] = mvc_temp - m0;
+			mvc[i1] = mvc_temp - m1;
+			mvc[i2] = mvc_temp - m2;
+			mvc[i3] = mvc_temp - m3;
 			break;
 				}
 		default:   { // differential update
-			int mvc_temp = LLRin[i];
 			int index_iind = i; // tracks i+jp*nvar
 			for (int jp = 0; jp < sumX1[i]; jp++) {
 				mvc_temp +=  mcv[iind[index_iind]];
 				index_iind += nvar;
 			}
-			LLRout[i] = mvc_temp;
 			index_iind = i;  // tracks i+j*nvar
 			for (int j = 0; j < sumX1[i]; j++) {
 				mvc[index_iind] = mvc_temp - mcv[iind[index_iind]];
@@ -294,6 +295,9 @@ void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, in
 			}
 				   }
 		}
+
+		LLRout[i] = mvc_temp<0;
+
 	}
 }
 
@@ -308,7 +312,7 @@ void initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin )
 	}
 }
 
-int bp_decode(int *LLRin, int *LLRout,
+int bp_decode(int *LLRin, char *LLRout,
 	int nvar, int ncheck, 
 	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization

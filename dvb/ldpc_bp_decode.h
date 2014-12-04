@@ -6,7 +6,7 @@ int max(int *v, int N);
 //! Minimum value of vector
 int min(int *v, int N);
 
-bool syndrome_check(int* LLR,
+bool syndrome_check(char* LLR,
 	int ncheck, 
 	int* sumX2, 
 	int* V) ;
@@ -19,7 +19,7 @@ int Boxplus(int a, int b,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	int* logexp_table );		//! The lookup tables for the decoder
 
-int bp_decode(int *LLRin, int *LLRout,
+int bp_decode(int *LLRin, char *LLRout,
 	int nvar, int ncheck, 
 	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization

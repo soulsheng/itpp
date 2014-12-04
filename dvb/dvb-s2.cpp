@@ -16,7 +16,7 @@ using namespace itpp;
 #define		T_BCH			2
 #define		K_BCH			21
 
-#define		USE_GPU		1
+#define		USE_GPU		0
 
 enum	MOD_TYPE
 {
@@ -170,7 +170,7 @@ int main(int argc, char **argv)
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), llrOut ); 
 #else
-		countIteration[i] = bp_decode( llrIn._data(), llr._data(), 
+		countIteration[i] = bp_decode( llrIn._data(), llrOut, 
 			ldpc.nvar, ldpc.ncheck, 
 			nmaxX1, nmaxX2, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
