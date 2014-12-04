@@ -24,5 +24,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
+    <ClInclude Include="..\tests\helper_timer.h" />
   </ItemGroup>
 </Project>

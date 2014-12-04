@@ -3,6 +3,7 @@
 #include <cuda_runtime.h>
 #include "ldpc_bp_decode.h"
 #include "ldpc_bp_decode.cuh"
+#include "helper_timer.h"
 
 using namespace std;
 using namespace itpp;
@@ -48,7 +49,10 @@ int main(int argc, char **argv)
 
 	RNG_randomize();
 
-	Real_Timer	timer, timerStep;
+	StopWatchInterface	*timer, *timerStep;
+	sdkCreateTimer( &timer );
+	sdkCreateTimer( &timerStep );
+
 	vec			timerValue(COUNT_REPEAT);
 
 	vec			timerStepValue(COUNT_REPEAT);
@@ -102,8 +106,8 @@ int main(int argc, char **argv)
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
-		timer.reset();
-		timer.start();
+		sdkResetTimer( &timer );
+		sdkStartTimer( &timer );
 
 		// step 1: input message
 		bvec bitsinBCHEnc = randb(Kbch);
@@ -160,8 +164,8 @@ int main(int argc, char **argv)
 		//QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
 
-		timerStep.reset();
-		timerStep.start();
+		sdkResetTimer( &timerStep );
+		sdkStartTimer( &timerStep );
 
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), llrOut ); 
@@ -177,8 +181,8 @@ int main(int argc, char **argv)
 
 #endif
 
-		timerStep.stop();
-		timerStepValue[i] = timerStep.get_time() ;
+		sdkStopTimer( &timerStep );
+		timerStepValue[i] = sdkGetTimerValue( &timerStep );
 
 
 		bvec bitsoutLDPCDec(nldpc);
@@ -201,8 +205,8 @@ int main(int argc, char **argv)
 		// step 9: verify result, Count the number of errors
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
 
-		timer.stop();
-		timerValue[i] = timer.get_time() ;
+		sdkStopTimer( &timer );
+		timerValue[i] = sdkGetTimerValue( &timer );
         
 		cout << "Eb/N0 = " << EBNO << "  Simulated "
 				<< i << " frames and "
@@ -215,14 +219,14 @@ int main(int argc, char **argv)
 	double timerAverageAll = 0.0f, timerStepAverage = 0.0f;
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
-		cout << timerValue[i] << " s, " ;
+		cout << timerValue[i] << " ms, " ;
 		timerAverageAll += timerValue[i];
 	}
 	cout << endl << endl ;
 
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
-		cout << timerStepValue[i] << " s, " ;
+		cout  << "timerStepValue[ " << i << " ] = "<< timerStepValue[i] << " ms, " << endl;
 		timerStepAverage += timerStepValue[i];
 	}
 	cout << endl << endl ;
@@ -239,13 +243,15 @@ int main(int argc, char **argv)
 	}
 	cout << endl << endl ;
 
-	cout << endl << "DVB S-2 totally costs time: "<< timerAverageAll/COUNT_REPEAT << " s for each code with length of 16200" << endl ;
+	cout << endl << "DVB S-2 totally costs time: "<< timerAverageAll/COUNT_REPEAT << " ms for each code with length of 16200" << endl ;
 	
-	cout << endl << timerStepAverage/COUNT_REPEAT << " s for decoding ldpc" << endl ;
+	cout << endl << timerStepAverage/COUNT_REPEAT << " ms for decoding ldpc" << endl ;
 	
 	cout << endl << (int)(countIterationAverage/COUNT_REPEAT+0.5) << " iterations in decode ldpc" << endl << endl ;
 
 	free( llrOut );
+	sdkDeleteTimer( &timer );
+	sdkDeleteTimer( &timerStep );
 
 	cudaDeviceReset();
 
