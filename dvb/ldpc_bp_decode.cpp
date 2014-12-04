@@ -102,9 +102,18 @@ int Boxplus(int a, int b,
 	return result;
 }
 
-void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table,
-	int* jj, int* m, int* ml, int* mr ) 
+void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table ) 
 {
+
+	//! Maximum check node degree that the class can handle
+	static const int max_cnd = 200;
+
+	// allocate temporary variables used for the check node update
+	int jj[max_cnd];
+	int m[max_cnd];
+	int ml[max_cnd];
+	int mr[max_cnd];
+
 
 	for (int j = 0; j < ncheck; j++) {
 		// The check node update calculations are hardcoded for degrees
@@ -327,26 +336,13 @@ int bp_decode(int *LLRin, char *LLRout,
   // initial step
 	initializeMVC(nvar, sumX1, mvc, LLRin);
 
-  const int QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
-
-  //! Maximum check node degree that the class can handle
-  static const int max_cnd = 200;
-
-  // allocate temporary variables used for the check node update
-  int jj[max_cnd];
-  int m[max_cnd];
-  int ml[max_cnd];
-  int mr[max_cnd];
-
-
   bool is_valid_codeword = false;
   int iter = 0;
   do {
     iter++;
     //if (nvar >= 100000) { it_info_no_endl_debug("."); }
     // --------- Step 1: check to variable nodes ----------
-	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table,
-		jj, m, ml, mr );
+	updateCheckNode(ncheck, sumX2, mcv, mvc, jind, Dint1, Dint2, Dint3, logexp_table );
 
     
     // step 2: variable to check nodes
