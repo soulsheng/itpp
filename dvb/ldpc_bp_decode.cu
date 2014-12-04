@@ -125,17 +125,48 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 			d_LLRout, d_mvc );
 
 		// --------- Step 3: check syndrome ∆Ê≈º–£—È ----------
+#if 0
 		syndrome_check_kernel<<< grid, block >>>( d_LLRout, d_sumX2, ncheck, d_V, 
 			d_synd );
 
 		cudaMemcpy( &not_valid_codeword, d_synd, sizeof(int), cudaMemcpyDeviceToHost );
-
+#else
+		cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(char), cudaMemcpyDeviceToHost );
+		
+		if (psc && check_parity_cpu(LLRout)) {
+			 not_valid_codeword = false;
+			break;
+		}
+#endif
 	}
   
-  cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(char), cudaMemcpyDeviceToHost );
+  //cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(char), cudaMemcpyDeviceToHost );
 
 
   return (!not_valid_codeword ? iter : -iter);
+}
+
+bool ldpc_gpu::check_parity_cpu(char *LLR) 
+{
+	// Please note the IT++ convention that a sure zero corresponds to
+	// LLR=+infinity
+	int i, j, synd, vi;
+
+	for (j = 0; j < ncheck; j++) {
+		synd = 0;
+		int vind = j; // tracks j+i*ncheck
+		for (i = 0; i < h_sumX2[j]; i++) {
+			vi = h_V[vind];
+			if (LLR[vi]) {
+				synd++;
+			}
+			vind += ncheck;
+		}
+		if ((synd&1) == 1) {
+			return false;  // codeword is invalid
+		}
+	}
+	return true;   // codeword is valid
 }
 
 bool ldpc_gpu::initialize( int nvar, int ncheck,
@@ -150,6 +181,9 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	this->nmaxX1 = nmaxX1;	this->nmaxX2 = nmaxX2; // max(sumX1) max(sumX2)
 	this->Dint1 = Dint1;	this->Dint2 = Dint2;	this->Dint3 = Dint3;	//! Decoder (lookup-table) parameters
 	
+	this->h_V = V;
+	this->h_sumX2 = sumX2;
+
 	//max_cnd = 200;
 	QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
 

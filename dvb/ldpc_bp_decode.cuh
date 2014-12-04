@@ -12,6 +12,8 @@ void updateCheckNode_gpu( );
 
 void initializeMVC_gpu( );
 
+bool check_parity_cpu(char *LLR);
+
 public:
 int bp_decode(int *LLRin, int *LLRout,
 	bool psc = true,			//!< check syndrom after each iteration
@@ -52,6 +54,8 @@ private:
 	int* d_LLRin ;
 	char* d_LLRout ;
 	
+	int* h_V, *h_sumX2;
+
 private:
 	int nvar, ncheck;
 	int nmaxX1, nmaxX2; // max(sumX1) max(sumX2)

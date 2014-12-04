@@ -16,7 +16,7 @@ using namespace itpp;
 #define		T_BCH			2
 #define		K_BCH			21
 
-#define		USE_GPU		0
+#define		USE_GPU		1
 
 enum	MOD_TYPE
 {
