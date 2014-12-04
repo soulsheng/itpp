@@ -120,7 +120,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 			d_mcv );	// Shared not faster
 
 		// --------- Step 2: variable to check nodes ----------
-		updateVariableNodeOpti_kernel<<< grid, block >>>( nvar, ncheck, 
+		updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, 
 			d_sumX1, d_mcv, d_iind, d_LLRin, 
 			d_LLRout, d_mvc );
 
@@ -189,7 +189,7 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 
 	cudaMalloc( (void**)&d_LLRin, nvar * sizeof(int) );
 	cudaMalloc( (void**)&d_LLRout, nvar * sizeof(char) );
-	cudaMemset( d_LLRout, 0, nvar * sizeof(char) );
+	cudaMemset( d_LLRout, 1, nvar * sizeof(char) );
 
 	cudaMalloc( (void**)&d_synd, 1 * sizeof(int) );
 	cudaMemset( d_synd, 0, 1 * sizeof(int) );

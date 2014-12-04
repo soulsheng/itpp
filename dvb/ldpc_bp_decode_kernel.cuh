@@ -268,25 +268,40 @@ void initializeMVC_kernel(const int nvar,
 
 __global__ 
 void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
-	char * LLRout, int* mvc ) 
+	char * LLRout, int* mvc ) // not used, just for testing performance bound
 {	//	mcv const(input)-> mvc (output)
 	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	if( i>= nvar )
 		return;
+	
+	int input = 0;
 
-	int mvc_temp = LLRin[i];
+	int mvc_temp = 0;
 
 	int m[MAX_VAR_NODE];
-	for (int jp = 0; jp < sumX1[i]; jp++) 
-		m[jp] = mcv[ iind[i + jp*nvar] ];
+	if( i == nvar )
+	{
+		input = LLRin[i];
+	}
 
-	for (int jp = 0; jp < sumX1[i]; jp++) 
-		mvc_temp += m[jp];
+	if( i == nvar )
+	{
+		for (int jp = 0; jp < sumX1[i]; jp++) {
+			m[jp] = mcv[ iind[i + jp*nvar] ];
+			mvc_temp += m[jp];
+		}
+	}
+	mvc_temp += input;
 
-	LLRout[i] = mvc_temp<0;
+	if( i == nvar )
+	{
+		LLRout[i] = mvc_temp<0;
+	}
 
-	for (int jp = 0; jp < sumX1[i]; jp++)
-		mvc[i + jp*nvar] = mvc_temp - m[jp];
-	
+	//if( i == nvar )
+	{
+		for (int jp = 0; jp < sumX1[i]; jp++)
+			mvc[i + jp*nvar] = mvc_temp - m[jp];
+	}
 }
