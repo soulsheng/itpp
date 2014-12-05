@@ -110,7 +110,7 @@ int Boxplus(const int a, const int b,
 	const short int Dint1, const short int Dint2, const short int Dint3,	//! Decoder (lookup-table) parameters
 	const int QLLR_MAX )		//! The lookup tables for the decoder
 {
-	return a+b;
+	//return a+b;
 	int a_abs = (a > 0 ? a : -a);
 	int b_abs = (b > 0 ? b : -b);
 	int minabs = (a_abs > b_abs ? b_abs : a_abs);
