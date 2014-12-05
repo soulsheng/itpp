@@ -110,6 +110,7 @@ int Boxplus(const int a, const int b,
 	const short int Dint1, const short int Dint2, const short int Dint3,	//! Decoder (lookup-table) parameters
 	const int QLLR_MAX )		//! The lookup tables for the decoder
 {
+	return a+b;
 	int a_abs = (a > 0 ? a : -a);
 	int b_abs = (b > 0 ? b : -b);
 	int minabs = (a_abs > b_abs ? b_abs : a_abs);
@@ -303,5 +304,52 @@ void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int*
 	{
 		for (int jp = 0; jp < sumX1[i]; jp++)
 			mvc[i + jp*nvar] = mvc_temp - m[jp];
+	}
+}
+
+
+__global__ 
+void updateCheckNodeOpti_kernel( const int ncheck, const int nvar, 
+	const int* sumX2, const int* mvc, const int* jind, 
+	const short int Dint1, const short int Dint2, const short int Dint3, 
+	const int QLLR_MAX,
+	int* mcv )
+{	//	mvc const(input)-> mcv (output)
+	int j = blockIdx.x * blockDim.x + threadIdx.x;
+
+	if( j>= ncheck )
+		return;
+
+	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
+	int mr[MAX_CHECK_NODE];//int* mr	= d_mr	+ j * max_cnd;
+	int m[MAX_CHECK_NODE];
+
+	//if( j== ncheck )
+	{
+		for(int i = 0; i < sumX2[j]; i++ ) 
+			m[i] = mvc[ jind[j+i*ncheck] ];
+	}
+
+	int nodes = sumX2[j];
+
+	nodes--;
+
+	// compute partial sums from the left and from the right
+	//if( j== ncheck )
+	{
+		ml[0] = m[0];
+		mr[0] = m[nodes];
+		for(int i = 1; i < nodes; i++ ) {
+			ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX );
+			mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX );
+		}
+	}
+	// merge partial sums
+	//if( j== ncheck )
+	{	
+		mcv[j] = mr[nodes-1];
+		mcv[j+nodes*ncheck] = ml[nodes-1];
+		for(int i = 1; i < nodes; i++ )
+			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
 	}
 }

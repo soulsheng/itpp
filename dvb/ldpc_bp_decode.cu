@@ -115,7 +115,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 	for( ; iter < max_iters && not_valid_codeword; iter ++ )
 	{
 		// --------- Step 1: check to variable nodes ----------
-		updateCheckNode_kernel<<< grid, block >>>(ncheck, nvar, 
+		updateCheckNodeOpti_kernel<<< grid, block >>>(ncheck, nvar, 
 			d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,QLLR_MAX, 
 			d_mcv );	// Shared not faster
 
