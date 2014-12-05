@@ -288,12 +288,17 @@ void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int*
 
 	//if( i == nvar )
 	{
-		for (int jp = 0; jp < sumX1[i]; jp++) {
+		for (int jp = 0; jp < sumX1[i]; jp++)
 			m[jp] = mcv[ iind[i + jp*nvar] ];
-			mvc_temp += m[jp];
-		}
 	}
-	mvc_temp += input;
+
+	//if( i == nvar )
+	{
+		for (int jp = 0; jp < sumX1[i]; jp++)
+			mvc_temp += m[jp];
+	
+		mvc_temp += input;
+	}
 
 	//if( i == nvar )
 	{
