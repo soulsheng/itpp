@@ -47,7 +47,7 @@ private:
 	int* d_jind ;
 	int* d_V ;
 
-	//int* d_logexp_table ;
+	int* d_logexp_table ;
 	
 	//int *d_ml, *d_mr ;
 	

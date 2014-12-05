@@ -95,20 +95,20 @@ void updateVariableNode_kernel( const int nvar, const int ncheck, const int* sum
 __device__
 int  logexp_device(const int x,
 	const short int Dint1, const short int Dint2, const short int Dint3	//! Decoder (lookup-table) parameters
-	)		
+	, int* s_logexp_table )		
 {
 	int ind = x >> Dint3;
 	if (ind >= Dint2) // outside table
 		return 0;
 
 	// Without interpolation
-	return const_logexp_table[ind];
+	return s_logexp_table[ind];
 }
 
 __device__
 int Boxplus(const int a, const int b,
 	const short int Dint1, const short int Dint2, const short int Dint3,	//! Decoder (lookup-table) parameters
-	const int QLLR_MAX )		//! The lookup tables for the decoder
+	const int QLLR_MAX, int* s_logexp_table )		//! The lookup tables for the decoder
 {
 	//return a+b;
 	int a_abs = (a > 0 ? a : -a);
@@ -129,9 +129,9 @@ int Boxplus(const int a, const int b,
 	}
 
 	int apb = a + b;
-	int term2 = logexp_device((apb > 0 ? apb : -apb), Dint1, Dint2, Dint3);
+	int term2 = logexp_device((apb > 0 ? apb : -apb), Dint1, Dint2, Dint3, s_logexp_table );
 	int amb = a - b;
-	int term3 = logexp_device((amb > 0 ? amb : -amb), Dint1, Dint2, Dint3);
+	int term3 = logexp_device((amb > 0 ? amb : -amb), Dint1, Dint2, Dint3, s_logexp_table );
 	int result = term1 + term2 - term3;
 
 	// Don't abort when overflowing, just saturate the QLLR
@@ -146,7 +146,7 @@ int Boxplus(const int a, const int b,
 
 __global__ 
 void updateCheckNode_kernel( const int ncheck, const int nvar, 
-	const int* sumX2, const int* mvc, const int* jind, 
+	const int* sumX2, const int* mvc, const int* jind, int* logexp_table,  
 	const short int Dint1, const short int Dint2, const short int Dint3, 
 	const int QLLR_MAX,
 	int* mcv )
@@ -182,21 +182,21 @@ void updateCheckNode_kernel( const int ncheck, const int nvar,
 	ml[0] = mvc[jind[j]];
 	mr[0] = mvc[jind[j+nodes*ncheck]];
 	for(int i = 1; i < nodes; i++ ) {
-		ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
-		mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
+		ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
+		mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
 	}
 #endif
 	// merge partial sums
 	mcv[j] = mr[nodes-1];
 	mcv[j+nodes*ncheck] = ml[nodes-1];
 	for(int i = 1; i < nodes; i++ )
-		mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
+		mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
 
 }
 
 __global__ 
 void updateCheckNodeShared_kernel( const int ncheck, const int nvar, 
-	const int* sumX2, const int* mvc, const int* jind, 
+	const int* sumX2, const int* mvc, const int* jind, int* logexp_table, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
 	const int QLLR_MAX,
 	int* mcv )
@@ -236,8 +236,8 @@ void updateCheckNodeShared_kernel( const int ncheck, const int nvar,
 	ml[0] = mvc[jind[j]];
 	mr[0] = mvc[jind[j+nodes*ncheck]];
 	for(int i = 1; i < nodes; i++ ) {
-		ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
-		mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX );
+		ml[i] = Boxplus( ml[i-1], mvc[jind[j+i*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
+		mr[i] = Boxplus( mr[i-1], mvc[jind[j+(nodes-i)*ncheck]], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
 	}
 #endif
 
@@ -245,7 +245,7 @@ void updateCheckNodeShared_kernel( const int ncheck, const int nvar,
 	mcv[j] = mr[nodes-1];
 	mcv[j+nodes*ncheck] = ml[nodes-1];
 	for(int i = 1; i < nodes; i++ )
-		mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
+		mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
 
 }
 
@@ -310,7 +310,7 @@ void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int*
 
 __global__ 
 void updateCheckNodeOpti_kernel( const int ncheck, const int nvar, 
-	const int* sumX2, const int* mvc, const int* jind, 
+	const int* sumX2, const int* mvc, const int* jind, const int* logexp_table, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
 	const int QLLR_MAX,
 	int* mcv )
@@ -319,6 +319,12 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 
 	if( j>= ncheck )
 		return;
+
+	__shared__ int s_logexp_table[TABLE_SIZE_DINT2];
+
+	if( threadIdx.x < TABLE_SIZE_DINT2 )
+		s_logexp_table[threadIdx.x] = logexp_table[threadIdx.x];
+	__syncthreads();
 
 	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
 	int mr[MAX_CHECK_NODE];//int* mr	= d_mr	+ j * max_cnd;
@@ -340,8 +346,8 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 		ml[0] = m[0];
 		mr[0] = m[nodes];
 		for(int i = 1; i < nodes; i++ ) {
-			ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX );
-			mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX );
+			ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
+			mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
 		}
 	}
 	// merge partial sums
@@ -350,6 +356,6 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 		mcv[j] = mr[nodes-1];
 		mcv[j+nodes*ncheck] = ml[nodes-1];
 		for(int i = 1; i < nodes; i++ )
-			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX );
+			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
 	}
 }

@@ -39,7 +39,7 @@ void ldpc_gpu::updateCheckNode_gpu()
 	dim3 grid( (ncheck + block.x - 1) / block.x );
 
 	updateCheckNode_kernel<<< grid, block >>>(ncheck, nvar, 
-		d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,
+		d_sumX2, d_mvc, d_jind, d_logexp_table, Dint1, Dint2, Dint3,
 		QLLR_MAX, d_mcv );	// Shared not faster
 }
 
@@ -116,7 +116,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 	{
 		// --------- Step 1: check to variable nodes ----------
 		updateCheckNodeOpti_kernel<<< grid, block >>>(ncheck, nvar, 
-			d_sumX2, d_mvc, d_jind, Dint1, Dint2, Dint3,QLLR_MAX, 
+			d_sumX2, d_mvc, d_jind, d_logexp_table, Dint1, Dint2, Dint3,QLLR_MAX, 
 			d_mcv );	// Shared not faster
 
 		// --------- Step 2: variable to check nodes ----------
@@ -215,8 +215,8 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMalloc( (void**)&d_mvc, nvar * nmaxX1 * sizeof(int) );
 	cudaMemcpy( d_mvc, mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
 
-	//cudaMalloc( (void**)&d_logexp_table, Dint2 * sizeof(int) );		// const 1.2 K
-	//cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMalloc( (void**)&d_logexp_table, Dint2 * sizeof(int) );		// const 1.2 K
+	cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
 
 	initConstantMemoryLogExp(logexp_table);
 
@@ -256,7 +256,7 @@ bool ldpc_gpu::release()
 
 	cudaFree( d_mcv );		cudaFree( d_mvc );
 	
-	//cudaFree( d_logexp_table );	
+	cudaFree( d_logexp_table );	
 
 	return true;
 }
