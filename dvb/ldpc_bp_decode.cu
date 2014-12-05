@@ -120,7 +120,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 			d_mcv );	// Shared not faster
 
 		// --------- Step 2: variable to check nodes ----------
-		updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, 
+		updateVariableNodeOpti_kernel<<< grid, block >>>( nvar, ncheck, 
 			d_sumX1, d_mcv, d_iind, d_LLRin, 
 			d_LLRout, d_mvc );
 
