@@ -42,3 +42,4 @@
 /data/*.txt
 /data/*.it
 /win32/data/*.it
+/win32/*.suo
