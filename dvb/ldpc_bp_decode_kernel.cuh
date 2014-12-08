@@ -327,8 +327,8 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 
 	__shared__ int s_logexp_table[TABLE_SIZE_DINT2];
 
-	if( threadIdx.x < TABLE_SIZE_DINT2 )
-		s_logexp_table[threadIdx.x] = logexp_table[threadIdx.x];
+	for( int ii=0; threadIdx.x + ii * SIZE_BLOCK < TABLE_SIZE_DINT2; ii++ )
+		s_logexp_table[threadIdx.x + ii * SIZE_BLOCK] = logexp_table[threadIdx.x + ii * SIZE_BLOCK];
 	__syncthreads();
 
 	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
