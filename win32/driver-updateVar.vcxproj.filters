@@ -4,9 +4,6 @@
     <ClInclude Include="..\tests\helper_timer.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\dvb\driverUtility.h">
-      <Filter>utility</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cuda">
@@ -22,16 +19,11 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\dvb\ldpc_bp_decode_kernel.cuh">
-      <Filter>cuda</Filter>
-    </None>
     <None Include="..\dvb\driver-updateVar.cuh">
       <Filter>cuda</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\dvb\driverUtility.cpp">
-      <Filter>utility</Filter>
-    </ClCompile>
+    <ClCompile Include="..\dvb\driver-updateVar.cpp" />
   </ItemGroup>
 </Project>

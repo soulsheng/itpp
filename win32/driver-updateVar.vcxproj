@@ -63,8 +63,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>itpp.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>lib;$(LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>uuid.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -96,8 +96,8 @@
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>itpp_debug.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>lib;$(LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>uuid.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -119,14 +119,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\dvb\driver-updateVar.cpp" />
-    <ClCompile Include="..\dvb\driverUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\dvb\driver-updateVar.cuh" />
-    <None Include="..\dvb\ldpc_bp_decode_kernel.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\dvb\driverUtility.h" />
     <ClInclude Include="..\tests\helper_timer.h" />
   </ItemGroup>
   <ItemGroup>
