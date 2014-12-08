@@ -4,6 +4,7 @@
 #include "ldpc_bp_decode.h"
 #include "ldpc_bp_decode.cuh"
 #include "helper_timer.h"
+#include "driverUtility.h"
 
 using namespace std;
 using namespace itpp;
@@ -102,6 +103,14 @@ int main(int argc, char **argv)
 		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
 		ldpc.llrcalc.logexp_table._data());
 
+if WRITE_FILE_FOR_DRIVER
+	writeArray( ldpc.sumX1._data(), ldpc.nvar, "sumX1.txt" );
+	writeArray( ldpc.sumX2._data(), ldpc.ncheck, "sumX2.txt" );
+
+	writeArray( ldpc.iind._data(), ldpc.nvar * nmaxX1, "iind.txt" );
+	writeArray( ldpc.jind._data(), ldpc.ncheck * nmaxX2, "jind.txt" );
+#endif
+
 	char * llrOut = (char*)malloc( nldpc * sizeof(char) );
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
@@ -163,6 +172,11 @@ int main(int argc, char **argv)
 		// step 7: ldpc Decode the received bits
 		//QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
+		
+if WRITE_FILE_FOR_DRIVER
+		if( i==0 )
+			writeArray( llrIn._data(), ldpc.nvar, "input.txt" );
+#endif
 
 		sdkResetTimer( &timerStep );
 		sdkStartTimer( &timerStep );

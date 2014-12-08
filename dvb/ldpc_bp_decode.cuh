@@ -55,6 +55,7 @@ private:
 	char* d_LLRout ;
 	
 	int* h_V, *h_sumX2;
+	int* h_mcv, *h_mvc ;
 
 private:
 	int nvar, ncheck;

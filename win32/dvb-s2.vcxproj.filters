@@ -3,10 +3,16 @@
   <ItemGroup>
     <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
     <ClCompile Include="..\dvb\dvb-s2.cpp" />
+    <ClCompile Include="..\dvb\driverUtility.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cuda">
       <UniqueIdentifier>{693d02f6-f689-423b-8a23-831be0de9b58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{3736b0f1-3f4c-4756-917d-9cd291b6c1bb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -24,6 +30,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
-    <ClInclude Include="..\tests\helper_timer.h" />
+    <ClInclude Include="..\dvb\driverUtility.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\helper_timer.h">
+      <Filter>utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

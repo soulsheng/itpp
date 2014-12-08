@@ -118,6 +118,7 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\dvb\driverUtility.cpp" />
     <ClCompile Include="..\dvb\dvb-s2.cpp" />
     <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
   </ItemGroup>
@@ -129,6 +130,7 @@
     <None Include="..\dvb\ldpc_bp_decode_kernel.cuh" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\dvb\driverUtility.h" />
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
     <ClInclude Include="..\tests\helper_timer.h" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 
 #include "ldpc_bp_decode.cuh"
 #include "ldpc_bp_decode_kernel.cuh"
+#include "driverUtility.h"
 
 #include <cuda_runtime.h>
 #include <thrust/reduce.h>
@@ -111,7 +112,7 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 	initializeMVC_kernel<<< grid, block >>>( nvar, d_sumX1, d_LLRin, d_mvc );
 
 	int not_valid_codeword = true;
-	int iter = 0;
+	int iter = 1;
 	for( ; iter < max_iters && not_valid_codeword; iter ++ )
 	{
 		// --------- Step 1: check to variable nodes ----------
@@ -133,6 +134,20 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 #else
 		cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(char), cudaMemcpyDeviceToHost );
 		
+#if WRITE_FILE_FOR_DRIVER
+		static bool bRunOnce = false;
+		if( iter == 1 && !bRunOnce ){
+			cudaMemcpy( h_mvc, d_mvc, nvar * nmaxX1 * sizeof(char), cudaMemcpyDeviceToHost );
+			cudaMemcpy( h_mcv, d_mcv, ncheck * nmaxX2 * sizeof(char), cudaMemcpyDeviceToHost );
+
+			writeArray( LLRout, nvar, "output.txt" );
+			writeArray( h_mvc, nvar * nmaxX1, "mvc.txt" );		
+			writeArray( h_mcv, ncheck * nmaxX2, "mcv.txt" );
+
+			bRunOnce = true;
+		}
+#endif
+
 		if (psc && check_parity_cpu(LLRout)) {
 			 not_valid_codeword = false;
 			break;
@@ -239,6 +254,9 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 
 #endif
 
+	h_mvc = (int*)malloc(nvar * nmaxX1 * sizeof(int));
+	h_mcv = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
+
 	return true;
 }
 
@@ -257,6 +275,8 @@ bool ldpc_gpu::release()
 	cudaFree( d_mcv );		cudaFree( d_mvc );
 	
 	cudaFree( d_logexp_table );	
+
+	free( h_mvc );	free( h_mcv );
 
 	return true;
 }
