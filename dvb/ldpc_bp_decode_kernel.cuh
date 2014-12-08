@@ -276,40 +276,24 @@ void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int*
 	if( i>= nvar )
 		return;
 	
-	int input = 0;
 
-	int mvc_temp = 0;
+	int mvc_temp = LLRin[i];
 
 	int m[MAX_VAR_NODE];
-	//if( i == nvar )
-	{
-		input = LLRin[i];
-	}
 
-	//if( i == nvar )
-	{
-		for (int jp = 0; jp < sumX1[i]; jp++)
-			m[jp] = mcv[ iind[i + jp*nvar] ];
-	}
+	for (int jp = 0; jp < sumX1[i]; jp++)
+		m[jp] = mcv[ iind[i + jp*nvar] ];
 
-	//if( i == nvar )
-	{
-		for (int jp = 0; jp < sumX1[i]; jp++)
-			mvc_temp += m[jp];
+
+	for (int jp = 0; jp < sumX1[i]; jp++)
+		mvc_temp += m[jp];
 	
-		mvc_temp += input;
-	}
 
-	//if( i == nvar )
-	{
-		LLRout[i] = mvc_temp<0;
-	}
-
-	//if( i == nvar )
-	{
-		for (int jp = 0; jp < sumX1[i]; jp++)
+	LLRout[i] = mvc_temp<0;
+	
+	for (int jp = 0; jp < sumX1[i]; jp++)
 			mvc[i + jp*nvar] = mvc_temp - m[jp];
-	}
+
 }
 
 
