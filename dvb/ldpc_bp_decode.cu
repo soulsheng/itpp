@@ -120,6 +120,18 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 			d_sumX2, d_mvc, d_jind, d_logexp_table, Dint1, Dint2, Dint3,QLLR_MAX, 
 			d_mcv );	// Shared not faster
 
+				
+#if WRITE_FILE_FOR_DRIVER
+		static bool bRunOnce1 = false;
+		if( iter == 1 && !bRunOnce1 ){
+			cudaMemcpy( h_mcv, d_mcv, ncheck * nmaxX2 * sizeof(int), cudaMemcpyDeviceToHost );
+
+			writeArray( h_mcv, ncheck * nmaxX2, "../data/mcv.txt" );
+
+			bRunOnce1 = true;
+		}
+#endif
+
 		// --------- Step 2: variable to check nodes ----------
 		updateVariableNodeOpti_kernel<<< grid, block >>>( nvar, ncheck, 
 			d_sumX1, d_mcv, d_iind, d_LLRin, 
@@ -135,16 +147,14 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 		cudaMemcpy( LLRout, d_LLRout, nvar * sizeof(char), cudaMemcpyDeviceToHost );
 		
 #if WRITE_FILE_FOR_DRIVER
-		static bool bRunOnce = false;
-		if( iter == 1 && !bRunOnce ){
-			cudaMemcpy( h_mvc, d_mvc, nvar * nmaxX1 * sizeof(char), cudaMemcpyDeviceToHost );
-			cudaMemcpy( h_mcv, d_mcv, ncheck * nmaxX2 * sizeof(char), cudaMemcpyDeviceToHost );
+		static bool bRunOnce2 = false;
+		if( iter == 1 && !bRunOnce2 ){
+			cudaMemcpy( h_mvc, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyDeviceToHost );
 
 			writeArray( LLRout, nvar, "../data/output.txt" );
 			writeArray( h_mvc, nvar * nmaxX1, "../data/mvc.txt" );		
-			writeArray( h_mcv, ncheck * nmaxX2, "../data/mcv.txt" );
 
-			bRunOnce = true;
+			bRunOnce2 = true;
 		}
 #endif
 
@@ -225,10 +235,10 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMemcpy( d_V, V, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 	
 	cudaMalloc( (void**)&d_mcv, ncheck * nmaxX2 * sizeof(int) );
-	cudaMemcpy( d_mcv, mcv, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemset( d_mcv, 0, ncheck * nmaxX2 * sizeof(int) );
 		
 	cudaMalloc( (void**)&d_mvc, nvar * nmaxX1 * sizeof(int) );
-	cudaMemcpy( d_mvc, mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemset( d_mvc, 0, nvar * nmaxX1 * sizeof(int) );
 
 	cudaMalloc( (void**)&d_logexp_table, Dint2 * sizeof(int) );		// const 1.2 K
 	cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );

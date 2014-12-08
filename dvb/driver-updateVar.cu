@@ -1,17 +1,19 @@
 
 #include "driver-updateVar.cuh"
 #include "ldpc_bp_decode_kernel.cuh"
-#include "driverUtility.h"
+//#include "driverUtility.h"
 
 #include <cuda_runtime.h>
 
+#include <iostream>
+using namespace std;
 
 bool driverUpdataVar::launch()
 {
 	dim3 block( SIZE_BLOCK );
 	dim3 grid( (nvar + block.x - 1) / block.x );
 
-	updateVariableNode_kernel<<< grid, block >>>( nvar, ncheck, 
+	updateVariableNodeOpti_kernel<<< grid, block >>>( nvar, ncheck, 
 		d_sumX1, d_mcv, d_iind, d_input, 
 		d_output, d_mvc );
 
@@ -21,7 +23,7 @@ bool driverUpdataVar::launch()
 
 bool driverUpdataVar::verify()
 {
-	cudaMemcpy( mvc, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemcpy( mvc, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyDeviceToHost );
 	cudaMemcpy( output, d_output, nvar * sizeof(char), cudaMemcpyDeviceToHost );
 
 	// mvc
@@ -49,6 +51,19 @@ bool driverUpdataVar::verify()
 	return true;
 }
 
+template <typename T>
+void 	readArray(T* pArray, int nSize, char* strFileName)
+{
+	FILE* fp = NULL;
+	fp = fopen( strFileName, "rb" );
+	if(fp == NULL)
+	{
+		printf("failed to open: %s!\n", strFileName);
+	}
+	fread( pArray, sizeof(T), nSize, fp);
+	fclose(fp);
+}
+
 driverUpdataVar::driverUpdataVar()
 	: nvar( VAR_SIZE_CODE )
 	, ncheck( CHECK_SIZE_CODE )
@@ -57,8 +72,8 @@ driverUpdataVar::driverUpdataVar()
 {
 	sumX1 = (int*)malloc(nvar * sizeof(int));
 	sumX2 = (int*)malloc(ncheck * sizeof(int));
-	d_iind = (int*)malloc(nvar * nmaxX1 * sizeof(int));
-	d_jind = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
+	iind = (int*)malloc(nvar * nmaxX1 * sizeof(int));
+	jind = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
 	mvc = (int*)malloc(nvar * nmaxX1 * sizeof(int));
 	mcv = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
 	input = (int*)malloc(nvar * sizeof(int));
@@ -74,6 +89,11 @@ driverUpdataVar::driverUpdataVar()
 	readArray( jind, ncheck * nmaxX2, "../data/jind.txt" );
 
 	readArray( ref_output, nvar, "../data/output.txt" );
+
+	readArray( input, nvar, "../data/input.txt" );
+
+	readArray( mcv, ncheck * nmaxX2, "../data/mcv.txt" );	
+
 	readArray( ref_mvc, nvar * nmaxX1, "../data/mvc.txt" );		
 
 	cudaMalloc( (void**)&d_sumX1, nvar * sizeof(int) );		// const 64 K
@@ -91,11 +111,14 @@ driverUpdataVar::driverUpdataVar()
 	cudaMalloc( (void**)&d_mcv, ncheck * nmaxX2 * sizeof(int) );
 	cudaMemcpy( d_mcv, mcv, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 
-	cudaMalloc( (void**)&d_mvc, nvar * nmaxX1 * sizeof(int) );
-	cudaMemcpy( d_mvc, mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
-
 	cudaMalloc( (void**)&d_input, nvar * sizeof(int) );
+	cudaMemcpy( d_input, input, nvar * sizeof(int), cudaMemcpyHostToDevice );
+	
 	cudaMalloc( (void**)&d_output, nvar * sizeof(char) );
+	cudaMemset( d_output, 0, nvar * sizeof(char) );
+
+	cudaMalloc( (void**)&d_mvc, nvar * nmaxX1 * sizeof(int) );
+	cudaMemset( d_mvc, 0, nvar * nmaxX1 * sizeof(int) );
 
 }
 

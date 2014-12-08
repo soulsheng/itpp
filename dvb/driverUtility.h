@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <fstream>
 #include <iostream>
 using namespace std;
 
@@ -10,27 +9,25 @@ using namespace std;
 template <typename T>
 void 	readArray(T* pArray, int nSize, char* strFileName)
 {
-	ifstream file(strFileName);
-
-	if( file == NULL )
-		cout << "failed to open: " << strFileName << endl;
-
-	for (int i=0;i<nSize;i++)
-		file >> pArray[i];
-
-	file.close();
+	FILE* fp = NULL;
+	fp = fopen( strFileName, "rb" );
+	if(fp == NULL)
+	{
+		printf("failed to open: %s!\n", strFileName);
+	}
+	fread( pArray, sizeof(T), nSize, fp);
+	fclose(fp);
 }
 
 template <typename T>
 void	writeArray(T* pArray, int nSize, char* strFileName)
 {
-	ofstream file(strFileName);
-
-	if( file == NULL )
-		cout << "failed to open: " << strFileName << endl;
-
-	for (int i=0;i<nSize;i++)
-		file << pArray[i];
-
-	file.close();
+	FILE* fp = NULL;
+	fp = fopen( strFileName, "wb" );
+	if(fp == NULL)
+	{
+		printf("failed to open: %s!\n", strFileName);
+	}
+	fwrite( pArray, sizeof(T), nSize, fp);
+	fclose(fp);
 }

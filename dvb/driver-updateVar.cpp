@@ -16,6 +16,7 @@ void main()
 
 	if( !ldpc.verify() )
 		cout << "failed to verify" << endl;
-
+	else
+		cout << "succeed to launch and verify that result is right" << endl;
 }
 
