@@ -39,3 +39,6 @@
 /win32/itpp_build
 /win32/dvb-s2_build
 /win32/*.pdb
+/data/*.txt
+/data/*.it
+/win32/data/*.it
