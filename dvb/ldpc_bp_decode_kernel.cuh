@@ -4,7 +4,8 @@
 #define		TABLE_SIZE_DINT2	300
 #define		MAX_CHECK_NODE		10
 #define		MAX_VAR_NODE		19
-#define		TABLE_SIZE_CODE		16200
+#define		VAR_SIZE_CODE		16200
+#define		CHECK_SIZE_CODE		8073
 #define		USE_TABLE_CODE		0
 #define		USE_TEXTURE_ADDRESS	0
 #define		USE_SHARED_MLR		0
@@ -19,11 +20,11 @@ texture<int, 2, cudaReadModeElementType> texMVC;
 __device__ __constant__ int const_logexp_table[TABLE_SIZE_DINT2];
 
 #if		USE_TABLE_CODE
-__device__ __constant__ char const_llr_byte[TABLE_SIZE_CODE];	// char
+__device__ __constant__ char const_llr_byte[VAR_SIZE_CODE];	// char
 
 void updateConstantMemoryLLRByte(char *bLLR)
 {
-	cudaMemcpyToSymbol( const_llr_byte, bLLR, TABLE_SIZE_CODE * sizeof(char), 0, cudaMemcpyDeviceToDevice );
+	cudaMemcpyToSymbol( const_llr_byte, bLLR, VAR_SIZE_CODE * sizeof(char), 0, cudaMemcpyDeviceToDevice );
 }
 #endif
 

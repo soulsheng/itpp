@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
+    <ClCompile Include="..\dvb\dvb-s2.cpp" />
+    <ClCompile Include="..\dvb\driverUtility.cpp">
+      <Filter>utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="cuda">
+      <UniqueIdentifier>{693d02f6-f689-423b-8a23-831be0de9b58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utility">
+      <UniqueIdentifier>{3736b0f1-3f4c-4756-917d-9cd291b6c1bb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\dvb\ldpc_bp_decode.cu">
+      <Filter>cuda</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\dvb\ldpc_bp_decode.cuh">
+      <Filter>cuda</Filter>
+    </None>
+    <None Include="..\dvb\ldpc_bp_decode_kernel.cuh">
+      <Filter>cuda</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
+    <ClInclude Include="..\dvb\driverUtility.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\helper_timer.h">
+      <Filter>utility</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -43,3 +43,4 @@
 /data/*.it
 /win32/data/*.it
 /win32/*.suo
+/win32/driver-updateVar_build
