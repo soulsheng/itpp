@@ -103,12 +103,12 @@ int main(int argc, char **argv)
 		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
 		ldpc.llrcalc.logexp_table._data());
 
-if WRITE_FILE_FOR_DRIVER
-	writeArray( ldpc.sumX1._data(), ldpc.nvar, "sumX1.txt" );
-	writeArray( ldpc.sumX2._data(), ldpc.ncheck, "sumX2.txt" );
+#if WRITE_FILE_FOR_DRIVER
+	writeArray( ldpc.sumX1._data(), ldpc.nvar, "../data/sumX1.txt" );
+	writeArray( ldpc.sumX2._data(), ldpc.ncheck, "../data/sumX2.txt" );
 
-	writeArray( ldpc.iind._data(), ldpc.nvar * nmaxX1, "iind.txt" );
-	writeArray( ldpc.jind._data(), ldpc.ncheck * nmaxX2, "jind.txt" );
+	writeArray( ldpc.iind._data(), ldpc.nvar * nmaxX1, "../data/iind.txt" );
+	writeArray( ldpc.jind._data(), ldpc.ncheck * nmaxX2, "../data/jind.txt" );
 #endif
 
 	char * llrOut = (char*)malloc( nldpc * sizeof(char) );
@@ -173,9 +173,9 @@ if WRITE_FILE_FOR_DRIVER
 		//QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
 		
-if WRITE_FILE_FOR_DRIVER
+#if WRITE_FILE_FOR_DRIVER
 		if( i==0 )
-			writeArray( llrIn._data(), ldpc.nvar, "input.txt" );
+			writeArray( llrIn._data(), ldpc.nvar, "../data/input.txt" );
 #endif
 
 		sdkResetTimer( &timerStep );

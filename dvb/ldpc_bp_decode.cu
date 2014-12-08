@@ -140,9 +140,9 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 			cudaMemcpy( h_mvc, d_mvc, nvar * nmaxX1 * sizeof(char), cudaMemcpyDeviceToHost );
 			cudaMemcpy( h_mcv, d_mcv, ncheck * nmaxX2 * sizeof(char), cudaMemcpyDeviceToHost );
 
-			writeArray( LLRout, nvar, "output.txt" );
-			writeArray( h_mvc, nvar * nmaxX1, "mvc.txt" );		
-			writeArray( h_mcv, ncheck * nmaxX2, "mcv.txt" );
+			writeArray( LLRout, nvar, "../data/output.txt" );
+			writeArray( h_mvc, nvar * nmaxX1, "../data/mvc.txt" );		
+			writeArray( h_mcv, ncheck * nmaxX2, "../data/mcv.txt" );
 
 			bRunOnce = true;
 		}
