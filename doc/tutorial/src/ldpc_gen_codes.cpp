@@ -10,13 +10,16 @@ int main(int argc, char **argv)
   { // This generates a random regular (3,6) code with 500 bits
     cout << "========= RANDOM (3,6) CODE ==========" << endl;
     LDPC_Parity_Regular H;
-    H.generate(500, 3, 6,
+    H.generate(16200, 3, 6,
                "rand",  // random unstructured matrix
                "500 10");   // optimize girth
     H.display_stats();
-    LDPC_Code C1(&H);
+	LDPC_Generator_Systematic G(&H);
+    LDPC_Code C1(&H, &G);
     C1.save_code("../../data/random_3_6_code.it");
   }
+
+  return 0;
 
   { // This is the code "204.33.484 (N=204, K=102, M=102, R=0.5)" from
     // David MacKay's database over sparse-graph code. It can be obtained
