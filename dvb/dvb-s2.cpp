@@ -9,8 +9,9 @@
 using namespace std;
 using namespace itpp;
 
-#define		FILENAME_IT		"../data/RU_16200.it"
-#define		EBNO			1.8
+//#define		FILENAME_IT		"../data/RU_16200.it"
+#define		FILENAME_IT		"../data/random_3_6_16200.it"
+#define		EBNO			2.15
 #define		COUNT_REPEAT	100	// repeat time 
 
 #define		N_BCH			31
