@@ -133,9 +133,21 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 #endif
 
 		// --------- Step 2: variable to check nodes ----------
+#if USE_BLOCK_2D
+	
+	dim3 block( SIZE_BLOCK_2D_X, MAX_VAR_NODE );
+	dim3 grid;
+	grid.x = (nvar * MAX_VAR_NODE + SIZE_BLOCK_2D_X * MAX_VAR_NODE - 1) 
+				/ (SIZE_BLOCK_2D_X * MAX_VAR_NODE) ;
+
+	updateVariableNodeOpti2D_kernel<<< grid, block >>>( nvar, ncheck, 
+		d_sumX1, d_mcv, d_iind, d_LLRin, 
+		d_LLRout, d_mvc );
+#else
 		updateVariableNodeOpti_kernel<<< grid, block >>>( nvar, ncheck, 
 			d_sumX1, d_mcv, d_iind, d_LLRin, 
 			d_LLRout, d_mvc );
+#endif
 
 		// --------- Step 3: check syndrome ∆Ê≈º–£—È ----------
 #if 0

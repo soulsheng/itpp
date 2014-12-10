@@ -11,6 +11,8 @@
 #define		USE_SHARED_MLR		0
 #define		USE_SHARED_MVC		0
 #define		SIZE_BLOCK			256
+#define		SIZE_BLOCK_2D_X		32
+#define		USE_BLOCK_2D		0
 
 #if USE_TEXTURE_ADDRESS
 texture<int, 2, cudaReadModeElementType> texMCV;
@@ -348,4 +350,39 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 		for(int i = 1; i < nodes; i++ )
 			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
 	}
+}
+
+
+__global__ 
+void updateVariableNodeOpti2D_kernel( const int nvar, const int ncheck, const int* sumX1, const int* mcv, const int* iind, const int * LLRin, 
+	char * LLRout, int* mvc ) // not used, just for testing performance bound
+{	//	mcv const(input)-> mvc (output)
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	if( i>= nvar )
+		return;
+		
+	__shared__ int mvc_temp[SIZE_BLOCK_2D_X];
+	__shared__ int m[MAX_VAR_NODE][SIZE_BLOCK_2D_X];
+	
+
+	if( threadIdx.y < sumX1[i] )
+		m[threadIdx.y][threadIdx.x] = mcv[ iind[i + threadIdx.y*nvar] ];
+	__syncthreads();
+
+	if( threadIdx.y == 0 )
+	{
+		mvc_temp[threadIdx.x] = LLRin[i];
+
+		for (int jp = 0; jp < sumX1[i]; jp++)
+			mvc_temp[threadIdx.x] += m[jp][threadIdx.x];
+
+		LLRout[i] = mvc_temp[threadIdx.x]<0;
+	}
+	__syncthreads();
+
+	if( threadIdx.y < sumX1[i] )
+		mvc[i + threadIdx.y*nvar] = mvc_temp[threadIdx.x] - m[threadIdx.y][threadIdx.x];
+	__syncthreads();
+
 }
