@@ -2,8 +2,8 @@
 #pragma once
 
 #define		TABLE_SIZE_DINT2	300
-#define		MAX_CHECK_NODE		10
-#define		MAX_VAR_NODE		19
+#define		MAX_CHECK_NODE		6//10
+#define		MAX_VAR_NODE		3//19
 #define		VAR_SIZE_CODE		16200
 #define		CHECK_SIZE_CODE		8073
 #define		USE_TABLE_CODE		0
