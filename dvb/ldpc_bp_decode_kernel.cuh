@@ -314,8 +314,11 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 
 	__shared__ int s_logexp_table[TABLE_SIZE_DINT2];
 
-	for( int ii=0; threadIdx.x + ii * SIZE_BLOCK < TABLE_SIZE_DINT2; ii++ )
-		s_logexp_table[threadIdx.x + ii * SIZE_BLOCK] = logexp_table[threadIdx.x + ii * SIZE_BLOCK];
+	int SIZE_BLOCK_TRY = 137;	//	uppermost 137, > 138 fail on Tesla 2050 
+	if( threadIdx.x < SIZE_BLOCK_TRY )	{
+	for( int ii=0; threadIdx.x + ii * SIZE_BLOCK_TRY < TABLE_SIZE_DINT2; ii++ )
+		s_logexp_table[threadIdx.x + ii * SIZE_BLOCK_TRY] = logexp_table[threadIdx.x + ii * SIZE_BLOCK_TRY];
+	}
 	__syncthreads();
 
 	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
@@ -338,8 +341,8 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 		ml[0] = m[0];
 		mr[0] = m[nodes];
 		for(int i = 1; i < nodes; i++ ) {
-			ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
-			mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
+			ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
+			mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
 		}
 	}
 	// merge partial sums
@@ -348,7 +351,7 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 		mcv[j] = mr[nodes-1];
 		mcv[j+nodes*ncheck] = ml[nodes-1];
 		for(int i = 1; i < nodes; i++ )
-			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
+			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
 	}
 }
 
