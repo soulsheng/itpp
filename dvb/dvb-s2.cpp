@@ -74,6 +74,15 @@ int main(int argc, char **argv)
 	int nminX1 = min(ldpc.sumX1._data(), ldpc.sumX1.size());
 	int nminX2 = min(ldpc.sumX2._data(), ldpc.sumX2.size());
 
+	int nmaxI = max(ldpc.iind._data(), ldpc.iind.size());
+	int nmaxJ = max(ldpc.jind._data(), ldpc.jind.size());
+	int nminI = min(ldpc.iind._data(), ldpc.iind.size());
+	int nminJ = min(ldpc.jind._data(), ldpc.jind.size());
+	cout << "max(iind) = " << nmaxI << endl;// max(iind) = nvar*nmaxX1-1
+	cout << "max(jind) = " << nmaxJ << endl;// max(jind) = nvar*nmaxX1-1
+	cout << "min(iind) = " << nminI << endl;// min(iind) = 0
+	cout << "min(jind) = " << nminJ << endl;// min(jind) = 0
+
 	cout << "ldpc.nvar = " << ldpc.nvar << endl;		// nvar = 16200
 	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8073 
 	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;	// = nvar
