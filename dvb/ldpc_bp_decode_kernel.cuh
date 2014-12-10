@@ -300,7 +300,7 @@ void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int*
 
 __global__ 
 void updateCheckNodeOpti_kernel( const int ncheck, const int nvar, 
-	const int* sumX2, const int* mvc, const int* jind, const int* logexp_table, 
+	const int* sumX2, const int* mvc, const int* jind, int* logexp_table, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
 	const int QLLR_MAX,
 	int* mcv )
@@ -336,8 +336,8 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 		ml[0] = m[0];
 		mr[0] = m[nodes];
 		for(int i = 1; i < nodes; i++ ) {
-			ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
-			mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
+			ml[i] = Boxplus( ml[i-1], m[i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
+			mr[i] = Boxplus( mr[i-1], m[nodes-i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
 		}
 	}
 	// merge partial sums
@@ -346,6 +346,6 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 		mcv[j] = mr[nodes-1];
 		mcv[j+nodes*ncheck] = ml[nodes-1];
 		for(int i = 1; i < nodes; i++ )
-			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, s_logexp_table );
+			mcv[j+i*ncheck] = Boxplus( ml[i-1], mr[nodes-1-i], Dint1, Dint2, Dint3, QLLR_MAX, logexp_table );
 	}
 }
