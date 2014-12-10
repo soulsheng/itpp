@@ -11,7 +11,7 @@
 #define		USE_SHARED_MLR		0
 #define		USE_SHARED_MVC		0
 #define		SIZE_BLOCK			256
-#define		SIZE_BLOCK_2D_X		32
+#define		SIZE_BLOCK_2D_X		128
 #define		USE_BLOCK_2D		0
 
 #if USE_TEXTURE_ADDRESS
