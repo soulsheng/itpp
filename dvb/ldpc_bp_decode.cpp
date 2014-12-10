@@ -339,6 +339,8 @@ int bp_decode(int *LLRin, char *LLRout,
 	vector<float>	timerStepValue( (max_iters+1)*3 );
 
   // initial step
+	memset( mvc, 0, nvar * nmaxX1 * sizeof(int) );
+	memset( mcv, 0, ncheck * nmaxX2 * sizeof(int) );
 	initializeMVC(nvar, sumX1, mvc, LLRin);
 
 #if WRITE_FILE_FOR_DRIVER
