@@ -5,6 +5,7 @@
 #include <sstream>
 using namespace std;
 #include "helper_timer.h"
+#include "driverUtility.h"
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -354,6 +355,16 @@ int bp_decode(int *LLRin, char *LLRout,
 	sdkStopTimer( &timerStep );
 	timerStepValue[iter*3] = sdkGetTimerValue( &timerStep );
 
+#if WRITE_FILE_FOR_DRIVER
+	static bool bRunOnce1 = false;
+	if( iter == 1 && !bRunOnce1 ){
+
+		writeArray( mcv, ncheck * nmaxX2, "../data/mcv.txt" );
+
+		bRunOnce1 = true;
+	}
+#endif
+
 	sdkResetTimer( &timerStep );
 	sdkStartTimer( &timerStep );
  
@@ -362,6 +373,17 @@ int bp_decode(int *LLRin, char *LLRout,
 
 	sdkStopTimer( &timerStep );
 	timerStepValue[iter*3+1] = sdkGetTimerValue( &timerStep );
+
+#if WRITE_FILE_FOR_DRIVER
+	static bool bRunOnce2 = false;
+	if( iter == 1 && !bRunOnce2 ){
+
+		writeArray( LLRout, nvar, "../data/output.txt" );
+		writeArray( mvc, nvar * nmaxX1, "../data/mvc.txt" );		
+
+		bRunOnce2 = true;
+	}
+#endif
 
 	sdkResetTimer( &timerStep );
 	sdkStartTimer( &timerStep );
