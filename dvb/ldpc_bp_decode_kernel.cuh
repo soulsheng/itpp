@@ -283,7 +283,7 @@ void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int*
 	int mvc_temp = LLRin[i];
 
 	int m[MAX_VAR_NODE];
-
+	//if( threadIdx.x == nvar )		kernel updateVar read 3 misalligned global memory cost 80% time on tesla c2050
 	for (int jp = 0; jp < sumX1[i]; jp++)
 		m[jp] = mcv[ iind[i + jp*nvar] ];
 
