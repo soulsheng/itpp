@@ -109,6 +109,7 @@ int main(int argc, char **argv)
 
 	writeArray( ldpc.iind._data(), ldpc.nvar * nmaxX1, "../data/iind.txt" );
 	writeArray( ldpc.jind._data(), ldpc.ncheck * nmaxX2, "../data/jind.txt" );
+	writeArray( ldpc.llrcalc.logexp_table._data(), ldpc.llrcalc.Dint2, "../data/logexp.txt" );
 #endif
 
 	char * llrOut = (char*)malloc( nldpc * sizeof(char) );
