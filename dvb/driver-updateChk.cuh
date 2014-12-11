@@ -21,20 +21,18 @@ private:
 	int QLLR_MAX;
 
 	// host
-	int *sumX1, *sumX2;
-	int *iind, *jind;
+	int *sumX2;
+	int *jind;
 	int *mvc, *mcv;
-	int *input;	char *output;
 
-	int *ref_mcv;	char *ref_output;
+	int *ref_mcv;
 
 	int *logexp_table;
 
 	// device
-	int *d_sumX1, *d_sumX2;
-	int *d_iind, *d_jind;
+	int *d_sumX2;
+	int *d_jind;
 	int *d_mvc, *d_mcv;
-	int *d_input;	char *d_output;
 
 	int* d_logexp_table ;
 

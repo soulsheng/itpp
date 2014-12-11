@@ -230,27 +230,16 @@ driverUpdataChk::driverUpdataChk()
 	Dint1 = 12;	Dint2 = 300;	Dint3 = 7;	//! Decoder (lookup-table) parameters
 	QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
 
-	sumX1 = (int*)malloc(nvar * sizeof(int));
 	sumX2 = (int*)malloc(ncheck * sizeof(int));
-	iind = (int*)malloc(nvar * nmaxX1 * sizeof(int));
 	jind = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
 	mvc = (int*)malloc(nvar * nmaxX1 * sizeof(int) * N_FRAME);
 	mcv = (int*)malloc(ncheck * nmaxX2 * sizeof(int) * N_FRAME);
-	input = (int*)malloc(nvar * sizeof(int) * N_FRAME);
-	output = (char*)malloc(nvar * sizeof(char) * N_FRAME);
 	logexp_table = (int*)malloc(Dint2 * sizeof(int) );
 	ref_mcv = (int*)malloc(ncheck * nmaxX2 * sizeof(int) * N_FRAME);
-	ref_output = (char*)malloc(nvar * sizeof(char) * N_FRAME);
 
-	readArray( sumX1, nvar, "../data/sumX1.txt" );
 	readArray( sumX2, ncheck, "../data/sumX2.txt" );
 
-	readArray( iind, nvar * nmaxX1, "../data/iind.txt" );
 	readArray( jind, ncheck * nmaxX2, "../data/jind.txt" );
-
-	readArray( ref_output, nvar, "../data/output.txt" );
-
-	readArray( input, nvar, "../data/input.txt" );
 
 	readArray( ref_mcv, ncheck * nmaxX2, "../data/mcv.txt" );	
 
@@ -260,32 +249,18 @@ driverUpdataChk::driverUpdataChk()
 
 	for( int i = 0; i < N_FRAME; i ++ )
 	{
-		memcpy( ref_output + i * nvar, ref_output,  nvar * sizeof(char) );
-		memcpy( input + i * nvar, input,  nvar * sizeof(int) );
 		memcpy( ref_mcv + i * ncheck * nmaxX2, ref_mcv,  ncheck * nmaxX2 * sizeof(int) );
 		memcpy( mvc + i * nvar * nmaxX1, mvc,  nvar * nmaxX1 * sizeof(int) );
 	}
 
-	cudaMalloc( (void**)&d_sumX1, nvar * sizeof(int) );		// const 64 K
-	cudaMemcpy( d_sumX1, sumX1, nvar * sizeof(int), cudaMemcpyHostToDevice );
-
 	cudaMalloc( (void**)&d_sumX2, ncheck * sizeof(int) );	// const 32 K
 	cudaMemcpy( d_sumX2, sumX2, ncheck * sizeof(int), cudaMemcpyHostToDevice );
-
-	cudaMalloc( (void**)&d_iind, nvar * nmaxX1 * sizeof(int) );		// const 1.2 M
-	cudaMemcpy( d_iind, iind, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
 
 	cudaMalloc( (void**)&d_jind, ncheck * nmaxX2 * sizeof(int) );	// const 300 K
 	cudaMemcpy( d_jind, jind, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 
 	cudaMalloc( (void**)&d_mcv, ncheck * nmaxX2 * sizeof(int) * N_FRAME );
 	cudaMemset( d_mcv, 0, ncheck * nmaxX2 * sizeof(int) * N_FRAME );
-
-	cudaMalloc( (void**)&d_input, nvar * sizeof(int) * N_FRAME );
-	cudaMemcpy( d_input, input, nvar * sizeof(int) * N_FRAME, cudaMemcpyHostToDevice );
-	
-	cudaMalloc( (void**)&d_output, nvar * sizeof(char) * N_FRAME );
-	cudaMemset( d_output, 0, nvar * sizeof(char) * N_FRAME );
 
 	cudaMalloc( (void**)&d_mvc, nvar * nmaxX1 * sizeof(int) * N_FRAME );
 	cudaMemcpy( d_mvc, mvc, nvar * nmaxX1 * sizeof(int) * N_FRAME, cudaMemcpyHostToDevice );
@@ -298,18 +273,16 @@ driverUpdataChk::driverUpdataChk()
 driverUpdataChk::~driverUpdataChk()
 {
 	// host
-	free(sumX1);	free(sumX2);
-	free(iind);		free(jind);
+	free(sumX2);
+	free(jind);
 	free(mvc);		free(mcv);
-	free(input);	free(output);
 
-	free(ref_mcv);	free(ref_output);
+	free(ref_mcv);
 	free(logexp_table);
 
 	// device
-	cudaFree( d_sumX1 );	cudaFree( d_sumX2 );
-	cudaFree( d_iind );		cudaFree( d_jind );
+	cudaFree( d_sumX2 );
+	cudaFree( d_jind );
 	cudaFree( d_mvc );		cudaFree( d_mcv );
-	cudaFree( d_input );	cudaFree( d_output );
 	cudaFree( d_logexp_table );
 }

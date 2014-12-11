@@ -167,9 +167,7 @@ driverUpdataVar::driverUpdataVar()
 	, nmaxX2( MAX_CHECK_NODE )
 {
 	sumX1 = (int*)malloc(nvar * sizeof(int));
-	sumX2 = (int*)malloc(ncheck * sizeof(int));
 	iind = (int*)malloc(nvar * nmaxX1 * sizeof(int));
-	jind = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
 	mvc = (int*)malloc(nvar * nmaxX1 * sizeof(int) * N_FRAME);
 	mcv = (int*)malloc(ncheck * nmaxX2 * sizeof(int) * N_FRAME);
 	input = (int*)malloc(nvar * sizeof(int) * N_FRAME);
@@ -179,10 +177,8 @@ driverUpdataVar::driverUpdataVar()
 	ref_output = (char*)malloc(nvar * sizeof(char) * N_FRAME);
 
 	readArray( sumX1, nvar, "../data/sumX1.txt" );
-	readArray( sumX2, ncheck, "../data/sumX2.txt" );
 
 	readArray( iind, nvar * nmaxX1, "../data/iind.txt" );
-	readArray( jind, ncheck * nmaxX2, "../data/jind.txt" );
 
 	readArray( ref_output, nvar, "../data/output.txt" );
 
@@ -203,14 +199,8 @@ driverUpdataVar::driverUpdataVar()
 	cudaMalloc( (void**)&d_sumX1, nvar * sizeof(int) );		// const 64 K
 	cudaMemcpy( d_sumX1, sumX1, nvar * sizeof(int), cudaMemcpyHostToDevice );
 
-	cudaMalloc( (void**)&d_sumX2, ncheck * sizeof(int) );	// const 32 K
-	cudaMemcpy( d_sumX2, sumX2, ncheck * sizeof(int), cudaMemcpyHostToDevice );
-
 	cudaMalloc( (void**)&d_iind, nvar * nmaxX1 * sizeof(int) );		// const 1.2 M
 	cudaMemcpy( d_iind, iind, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
-
-	cudaMalloc( (void**)&d_jind, ncheck * nmaxX2 * sizeof(int) );	// const 300 K
-	cudaMemcpy( d_jind, jind, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 
 	cudaMalloc( (void**)&d_mcv, ncheck * nmaxX2 * sizeof(int) * N_FRAME );
 	cudaMemcpy( d_mcv, mcv, ncheck * nmaxX2 * sizeof(int) * N_FRAME, cudaMemcpyHostToDevice );
@@ -229,16 +219,16 @@ driverUpdataVar::driverUpdataVar()
 driverUpdataVar::~driverUpdataVar()
 {
 	// host
-	free(sumX1);	free(sumX2);
-	free(iind);		free(jind);
+	free(sumX1);
+	free(iind);	
 	free(mvc);		free(mcv);
 	free(input);	free(output);
 
 	free(ref_mvc);	free(ref_output);
 
 	// device
-	cudaFree( d_sumX1 );	cudaFree( d_sumX2 );
-	cudaFree( d_iind );		cudaFree( d_jind );
+	cudaFree( d_sumX1 );
+	cudaFree( d_iind );	
 	cudaFree( d_mvc );		cudaFree( d_mcv );
 	cudaFree( d_input );	cudaFree( d_output );
 }
