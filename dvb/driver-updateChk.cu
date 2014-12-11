@@ -242,21 +242,21 @@ driverUpdataChk::driverUpdataChk()
 	ref_mcv = (int*)malloc(ncheck * nmaxX2 * sizeof(int) * N_FRAME);
 	ref_output = (char*)malloc(nvar * sizeof(char) * N_FRAME);
 
-	readArray( sumX1, nvar, "sumX1.txt" );
-	readArray( sumX2, ncheck, "sumX2.txt" );
+	readArray( sumX1, nvar, "../data/sumX1.txt" );
+	readArray( sumX2, ncheck, "../data/sumX2.txt" );
 
-	readArray( iind, nvar * nmaxX1, "iind.txt" );
-	readArray( jind, ncheck * nmaxX2, "jind.txt" );
+	readArray( iind, nvar * nmaxX1, "../data/iind.txt" );
+	readArray( jind, ncheck * nmaxX2, "../data/jind.txt" );
 
-	readArray( ref_output, nvar, "output.txt" );
+	readArray( ref_output, nvar, "../data/output.txt" );
 
-	readArray( input, nvar, "input.txt" );
+	readArray( input, nvar, "../data/input.txt" );
 
-	readArray( ref_mcv, ncheck * nmaxX2, "mcv.txt" );	
+	readArray( ref_mcv, ncheck * nmaxX2, "../data/mcv.txt" );	
 
-	readArray( mvc, nvar * nmaxX1, "mvcInit.txt" );		
+	readArray( mvc, nvar * nmaxX1, "../data/mvcInit.txt" );		
 
-	readArray( logexp_table, Dint2, "logexp.txt" );
+	readArray( logexp_table, Dint2, "../data/logexp.txt" );
 
 	for( int i = 0; i < N_FRAME; i ++ )
 	{

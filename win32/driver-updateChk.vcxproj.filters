@@ -9,21 +9,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="driver-updateChk.cu">
+    <ClCompile Include="..\dvb\driver-updateChk.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\dvb\driver-updateChk.cu">
       <Filter>cuda</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="driver-updateChk.cuh">
+    <None Include="..\dvb\driver-updateChk.cuh">
       <Filter>cuda</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="helper_timer.h">
+    <ClInclude Include="..\tests\helper_timer.h">
       <Filter>utility</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="driver-updateChk.cpp" />
   </ItemGroup>
 </Project>

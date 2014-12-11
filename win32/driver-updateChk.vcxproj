@@ -10,8 +10,20 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\dvb\driver-updateChk.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\dvb\driver-updateChk.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\dvb\driver-updateChk.cuh" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\tests\helper_timer.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1CA0F68F-BBE2-45C1-8F55-8E9D860EF687}</ProjectGuid>
+    <ProjectGuid>{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}</ProjectGuid>
     <RootNamespace>ldpc_test</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -40,7 +52,7 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)_build\$(Configuration)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_build\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
@@ -117,18 +129,6 @@
       <CodeGeneration>compute_20,sm_20</CodeGeneration>
     </CudaCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <CudaCompile Include="driver-updateChk.cu" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="driver-updateChk.cuh" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="helper_timer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="driver-updateChk.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 5.5.targets" />

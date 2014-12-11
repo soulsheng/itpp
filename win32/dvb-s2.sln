@@ -14,6 +14,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dvb-s2", "dvb-s2.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "driver-updateVar", "driver-updateVar.vcxproj", "{1CA0F68F-BBE2-45C1-8F55-8E9D860EF687}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "driver-updateChk", "driver-updateChk.vcxproj", "{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -36,6 +38,10 @@ Global
 		{1CA0F68F-BBE2-45C1-8F55-8E9D860EF687}.Debug|Win32.Build.0 = Debug|Win32
 		{1CA0F68F-BBE2-45C1-8F55-8E9D860EF687}.Release|Win32.ActiveCfg = Release|Win32
 		{1CA0F68F-BBE2-45C1-8F55-8E9D860EF687}.Release|Win32.Build.0 = Release|Win32
+		{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}.Debug|Win32.Build.0 = Debug|Win32
+		{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}.Release|Win32.ActiveCfg = Release|Win32
+		{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
