@@ -84,13 +84,13 @@ int main(int argc, char **argv)
 	cout << "min(jind) = " << nminJ << endl;// min(jind) = 0
 
 	cout << "ldpc.nvar = " << ldpc.nvar << endl;		// nvar = 16200
-	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8073 
+	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8100//8073 
 	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;	// = nvar
 	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;	// = ncheck
-	cout << "max(sumX1) = " << nmaxX1 << endl;// max(sumX1) = 19
-	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 10
-	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 2
-	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 7
+	cout << "max(sumX1) = " << nmaxX1 << endl;// max(sumX1) = 3//19
+	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 6//10
+	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 3//2
+	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 6//7
 	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;			// = ncheck * max(sumX2)
 	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;		// = nvar * max(sumX1)
 	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;		// = ncheck * max(sumX2)

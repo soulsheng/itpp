@@ -7,10 +7,10 @@
 using namespace std;
 
 
-#define		MAX_CHECK_NODE		10
-#define		MAX_VAR_NODE		19
+#define		MAX_CHECK_NODE		6//10
+#define		MAX_VAR_NODE		3//19
 #define		VAR_SIZE_CODE		16200
-#define		CHECK_SIZE_CODE		8073
+#define		CHECK_SIZE_CODE		8100
 #define		SIZE_BLOCK			256
 #define		SIZE_BLOCK_2D_X		32
 
