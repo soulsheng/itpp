@@ -1,6 +1,7 @@
 
 #include "driver-updateVar.cuh"
 
+#include <cuda_runtime.h>
 #include <iostream>
 using	namespace	std;
 
@@ -18,5 +19,7 @@ void main()
 		cout << "failed to verify" << endl;
 	else
 		cout << "succeed to launch and verify that result is right" << endl;
+
+	cudaDeviceReset();
 }
 
