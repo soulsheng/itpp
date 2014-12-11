@@ -111,6 +111,15 @@ int ldpc_gpu::bp_decode_once(int *LLRin, char *LLRout,
 	// initial step
 	initializeMVC_kernel<<< grid, block >>>( nvar, d_sumX1, d_LLRin, d_mvc );
 
+#if WRITE_FILE_FOR_DRIVER
+	static bool bRunOnce1 = false;
+	if( !bRunOnce1 ){
+		cudaMemcpy( h_mvc, d_mvc, nvar * nmaxX1 * sizeof(int), cudaMemcpyDeviceToHost );
+		writeArray( h_mvc, nvar * nmaxX1, "../data/mvcInit.txt" );		
+		bRunOnce1 = true;
+	}
+#endif
+
 	int not_valid_codeword = true;
 	int iter = 1;
 	for( ; iter < max_iters && not_valid_codeword; iter ++ )

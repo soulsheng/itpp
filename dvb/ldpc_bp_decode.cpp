@@ -344,7 +344,11 @@ int bp_decode(int *LLRin, char *LLRout,
 	initializeMVC(nvar, sumX1, mvc, LLRin);
 
 #if WRITE_FILE_FOR_DRIVER
-	writeArray( mvc, nvar * nmaxX1, "../data/mvcInit.txt" );		
+	static bool bRunOnce1 = false;
+	if( !bRunOnce1 ){
+		writeArray( mvc, nvar * nmaxX1, "../data/mvcInit.txt" );		
+		bRunOnce1 = true;
+	}
 #endif
 
   bool is_valid_codeword = false;
