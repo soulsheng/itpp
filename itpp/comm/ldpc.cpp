@@ -1687,7 +1687,8 @@ void LDPC_Code::decoder_parameterization(const LDPC_Parity* const Hmat)
   for (int i = 0; i < nvar; i++) {
     ivec coli = Hmat->get_col(i).get_nz_indices();
     for (int j0 = 0; j0 < length(coli); j0++) {
-      C(j0 + cmax*i) = coli(j0);
+		int id = coli(j0);
+      C(j0 + cmax*i) = id;
     }
   }
 
@@ -1696,8 +1697,9 @@ void LDPC_Code::decoder_parameterization(const LDPC_Parity* const Hmat)
   it_info_debug("Computing decoder parameterization. Phase 2");
   for (int j = 0; j < ncheck; j++) {
     ivec rowj = Hmat->get_row(j).get_nz_indices();
-    for (int i0 = 0; i0 < length(rowj); i0++) {
-      V(j + ncheck*i0) = rowj(i0);
+	for (int i0 = 0; i0 < length(rowj); i0++) {
+		int id = rowj(i0);
+      V(j + ncheck*i0) = id;
     }
   }
 

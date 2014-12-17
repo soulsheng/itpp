@@ -5,6 +5,26 @@
 using namespace itpp;
 using namespace std;
 
+//! Maximum value of vector
+int max(int *v, int N)
+{
+	int tmp = v[0];
+	for (int i = 1; i < N; i++)
+		if (v[i] > tmp)
+			tmp = v[i];
+	return tmp;
+}
+
+//! Minimum value of vector
+int min(int *v, int N)
+{
+	int tmp = v[0];
+	for (int i = 1; i < N; i++)
+		if (v[i] < tmp)
+			tmp = v[i];
+	return tmp;
+}
+
 int main(int argc, char **argv)
 {
   { // This generates a random regular (3,6) code with 500 bits
@@ -17,6 +37,16 @@ int main(int argc, char **argv)
 	LDPC_Generator_Systematic G(&H);
     LDPC_Code C1(&H, &G);
     C1.save_code("../../data/random_3_6_code.it");
+
+	int nmaxX1 = max(C1.sumX1._data(), C1.sumX1.size());
+	int nmaxX2 = max(C1.sumX2._data(), C1.sumX2.size());
+	int nminX1 = min(C1.sumX1._data(), C1.sumX1.size());
+	int nminX2 = min(C1.sumX2._data(), C1.sumX2.size());
+	cout << "max(sumX1) = " << nmaxX1 << endl;// max(sumX1) = 3//19
+	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 6//10
+	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 3//2
+	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 6//7
+
   }
 
   return 0;
