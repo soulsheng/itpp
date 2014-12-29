@@ -11,8 +11,8 @@ using namespace itpp;
 
 //#define		FILENAME_IT		"../data/RU_16200.it"
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
-#define		EBNO			2.15
-#define		COUNT_REPEAT	100	// repeat time 
+#define		EBNO			2.20
+#define		COUNT_REPEAT	1000	// repeat time 
 
 #define		N_BCH			31
 #define		T_BCH			2
@@ -259,14 +259,14 @@ int main(int argc, char **argv)
 	double timerAverageAll = 0.0f, timerStepAverage = 0.0f;
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
-		cout << timerValue[i] << " ms, " ;
+		//cout << timerValue[i] << " ms, " ;
 		timerAverageAll += timerValue[i];
 	}
 	cout << endl << endl ;
 
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
-		cout  << "timerStepValue[ " << i << " ] = "<< timerStepValue[i] << " ms, " << endl;
+		//cout  << "timerStepValue[ " << i << " ] = "<< timerStepValue[i] << " ms, " << endl;
 		timerStepAverage += timerStepValue[i];
 	}
 	cout << endl << endl ;
@@ -274,7 +274,7 @@ int main(int argc, char **argv)
 	double countIterationAverage = 0.0f;
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
-		cout << countIteration[i] << " iteration, " ;
+		//cout << countIteration[i] << " iteration, " ;
 
 		if (countIteration[i]<0)
 			countIteration[i] *= -1;
