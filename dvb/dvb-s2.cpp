@@ -18,6 +18,8 @@ using namespace itpp;
 #define		T_BCH			2
 #define		K_BCH			21
 
+#define		SIZE_PACKET		188
+
 #define		USE_GPU		1
 
 enum	MOD_TYPE
@@ -47,7 +49,7 @@ int main(int argc, char **argv)
 	AWGN_Channel chan(N0 / 2);
 
 	BERC berc;  // Counters for coded and uncoded BER
-	//BLERC ferc; // Counter for coded FER
+	BLERC per(SIZE_PACKET); // Counter for coded FER
 
 	RNG_randomize();
 
@@ -126,11 +128,20 @@ int main(int argc, char **argv)
 
     for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
+		// step 0: prepare input packets from rand data or file stream
+		bvec	bitsPacketsPadding = zeros_b(Kbch);
+		int nCountPacket = Kbch / SIZE_PACKET;
+		for (int j = 0; j < nCountPacket; j ++) 
+		{
+			bvec onePacket = randb(SIZE_PACKET);
+			bitsPacketsPadding.set_subvector(j*SIZE_PACKET, onePacket);
+		}
+
 		sdkResetTimer( &timer );
 		sdkStartTimer( &timer );
 
 		// step 1: input message
-		bvec bitsinBCHEnc = randb(Kbch);
+		bvec bitsinBCHEnc = bitsPacketsPadding;//randb(Kbch);
 
 		// step 2: bch encode
 		bvec bitsoutBCHEnc = zeros_b(Nbch);
@@ -229,6 +240,7 @@ int main(int argc, char **argv)
 
 		// step 9: verify result, Count the number of errors
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
+		per.count(bitsinBCHEnc, bitsoutBCHDec);
 
 		sdkStopTimer( &timer );
 		timerValue[i] = sdkGetTimerValue( &timer );
@@ -238,6 +250,9 @@ int main(int argc, char **argv)
 				<< berc.get_total_bits() << " bits. " << endl
 				<< "Obtained " << berc.get_errors() << " bit errors. "
 				<< " BER: " << berc.get_errorrate() << " . "
+				<< per.get_total_blocks() << " packets. " << endl
+				<< "Obtained " << per.get_errors() << " error packets. "
+				<< " PER: " << per.get_errorrate() << " . "
 				<< endl << flush;
     }
 
