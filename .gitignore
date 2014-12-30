@@ -57,3 +57,5 @@
 /win32-vc10/*.suo
 /win32-vc10/ipch
 /win32-vc10/itpp_mkl_tests/*.codec
+/win32-vc10/lib/*.lib
+/win32-vc10/bin/*.exe
