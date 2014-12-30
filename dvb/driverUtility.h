@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-#define		WRITE_FILE_FOR_DRIVER	1
+#define		WRITE_FILE_FOR_DRIVER	0
 
 template <typename T>
 void 	readArray(T* pArray, int nSize, char* strFileName)

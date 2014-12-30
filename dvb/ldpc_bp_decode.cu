@@ -1,7 +1,7 @@
 
 #include "ldpc_bp_decode.cuh"
 #include "ldpc_bp_decode_kernel.cuh"
-#include "driverUtility.h"
+//#include "driverUtility.h"
 
 #include <cuda_runtime.h>
 #include <thrust/reduce.h>

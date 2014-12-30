@@ -5,7 +5,7 @@
 #include <sstream>
 using namespace std;
 #include "helper_timer.h"
-#include "driverUtility.h"
+//#include "driverUtility.h"
 
 //! Maximum value of vector
 int max(int *v, int N)

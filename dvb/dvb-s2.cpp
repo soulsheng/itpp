@@ -4,7 +4,7 @@
 #include "ldpc_bp_decode.h"
 #include "ldpc_bp_decode.cuh"
 #include "helper_timer.h"
-#include "driverUtility.h"
+//#include "driverUtility.h"
 
 using namespace std;
 using namespace itpp;
