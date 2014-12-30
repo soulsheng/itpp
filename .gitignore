@@ -62,7 +62,11 @@
 /win32-vc9/*.user
 /win32-vc9/*.suo
 /win32-vc9/*.ncb
-/win32-vc9/*
+/win32-vc9/*.build
 /win32-vc10/*.opensdf
 /win32-vc10/*.user
 /bin/*.tmp
+/win32-vc9/Debug
+/win32-vc9/*.pdb
+/win32-vc9/lib/*.lib
+/win32-vc9/*.codec

@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_test", "ldpc_test.vcpr
 		{C069ECD3-26E8-437C-8B20-3A5D68B22F2A} = {C069ECD3-26E8-437C-8B20-3A5D68B22F2A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dvb-s2", "dvb-s2.vcproj", "{CF5189B0-88E7-487E-87C2-07C209D7ACA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -22,6 +24,10 @@ Global
 		{AB7856FC-ABED-431E-85BA-8D29C31ED85C}.Debug|Win32.Build.0 = Debug|Win32
 		{AB7856FC-ABED-431E-85BA-8D29C31ED85C}.Release|Win32.ActiveCfg = Debug|Win32
 		{AB7856FC-ABED-431E-85BA-8D29C31ED85C}.Release|Win32.Build.0 = Debug|Win32
+		{CF5189B0-88E7-487E-87C2-07C209D7ACA9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CF5189B0-88E7-487E-87C2-07C209D7ACA9}.Debug|Win32.Build.0 = Debug|Win32
+		{CF5189B0-88E7-487E-87C2-07C209D7ACA9}.Release|Win32.ActiveCfg = Release|Win32
+		{CF5189B0-88E7-487E-87C2-07C209D7ACA9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
