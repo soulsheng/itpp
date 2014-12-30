@@ -59,3 +59,10 @@
 /win32-vc10/itpp_mkl_tests/*.codec
 /win32-vc10/lib/*.lib
 /win32-vc10/bin/*.exe
+/win32-vc9/*.user
+/win32-vc9/*.suo
+/win32-vc9/*.ncb
+/win32-vc9/*
+/win32-vc10/*.opensdf
+/win32-vc10/*.user
+/bin/*.tmp
