@@ -75,7 +75,7 @@ int Boxplus(int a, int b,
 	int term1 = (a > 0 ? (b > 0 ? minabs : -minabs)
 		: (b > 0 ? -minabs : minabs));
 
-	const int QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
+	const int QLLR_MAX = (1<<31 -1)>>4;//(std::numeric_limits<int>::max() >> 4);
 
 	if (Dint2 == 0) {  // logmax approximation - avoid looking into empty table
 		// Don't abort when overflowing, just saturate the QLLR

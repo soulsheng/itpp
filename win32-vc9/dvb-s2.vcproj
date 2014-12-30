@@ -35,6 +35,8 @@
 			/>
 			<Tool
 				Name="Cudart Build Rule"
+				Arch1="20"
+				Arch2="30"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -47,7 +49,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\"
+				AdditionalIncludeDirectories="..\;..\dvb;..\tests;$(CUDA_PATH_V5_0)\include;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -65,10 +67,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="itpp.lib"
+				AdditionalDependencies="itpp.lib cudart.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="lib;$(LIB)"
-				IgnoreDefaultLibraryNames="uuid.lib"
+				AdditionalLibraryDirectories="lib;$(CUDA_PATH_V5_0)\lib\Win32"
+				IgnoreDefaultLibraryNames="uuid.lib;libcmt.lib"
 				GenerateDebugInformation="false"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -152,7 +154,7 @@
 				AdditionalDependencies="itpp_debug.lib cudart.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="lib;$(CUDA_PATH_V5_0)\lib\Win32"
-				IgnoreDefaultLibraryNames="uuid.lib;libc.lib;libcmt.lib"
+				IgnoreDefaultLibraryNames="uuid.lib;libcmt.lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				SubSystem="1"

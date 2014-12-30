@@ -231,7 +231,7 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	this->h_sumX2 = sumX2;
 
 	//max_cnd = 200;
-	QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
+	QLLR_MAX = (1<<31 -1)>>4;//(std::numeric_limits<int>::max() >> 4);
 
 	cudaMalloc( (void**)&d_LLRin, nvar * sizeof(int) );
 	cudaMalloc( (void**)&d_LLRout, nvar * sizeof(char) );
