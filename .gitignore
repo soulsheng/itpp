@@ -45,3 +45,15 @@
 /win32/*.suo
 /win32/driver-updateVar_build
 /win32/driver-updateChk_build
+/win32-vc10/driver-updateChk_build
+/win32-vc10/driver-updateVar_build
+/win32-vc10/dvb-s2_build
+/win32-vc10/itpp_build
+/win32-vc10/diy/ldpc_gen_codes_build
+/win32-vc10/*.sdf
+/win32-vc10/*.pdb
+/win32-vc10/bin/*.pdb
+/win32-vc10/diy/*.pdb
+/win32-vc10/*.suo
+/win32-vc10/ipch
+/win32-vc10/itpp_mkl_tests/*.codec
