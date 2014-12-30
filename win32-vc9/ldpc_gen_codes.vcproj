@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="ldpc_test"
+	Name="ldpc_gen_codes"
 	ProjectGUID="{AB7856FC-ABED-431E-85BA-8D29C31ED85C}"
 	RootNamespace="ldpc_test"
 	Keyword="Win32Proj"
@@ -179,7 +179,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="..\tests\ldpc_test.cpp"
+			RelativePath="..\doc\tutorial\src\ldpc_gen_codes.cpp"
 			>
 		</File>
 	</Files>
