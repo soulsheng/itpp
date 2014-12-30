@@ -30,13 +30,13 @@ int main(int argc, char **argv)
   { // This generates a random regular (3,6) code with 500 bits
     cout << "========= RANDOM (3,6) CODE ==========" << endl;
     LDPC_Parity_Regular H;
-    H.generate(64800, 3, 6,
+    H.generate(16200, 3, 6,
                "rand",  // random unstructured matrix
                "500 10");   // optimize girth
     H.display_stats();
 	LDPC_Generator_Systematic G(&H);
     LDPC_Code C1(&H, &G);
-    C1.save_code("../../data/random_3_6_64800.it");
+    C1.save_code("../../data/random_3_6_16200.it");
 
 	int nmaxX1 = max(C1.sumX1._data(), C1.sumX1.size());
 	int nmaxX2 = max(C1.sumX2._data(), C1.sumX2.size());
