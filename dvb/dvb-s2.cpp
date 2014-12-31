@@ -183,20 +183,32 @@ int main(int argc, char **argv)
 		vec		dAWGN;
 		cvec	cAWGN;
 
+		switch ( modType )
+		{
+		case MOD_BPSK:
+			dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
+			dAWGN = chan(dMOD);
+			break;
+
+		case MOD_QPSK:
+			cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
+			cAWGN = chan(cMOD);
+			break;
+
+		default:
+			break;;
+		}
+
 		// Demodulate
 		vec softbits;
 	
 		switch ( modType )
 		{
 		case MOD_BPSK:
-			dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
-			dAWGN = chan(dMOD);
 			softbits = bpsk.demodulate_soft_bits(dAWGN, N0);
 			break;
 
 		case MOD_QPSK:
-			cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
-			cAWGN = chan(cMOD);
 			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
 			break;
 
