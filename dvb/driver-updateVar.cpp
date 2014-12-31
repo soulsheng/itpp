@@ -13,12 +13,12 @@ void main()
 	driverUpdataVar ldpc;
 
 	if( !ldpc.launch() )
-		cout << "failed to launch" << endl;
+		cout << "Failed to launch" << endl;
 
 	if( !ldpc.verify() )
-		cout << "failed to verify" << endl;
+		cout << "Failed to verify" << endl;
 	else
-		cout << "succeed to launch and verify that result is right" << endl;
+		cout << "Succeed to launch cuda kernel and verify that result is right" << endl;
 
 	cudaDeviceReset();
 	system( "pause" );

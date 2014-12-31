@@ -12,8 +12,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "driver-updateChk", "driver-updateChk.vcxproj", "{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_gen_codes", "ldpc_gen_codes.vcxproj", "{4542F35D-8CEA-4F77-89FA-074E28F89573}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C069ECD3-26E8-437C-8B20-3A5D68B22F2A} = {C069ECD3-26E8-437C-8B20-3A5D68B22F2A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_gen_datas", "ldpc_gen_datas.vcxproj", "{0D453D58-DE37-4718-A255-B8798B986983}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C069ECD3-26E8-437C-8B20-3A5D68B22F2A} = {C069ECD3-26E8-437C-8B20-3A5D68B22F2A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

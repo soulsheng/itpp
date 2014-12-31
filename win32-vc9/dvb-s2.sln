@@ -4,10 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "itpp", "itpp.vcproj", "{C069ECD3-26E8-437C-8B20-3A5D68B22F2A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dvb-s2", "dvb-s2.vcproj", "{CF5189B0-88E7-487E-87C2-07C209D7ACA9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C069ECD3-26E8-437C-8B20-3A5D68B22F2A} = {C069ECD3-26E8-437C-8B20-3A5D68B22F2A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_gen_codes", "ldpc_gen_codes.vcproj", "{AB7856FC-ABED-431E-85BA-8D29C31ED85C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C069ECD3-26E8-437C-8B20-3A5D68B22F2A} = {C069ECD3-26E8-437C-8B20-3A5D68B22F2A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ldpc_gen_datas", "ldpc_gen_datas.vcproj", "{216C8EEE-E163-4D6F-847A-BD48BFF2C88D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C069ECD3-26E8-437C-8B20-3A5D68B22F2A} = {C069ECD3-26E8-437C-8B20-3A5D68B22F2A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -51,6 +51,22 @@ int min(int *v, int N)
 int main(int argc, char **argv)
 {
 	// generate input bit and modulated bit
+	ifstream  testfile;
+	testfile.open( FILENAME_IT );
+	if ( testfile == NULL )
+	{
+		cout << "Can not find ldpc code file - \"random_3_6_16200.it\" in data path!" << endl << "Please run ldpc_gen_codes.exe to generate one.";
+		return 0;
+	}
+	else
+	{
+		cout << "Success to load ldpc code file - \"random_3_6_16200.it\" in data path!" << endl ;
+	}
+	testfile.close();
+
+	cout << "Generating ldpc data file - \"bitfile.dat\" to data path!" << endl ;
+	cout << "Please wait for a few minutes ..." << endl;
+
 	  LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
 	  LDPC_Code ldpc(FILENAME_IT, &G);
 
@@ -166,6 +182,13 @@ int main(int argc, char **argv)
 
 	  free( bitsPacketsPadding );
 	  free( bitsMOD );
+
+	  if ( bitfile != NULL )
+	  {
+		  cout << "Done!" << endl << "Success to generate ldpc data file - \"bitfile.dat\" in data path!" << endl ;
+		  cout << "Please run dvb-s2.exe to demodulate and decode it." << endl ;
+		  return 0;
+	  }
 
 	  system( "pause" );
 

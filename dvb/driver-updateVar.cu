@@ -3,6 +3,7 @@
 
 #include <cuda_runtime.h>
 
+#include <fstream>
 #include <iostream>
 using namespace std;
 
@@ -175,6 +176,19 @@ driverUpdataVar::driverUpdataVar()
 
 	ref_mvc = (int*)malloc(nvar * nmaxX1 * sizeof(int) * N_FRAME);
 	ref_output = (char*)malloc(nvar * sizeof(char) * N_FRAME);
+	
+	ifstream  testfile;
+	testfile.open( "../data/sumX1.txt" );
+	if ( testfile == NULL )
+	{
+		cout << "Missing ldpc code parameter file - \"sumX1.txt\" in data path!" << endl ;
+		return ;
+	}
+	else
+	{
+		cout << "Success to load ldpc code parameter file !" << endl ;
+	}
+	testfile.close();
 
 	readArray( sumX1, nvar, "../data/sumX1.txt" );
 
