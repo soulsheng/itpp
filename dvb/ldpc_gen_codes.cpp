@@ -38,6 +38,8 @@ int main(int argc, char **argv)
 	  C.save_code("../data/RU_16200.it");
   }
 
+  system( "pause" );
+
   return 0;
 
 }

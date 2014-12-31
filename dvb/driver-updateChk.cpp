@@ -21,5 +21,7 @@ void main()
 		cout << "succeed to launch and verify that result is right" << endl;
 
 	cudaDeviceReset();
+	system( "pause" );
+
 }
 

@@ -167,5 +167,7 @@ int main(int argc, char **argv)
 	  free( bitsPacketsPadding );
 	  free( bitsMOD );
 
+	  system( "pause" );
+
 	return 0;
 }
