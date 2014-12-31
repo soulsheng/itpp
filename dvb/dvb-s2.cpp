@@ -129,20 +129,6 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	ifstream  bitfileBCH;
-	bitfileBCH.open( "bitfileBCH.dat" );
-	if ( bitfileBCH == NULL )
-	{
-		return 0;
-	}
-
-	ifstream  bitfileLDPC;
-	bitfileLDPC.open( "bitfileLDPC.dat" );
-	if ( bitfileLDPC == NULL )
-	{
-		return 0;
-	}
-
 	ifstream  bitfileMOD;
 	bitfileMOD.open( "bitfileMOD.dat" );
 	if ( bitfileMOD == NULL )
@@ -156,10 +142,7 @@ int main(int argc, char **argv)
 	cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
 
 	char *bitsPacketsPadding = new char[Kbch];
-	char *bitsBCH  = new char[kldpc];
-	char *bitsLDPC  = new char[nldpc];
-
-	double *bitsMOD  = new double[nldpc];
+	double *bitsMOD_N  = new double[nldpc*COUNT_REPEAT];
 
 	vec			timerValue(COUNT_REPEAT);
 
@@ -167,17 +150,26 @@ int main(int argc, char **argv)
 	ivec		countIteration(COUNT_REPEAT);
 
 	bvec bitsinBCHEnc( Kbch );
+	bvec bitsinBCHEnc_N( Kbch*COUNT_REPEAT );
 
 	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 		// step 0: prepare input packets from rand data or file stream
 		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
 		convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
+		bitsinBCHEnc_N.set_subvector(i*Kbch, bitsinBCHEnc);
 
 		
 		// Received data stream, read from file by trunk length nldpc=16200
 		for ( int j=0; j<nldpc; j++ )
-			bitfileMOD >> bitsMOD[j] ;
+			bitfileMOD >> bitsMOD_N[j+i*nldpc] ;
+	}
+
+	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
+	{
+
+		sdkResetTimer( &timer );
+		sdkStartTimer( &timer );
 
 		// demodulate
 		vec		dAWGN( nldpc );
@@ -188,12 +180,12 @@ int main(int argc, char **argv)
 		switch ( modType )
 		{
 		case MOD_BPSK:
-			convertBufferToVec( bitsMOD, dAWGN );
+			convertBufferToVec( bitsMOD_N+i*nldpc, dAWGN );
 			softbits = bpsk.demodulate_soft_bits(dAWGN, N0);
 			break;
 
 		case MOD_QPSK:
-			convertBufferToVec( bitsMOD, cAWGN );
+			convertBufferToVec( bitsMOD_N+i*nldpc, cAWGN );
 			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
 			break;
 
@@ -252,6 +244,8 @@ int main(int argc, char **argv)
 		}
 
 		// step 9: verify result, Count the number of errors
+		bitsinBCHEnc = bitsinBCHEnc_N.mid(i*Kbch, Kbch);
+
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
 		per.count(bitsinBCHEnc, bitsoutBCHDec);
 
@@ -305,11 +299,8 @@ int main(int argc, char **argv)
 	free( llrOut );
 	free( bitsPacketsPadding );
 	bitfile.close();
-    free( bitsBCH );
-	bitfileBCH.close();
-	free( bitsLDPC );
-	bitfileLDPC.close();
-	free( bitsMOD );
+
+	free( bitsMOD_N );
 	bitfileMOD.close();
 
 	sdkDeleteTimer( &timer );
