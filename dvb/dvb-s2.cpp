@@ -14,6 +14,7 @@ using namespace itpp;
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		EBNO			2.20
 //#define		COUNT_REPEAT	10	// repeat time 
+#define		TIME_STEP		4	
 
 #define		N_BCH			31
 #define		T_BCH			2
@@ -146,7 +147,7 @@ int main(int argc, char **argv)
 
 	vec			timerValue(COUNT_REPEAT);
 
-	vec			timerStepValue(COUNT_REPEAT);
+	vec			timerStepValue(COUNT_REPEAT*TIME_STEP);
 	ivec		countIteration(COUNT_REPEAT);
 
 	bvec bitsinBCHEnc( Kbch );
@@ -165,11 +166,16 @@ int main(int argc, char **argv)
 			bitfileMOD >> bitsMOD_N[j+i*nldpc] ;
 	}
 
+	int nTimeStep = 0;
 	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 
 		sdkResetTimer( &timer );
 		sdkStartTimer( &timer );
+
+
+		sdkResetTimer( &timerStep );
+		sdkStartTimer( &timerStep );
 
 		// demodulate
 		vec		dAWGN( nldpc );
@@ -194,7 +200,12 @@ int main(int argc, char **argv)
 		}
 
 
+		sdkStopTimer( &timerStep );
+		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );
 
+
+		sdkResetTimer( &timerStep );
+		sdkStartTimer( &timerStep );
 
 		// ldpc Decode the received bits
 		//QLLRvec llr(nldpc);
@@ -204,9 +215,6 @@ int main(int argc, char **argv)
 		if( i==0 )
 			writeArray( llrIn._data(), ldpc.nvar, "../data/input.txt" );
 #endif
-
-		sdkResetTimer( &timerStep );
-		sdkStartTimer( &timerStep );
 
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), llrOut ); 
@@ -223,8 +231,11 @@ int main(int argc, char **argv)
 #endif
 
 		sdkStopTimer( &timerStep );
-		timerStepValue[i] = sdkGetTimerValue( &timerStep );
+		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );
 
+
+		sdkResetTimer( &timerStep );
+		sdkStartTimer( &timerStep );
 
 		bvec bitsoutLDPCDec(nldpc);
 		for (int j=0;j<nldpc;j++)
@@ -243,11 +254,20 @@ int main(int argc, char **argv)
 			bitsoutBCHDec.set_subvector(j*K_BCH, bitsoutBCHDecOne);
 		}
 
+		sdkStopTimer( &timerStep );
+		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );
+
+		sdkResetTimer( &timerStep );
+		sdkStartTimer( &timerStep );
+
 		// step 9: verify result, Count the number of errors
 		bitsinBCHEnc = bitsinBCHEnc_N.mid(i*Kbch, Kbch);
 
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
 		per.count(bitsinBCHEnc, bitsoutBCHDec);
+
+		sdkStopTimer( &timerStep );
+		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );
 
 		sdkStopTimer( &timer );
 		timerValue[i] = sdkGetTimerValue( &timer );
@@ -269,13 +289,19 @@ int main(int argc, char **argv)
 		//cout << timerValue[i] << " ms, " ;
 		timerAverageAll += timerValue[i];
 	}
+	timerAverageAll /= COUNT_REPEAT;
 	cout << endl << endl ;
+
+	for (int i=0;i<COUNT_REPEAT*TIME_STEP;i++)
+	{
+		//cout  << "timerStepValue[ " << i << " ] = "<< timerStepValue[i] << " ms, " << endl;
+	}
 
 	for (int i=0;i<COUNT_REPEAT;i++)
 	{
-		//cout  << "timerStepValue[ " << i << " ] = "<< timerStepValue[i] << " ms, " << endl;
-		timerStepAverage += timerStepValue[i];
+		timerStepAverage += timerStepValue[i*TIME_STEP+1];
 	}
+	timerStepAverage /= COUNT_REPEAT;
 	cout << endl << endl ;
 
 	double countIterationAverage = 0.0f;
@@ -288,13 +314,14 @@ int main(int argc, char **argv)
 
 		countIterationAverage += countIteration[i];
 	}
+	countIterationAverage = (int)(countIterationAverage/COUNT_REPEAT+0.5) ;
 	cout << endl << endl ;
 
-	cout << endl << "DVB S-2 totally costs time: "<< timerAverageAll/COUNT_REPEAT << " ms for each code with length of 16200" << endl ;
+	cout << endl << "DVB S-2 totally costs time: "<< timerAverageAll << " ms for each code with length of 16200" << endl ;
 	
-	cout << endl << timerStepAverage/COUNT_REPEAT << " ms for decoding ldpc" << endl ;
+	cout << endl << timerStepAverage << " ms for decoding ldpc" << endl ;
 	
-	cout << endl << (int)(countIterationAverage/COUNT_REPEAT+0.5) << " iterations in decode ldpc" << endl << endl ;
+	cout << endl << countIterationAverage << " iterations in decode ldpc" << endl << endl ;
 
 	free( llrOut );
 	free( bitsPacketsPadding );
