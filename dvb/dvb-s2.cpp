@@ -124,14 +124,14 @@ int main(int argc, char **argv)
 	char * llrOut = (char*)malloc( nldpc * sizeof(char) );
 
 	ifstream  bitfile;
-	bitfile.open( "bitfile.dat" );
+	bitfile.open( "../data/bitfile.dat" );
 	if ( bitfile == NULL )
 	{
 		return 0;
 	}
 
 	ifstream  bitfileMOD;
-	bitfileMOD.open( "bitfileMOD.dat" );
+	bitfileMOD.open( "../data/bitfileMOD.dat" );
 	if ( bitfileMOD == NULL )
 	{
 		return 0;

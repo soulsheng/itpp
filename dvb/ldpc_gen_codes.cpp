@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     H.display_stats();
 	LDPC_Generator_Systematic G(&H);
     LDPC_Code C1(&H, &G);
-    C1.save_code("../../data/random_3_6_16200.it");
+    C1.save_code("../data/random_3_6_16200.it");
 
   }
 
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 	  //LDPC_Code C(&H);
 	  LDPC_Generator_Systematic G(&H);
 	  LDPC_Code C(&H, &G);
-	  C.save_code("../../data/RU_16200.it");
+	  C.save_code("../data/RU_16200.it");
   }
 
   return 0;

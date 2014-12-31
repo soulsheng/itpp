@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="dvb-s2"
-	ProjectGUID="{CF5189B0-88E7-487E-87C2-07C209D7ACA9}"
+	Name="ldpc_gen_datas"
+	ProjectGUID="{216C8EEE-E163-4D6F-847A-BD48BFF2C88D}"
 	RootNamespace="ldpc_test"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
@@ -14,9 +14,6 @@
 		/>
 	</Platforms>
 	<ToolFiles>
-		<DefaultToolFile
-			FileName="NvCudaRuntimeApi.v5.0.rules"
-		/>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
@@ -34,11 +31,6 @@
 				Name="VCCustomBuildTool"
 			/>
 			<Tool
-				Name="Cudart Build Rule"
-				Arch1="20"
-				Arch2="30"
-			/>
-			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
 			<Tool
@@ -49,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\;..\dvb;..\tests;$(CUDA_PATH_V5_0)\include;"
+				AdditionalIncludeDirectories="..\;..\dvb;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -67,11 +59,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="itpp.lib cudart.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_vc9.exe"
+				AdditionalDependencies="itpp.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="lib;$(CUDA_PATH_V5_0)\lib\Win32"
-				IgnoreDefaultLibraryNames="uuid.lib;libcmt.lib"
+				AdditionalLibraryDirectories="lib;"
+				IgnoreDefaultLibraryNames="uuid.lib"
 				GenerateDebugInformation="false"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -118,11 +109,6 @@
 				Name="VCCustomBuildTool"
 			/>
 			<Tool
-				Name="Cudart Build Rule"
-				Arch1="20"
-				Arch2="30"
-			/>
-			<Tool
 				Name="VCXMLDataGeneratorTool"
 			/>
 			<Tool
@@ -134,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\;..\dvb;..\tests;$(CUDA_PATH_V5_0)\include;"
+				AdditionalIncludeDirectories="..\;..\dvb;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -152,11 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="itpp_debug.lib cudart.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_vc9d.exe"
+				AdditionalDependencies="itpp_debug.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="lib;$(CUDA_PATH_V5_0)\lib\Win32"
-				IgnoreDefaultLibraryNames="uuid.lib;libcmt.lib"
+				AdditionalLibraryDirectories="lib;"
+				IgnoreDefaultLibraryNames="uuid.lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				SubSystem="1"
@@ -194,22 +179,6 @@
 	</References>
 	<Files>
 		<Filter
-			Name="cuda"
-			>
-			<File
-				RelativePath="..\dvb\ldpc_bp_decode.cu"
-				>
-			</File>
-			<File
-				RelativePath="..\dvb\ldpc_bp_decode.cuh"
-				>
-			</File>
-			<File
-				RelativePath="..\dvb\ldpc_bp_decode_kernel.cuh"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="utility"
 			>
 			<File
@@ -225,20 +194,8 @@
 				>
 			</File>
 		</Filter>
-		<Filter
-			Name="cpp"
-			>
-			<File
-				RelativePath="..\dvb\ldpc_bp_decode.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\dvb\ldpc_bp_decode.h"
-				>
-			</File>
-		</Filter>
 		<File
-			RelativePath="..\dvb\dvb-s2.cpp"
+			RelativePath="..\dvb\ldpc_gen_datas.cpp"
 			>
 		</File>
 	</Files>
