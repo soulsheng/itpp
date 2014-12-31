@@ -262,7 +262,7 @@ driverUpdataChk::driverUpdataChk()
 	, nmaxX2( MAX_CHECK_NODE )
 {
 	Dint1 = 12;	Dint2 = 300;	Dint3 = 7;	//! Decoder (lookup-table) parameters
-	QLLR_MAX = (std::numeric_limits<int>::max() >> 4);
+	QLLR_MAX = (1<<31 -1)>>4;//(std::numeric_limits<int>::max() >> 4);
 
 	sumX2 = (int*)malloc(ncheck * sizeof(int));
 	jind = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
