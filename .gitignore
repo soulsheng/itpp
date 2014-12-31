@@ -71,3 +71,6 @@
 /win32-vc9/lib/*.lib
 /win32-vc9/*.codec
 /win32-vc10/ldpc_gen_codes_build
+/win32-vc10/*.filters
+/win32-vc9/*.dat
+/win32-vc10/*.dat
