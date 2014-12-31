@@ -12,6 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\doc\tutorial\src\ldpc_gen_codes.cpp" />
+    <ClCompile Include="..\dvb\dvbUtility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\dvb\dvbUtility.h" />
+    <ClInclude Include="..\tests\helper_timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4542F35D-8CEA-4F77-89FA-074E28F89573}</ProjectGuid>
@@ -56,7 +61,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\dvb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;HAVE_MKL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
@@ -85,7 +90,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\dvb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;HAVE_MKL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>

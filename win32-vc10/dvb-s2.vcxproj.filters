@@ -3,7 +3,7 @@
   <ItemGroup>
     <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
     <ClCompile Include="..\dvb\dvb-s2.cpp" />
-    <ClCompile Include="..\dvb\driverUtility.cpp">
+    <ClCompile Include="..\dvb\dvbUtility.cpp">
       <Filter>utility</Filter>
     </ClCompile>
   </ItemGroup>
@@ -30,10 +30,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
-    <ClInclude Include="..\dvb\driverUtility.h">
+    <ClInclude Include="..\tests\helper_timer.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\tests\helper_timer.h">
+    <ClInclude Include="..\dvb\dvbUtility.h">
       <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
