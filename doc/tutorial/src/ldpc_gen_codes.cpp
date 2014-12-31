@@ -103,6 +103,14 @@ int main(int argc, char **argv)
 		  return 0;
 	  }
 
+	  ofstream  bitfileLDPC;
+	  bitfileLDPC.open( "bitfileLDPC.dat" );
+	  if ( bitfileLDPC == NULL )
+	  {
+		  return 0;
+	  }
+
+	  int nldpc = VAR_SIZE_CODE;
 	  int kldpc = CHECK_SIZE_CODE;             // number of bits per codeword
 
 	  int nSplit = kldpc / N_BCH;
@@ -112,6 +120,7 @@ int main(int argc, char **argv)
 
 	  char *bitsPacketsPadding = new char[Kbch];
 	  char *bitsBCH = new char[kldpc];
+	  char *bitsLDPC = new char[nldpc];
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
@@ -158,13 +167,23 @@ int main(int argc, char **argv)
 
 #endif
 
+#if 1
+		  // step 3: ldpc encode
+		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
+
+		  convertVecToBuffer( bitsLDPC, bitsoutLDPCEnc );
+		  bitfileLDPC.write(bitsLDPC, sizeof(char)*nldpc);
+#endif
+
 	  }
 
 	  bitfile.close();
 	  bitfileBCH.close();
+	  bitfileLDPC.close();
 
 	  free( bitsPacketsPadding );
 	  free( bitsBCH );
+	  free( bitsLDPC );
 
   }
 

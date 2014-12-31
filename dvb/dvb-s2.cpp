@@ -136,6 +136,13 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
+	ifstream  bitfileLDPC;
+	bitfileLDPC.open( "bitfileLDPC.dat" );
+	if ( bitfileLDPC == NULL )
+	{
+		return 0;
+	}
+
 	int COUNT_REPEAT = 10;
 	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
 	bitfile.read( (char*)&Kbch, sizeof(int)*1);
@@ -143,6 +150,7 @@ int main(int argc, char **argv)
 
 	char *bitsPacketsPadding = new char[Kbch];
 	char *bitsBCH  = new char[kldpc];
+	char *bitsLDPC  = new char[nldpc];
 
 
 	vec			timerValue(COUNT_REPEAT);
@@ -163,9 +171,10 @@ int main(int argc, char **argv)
 		bitfileBCH.read(bitsBCH, sizeof(char)*kldpc);
 		convertBufferToVec( bitsBCH, bitsinLDPCEnc );
 
-		// step 3: ldpc encode
-		bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
-		
+		bvec bitsoutLDPCEnc = zeros_b(nldpc);
+		bitfileLDPC.read(bitsLDPC, sizeof(char)*nldpc);
+		convertBufferToVec( bitsLDPC, bitsoutLDPCEnc );
+
 		// step 4-6: modulate	-- awgn -- Demodulate
 		vec		dMOD;	// double vector
 		cvec	cMOD;	// complex vector
@@ -301,6 +310,8 @@ int main(int argc, char **argv)
 	bitfile.close();
     free( bitsBCH );
 	bitfileBCH.close();
+	free( bitsLDPC );
+	bitfileLDPC.close();
 
 	sdkDeleteTimer( &timer );
 	sdkDeleteTimer( &timerStep );
