@@ -174,25 +174,15 @@ int main(int argc, char **argv)
 		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
 		convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
 
-
-		bvec bitsinLDPCEnc = zeros_b(kldpc);
-		bitfileBCH.read(bitsBCH, sizeof(char)*kldpc);
-		convertBufferToVec( bitsBCH, bitsinLDPCEnc );
-
-		bvec bitsoutLDPCEnc = zeros_b(nldpc);
-		bitfileLDPC.read(bitsLDPC, sizeof(char)*nldpc);
-		convertBufferToVec( bitsLDPC, bitsoutLDPCEnc );
-
-		// step 4-6: modulate	-- awgn -- Demodulate
-
+		
+		// Received data stream, read from file by trunk length nldpc=16200
 		for ( int j=0; j<nldpc; j++ )
 			bitfileMOD >> bitsMOD[j] ;
 
-		// Received data
+		// demodulate
 		vec		dAWGN( nldpc );
 		cvec	cAWGN( nldpc/2 );
 
-		// Demodulate
 		vec softbits;
 	
 		switch ( modType )
@@ -214,7 +204,7 @@ int main(int argc, char **argv)
 
 
 
-		// step 7: ldpc Decode the received bits
+		// ldpc Decode the received bits
 		//QLLRvec llr(nldpc);
 		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
 		
