@@ -68,6 +68,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="itpp.lib cudart.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_vc9.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="lib;$(CUDA_PATH_V5_0)\lib\Win32"
 				IgnoreDefaultLibraryNames="uuid.lib;libcmt.lib"
@@ -152,6 +153,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="itpp_debug.lib cudart.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_vc9d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="lib;$(CUDA_PATH_V5_0)\lib\Win32"
 				IgnoreDefaultLibraryNames="uuid.lib;libcmt.lib"

@@ -328,5 +328,7 @@ int main(int argc, char **argv)
 
 	cudaDeviceReset();
 
+	system( "pause" );
+
 	return 0;
 }

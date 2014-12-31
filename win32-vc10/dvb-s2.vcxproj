@@ -74,7 +74,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)_vc10$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -107,6 +107,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
+      <OutputFile>$(OutDir)$(TargetName)_vc10d$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
       <Command>

@@ -75,3 +75,4 @@
 /win32-vc9/*.dat
 /win32-vc10/*.dat
 /win32-vc10/*.filters
+/bin/*.dat
