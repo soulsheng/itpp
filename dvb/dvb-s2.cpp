@@ -143,6 +143,13 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
+	ifstream  bitfileMOD;
+	bitfileMOD.open( "bitfileMOD.dat" );
+	if ( bitfileMOD == NULL )
+	{
+		return 0;
+	}
+
 	int COUNT_REPEAT = 10;
 	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
 	bitfile.read( (char*)&Kbch, sizeof(int)*1);
@@ -177,30 +184,13 @@ int main(int argc, char **argv)
 		convertBufferToVec( bitsLDPC, bitsoutLDPCEnc );
 
 		// step 4-6: modulate	-- awgn -- Demodulate
-		vec		dMOD;	// double vector
-		cvec	cMOD;	// complex vector
+
+		for ( int j=0; j<nldpc; j++ )
+			bitfileMOD >> bitsMOD[j] ;
 
 		// Received data
-		vec		dAWGN;
-		cvec	cAWGN;
-
-		switch ( modType )
-		{
-		case MOD_BPSK:
-			dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
-			dAWGN = chan(dMOD);
-			convertVecToBuffer( bitsMOD, dAWGN );
-			break;
-
-		case MOD_QPSK:
-			cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
-			cAWGN = chan(cMOD);
-			convertVecToBuffer( bitsMOD, cAWGN );
-			break;
-
-		default:
-			break;;
-		}
+		vec		dAWGN( nldpc );
+		cvec	cAWGN( nldpc/2 );
 
 		// Demodulate
 		vec softbits;
@@ -330,6 +320,7 @@ int main(int argc, char **argv)
 	free( bitsLDPC );
 	bitfileLDPC.close();
 	free( bitsMOD );
+	bitfileMOD.close();
 
 	sdkDeleteTimer( &timer );
 	sdkDeleteTimer( &timerStep );

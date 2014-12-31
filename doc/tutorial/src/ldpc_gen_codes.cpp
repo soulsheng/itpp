@@ -110,6 +110,13 @@ int main(int argc, char **argv)
 		  return 0;
 	  }
 
+	  ofstream  bitfileMOD;
+	  bitfileMOD.open( "bitfileMOD.dat" );
+	  if ( bitfileMOD == NULL )
+	  {
+		  return 0;
+	  }
+
 	  int nldpc = VAR_SIZE_CODE;
 	  int kldpc = CHECK_SIZE_CODE;             // number of bits per codeword
 
@@ -121,6 +128,7 @@ int main(int argc, char **argv)
 	  char *bitsPacketsPadding = new char[Kbch];
 	  char *bitsBCH = new char[kldpc];
 	  char *bitsLDPC = new char[nldpc];
+	  double *bitsMOD = new double[nldpc];
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
@@ -175,15 +183,49 @@ int main(int argc, char **argv)
 		  bitfileLDPC.write(bitsLDPC, sizeof(char)*nldpc);
 #endif
 
+#if 1
+
+		  // step 4-6: modulate	-- awgn -- Demodulate
+		  vec	dMOD;	// double vector
+		  cvec	cMOD;	// complex vector
+
+		  // Received data
+		  vec	dAWGN;
+		  cvec	cAWGN;
+
+		  switch ( modType )
+		  {
+		  case MOD_BPSK:
+			  dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
+			  dAWGN = chan(dMOD);
+			  convertVecToBuffer( bitsMOD, dAWGN );
+			  break;
+
+		  case MOD_QPSK:
+			  cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
+			  cAWGN = chan(cMOD);
+			  convertVecToBuffer( bitsMOD, cAWGN );
+			  break;
+
+		  default:
+			  break;;
+		  }
+
+		  for ( int j=0; j<nldpc; j++ )
+		  	  bitfileMOD << bitsMOD[j] << " " ;
+#endif
+
 	  }
 
 	  bitfile.close();
 	  bitfileBCH.close();
 	  bitfileLDPC.close();
+	  bitfileMOD.close();
 
 	  free( bitsPacketsPadding );
 	  free( bitsBCH );
 	  free( bitsLDPC );
+	  free( bitsMOD );
 
   }
 
