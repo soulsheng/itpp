@@ -60,6 +60,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="itpp.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_vc9.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="lib;"
 				IgnoreDefaultLibraryNames="uuid.lib"
@@ -139,6 +140,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="itpp_debug.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_vc9d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="lib;"
 				IgnoreDefaultLibraryNames="uuid.lib"
