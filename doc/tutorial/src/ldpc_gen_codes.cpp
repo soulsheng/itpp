@@ -5,6 +5,16 @@
 using namespace itpp;
 using namespace std;
 
+#define		COUNT_REPEAT_DEF	100	// repeat time 
+#define		SIZE_PACKET		188
+
+#define		N_BCH			31
+#define		T_BCH			2
+#define		K_BCH			21
+
+#define		VAR_SIZE_CODE		16200
+#define		CHECK_SIZE_CODE		8100//8073
+
 //! Maximum value of vector
 int max(int *v, int N)
 {
@@ -27,7 +37,8 @@ int min(int *v, int N)
 
 int main(int argc, char **argv)
 {
-  { // This generates a random regular (3,6) code with 500 bits
+  if( 0 )
+  { // This generates a random regular (3,6) code with 16200 bits, k = 8100
     cout << "========= RANDOM (3,6) CODE ==========" << endl;
     LDPC_Parity_Regular H;
     H.generate(16200, 3, 6,
@@ -46,6 +57,51 @@ int main(int argc, char **argv)
 	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 6//10
 	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 3//2
 	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 6//7
+
+  }
+
+  { // generate input bit and modulated bit
+	  ofstream  bitfile;
+	  bitfile.open( "bitfile.dat" );
+	  if ( bitfile == NULL )
+	  {
+		  return 0;
+	  }
+
+	  int kldpc = CHECK_SIZE_CODE;             // number of bits per codeword
+
+	  int nSplit = kldpc / N_BCH;
+
+	  int Kbch = nSplit * K_BCH;
+
+	  char *bitsPacketsPadding = new char[Kbch];
+
+	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
+	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
+	  bitfile.write( (char*)&Kbch, sizeof(int)*1);
+
+	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
+	  {
+		  // step 0: prepare input packets from rand data or file stream
+		  memset( bitsPacketsPadding, 0, sizeof(char)*Kbch );
+		  srand( (unsigned int)i*CHECK_SIZE_CODE ) ;
+
+		  int nCountPacket = Kbch / SIZE_PACKET;
+		  for (int j = 0; j < nCountPacket; j ++) 
+		  {
+			  char *onePacket = bitsPacketsPadding + j*SIZE_PACKET;
+			  for (int k = 0; k < SIZE_PACKET; k ++) 
+			  {
+				onePacket[k] = rand()%2;
+			  }
+		  }
+
+		  bitfile.write(bitsPacketsPadding, sizeof(char)*Kbch);
+	  }
+
+	  bitfile.close();
+
+	  free( bitsPacketsPadding );
 
   }
 

@@ -12,7 +12,7 @@ using namespace itpp;
 //#define		FILENAME_IT		"../data/RU_16200.it"
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		EBNO			2.20
-#define		COUNT_REPEAT	1000	// repeat time 
+//#define		COUNT_REPEAT	10	// repeat time 
 
 #define		N_BCH			31
 #define		T_BCH			2
@@ -56,11 +56,6 @@ int main(int argc, char **argv)
 	StopWatchInterface	*timer, *timerStep;
 	sdkCreateTimer( &timer );
 	sdkCreateTimer( &timerStep );
-
-	vec			timerValue(COUNT_REPEAT);
-
-	vec			timerStepValue(COUNT_REPEAT);
-	ivec		countIteration(COUNT_REPEAT);
 
 	int nldpc = ldpc.get_nvar();
 	int kldpc = ldpc.get_ninfo();             // number of bits per codeword
@@ -126,22 +121,36 @@ int main(int argc, char **argv)
 
 	char * llrOut = (char*)malloc( nldpc * sizeof(char) );
 
-    for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
+	ifstream  bitfile;
+	bitfile.open( "bitfile.dat" );
+	if ( bitfile == NULL )
+	{
+		return 0;
+	}
+
+	int COUNT_REPEAT = 10;
+	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
+	bitfile.read( (char*)&Kbch, sizeof(int)*1);
+	cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
+
+	char *bitsPacketsPadding = new char[Kbch];
+
+
+	vec			timerValue(COUNT_REPEAT);
+
+	vec			timerStepValue(COUNT_REPEAT);
+	ivec		countIteration(COUNT_REPEAT);
+
+	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 		// step 0: prepare input packets from rand data or file stream
-		bvec	bitsPacketsPadding = zeros_b(Kbch);
-		int nCountPacket = Kbch / SIZE_PACKET;
-		for (int j = 0; j < nCountPacket; j ++) 
-		{
-			bvec onePacket = randb(SIZE_PACKET);
-			bitsPacketsPadding.set_subvector(j*SIZE_PACKET, onePacket);
-		}
+		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
 
 		sdkResetTimer( &timer );
 		sdkStartTimer( &timer );
 
 		// step 1: input message
-		bvec bitsinBCHEnc = bitsPacketsPadding;//randb(Kbch);
+		bvec bitsinBCHEnc( (const bin*)bitsPacketsPadding, Kbch);//randb(Kbch);
 
 		// step 2: bch encode
 		bvec bitsoutBCHEnc = zeros_b(Nbch);
@@ -290,6 +299,9 @@ int main(int argc, char **argv)
 	cout << endl << (int)(countIterationAverage/COUNT_REPEAT+0.5) << " iterations in decode ldpc" << endl << endl ;
 
 	free( llrOut );
+	free( bitsPacketsPadding );
+	bitfile.close();
+
 	sdkDeleteTimer( &timer );
 	sdkDeleteTimer( &timerStep );
 

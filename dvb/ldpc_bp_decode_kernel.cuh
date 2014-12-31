@@ -5,7 +5,7 @@
 #define		MAX_CHECK_NODE		6//10
 #define		MAX_VAR_NODE		3//19
 #define		VAR_SIZE_CODE		16200
-#define		CHECK_SIZE_CODE		8073
+#define		CHECK_SIZE_CODE		8100//8073
 #define		USE_TABLE_CODE		0
 #define		USE_TEXTURE_ADDRESS	0
 #define		USE_SHARED_MLR		0
