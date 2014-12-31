@@ -152,6 +152,7 @@ int main(int argc, char **argv)
 	char *bitsBCH  = new char[kldpc];
 	char *bitsLDPC  = new char[nldpc];
 
+	double *bitsMOD  = new double[nldpc];
 
 	vec			timerValue(COUNT_REPEAT);
 
@@ -188,11 +189,13 @@ int main(int argc, char **argv)
 		case MOD_BPSK:
 			dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
 			dAWGN = chan(dMOD);
+			convertVecToBuffer( bitsMOD, dAWGN );
 			break;
 
 		case MOD_QPSK:
 			cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
 			cAWGN = chan(cMOD);
+			convertVecToBuffer( bitsMOD, cAWGN );
 			break;
 
 		default:
@@ -205,10 +208,12 @@ int main(int argc, char **argv)
 		switch ( modType )
 		{
 		case MOD_BPSK:
+			convertBufferToVec( bitsMOD, dAWGN );
 			softbits = bpsk.demodulate_soft_bits(dAWGN, N0);
 			break;
 
 		case MOD_QPSK:
+			convertBufferToVec( bitsMOD, cAWGN );
 			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
 			break;
 
@@ -324,6 +329,7 @@ int main(int argc, char **argv)
 	bitfileBCH.close();
 	free( bitsLDPC );
 	bitfileLDPC.close();
+	free( bitsMOD );
 
 	sdkDeleteTimer( &timer );
 	sdkDeleteTimer( &timerStep );
