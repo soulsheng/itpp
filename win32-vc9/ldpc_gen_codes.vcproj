@@ -178,22 +178,6 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="utility"
-			>
-			<File
-				RelativePath="..\dvb\dvbUtility.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\dvb\dvbUtility.h"
-				>
-			</File>
-			<File
-				RelativePath="..\dvb\helper_timer.h"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath="..\dvb\ldpc_gen_codes.cpp"
 			>

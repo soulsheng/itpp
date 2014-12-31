@@ -76,3 +76,4 @@
 /win32-vc10/*.dat
 /win32-vc10/*.filters
 /bin/*.dat
+/win32-vc10/*.build
