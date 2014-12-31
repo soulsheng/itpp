@@ -190,12 +190,12 @@
 				>
 			</File>
 			<File
-				RelativePath="..\tests\helper_timer.h"
+				RelativePath="..\dvb\helper_timer.h"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\doc\tutorial\src\ldpc_gen_codes.cpp"
+			RelativePath="..\dvb\ldpc_gen_codes.cpp"
 			>
 		</File>
 	</Files>

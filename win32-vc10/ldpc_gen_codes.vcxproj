@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\doc\tutorial\src\ldpc_gen_codes.cpp" />
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
+    <ClCompile Include="..\dvb\ldpc_gen_codes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\dvbUtility.h" />
-    <ClInclude Include="..\tests\helper_timer.h" />
+    <ClInclude Include="..\dvb\helper_timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4542F35D-8CEA-4F77-89FA-074E28F89573}</ProjectGuid>

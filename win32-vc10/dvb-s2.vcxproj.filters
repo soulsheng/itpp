@@ -30,10 +30,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
-    <ClInclude Include="..\tests\helper_timer.h">
+    <ClInclude Include="..\dvb\dvbUtility.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\dvb\dvbUtility.h">
+    <ClInclude Include="..\dvb\helper_timer.h">
       <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>

@@ -131,8 +131,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\dvbUtility.h" />
+    <ClInclude Include="..\dvb\helper_timer.h" />
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
-    <ClInclude Include="..\tests\helper_timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
