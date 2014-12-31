@@ -41,7 +41,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\"
+				AdditionalIncludeDirectories="..\;..\dvb;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -61,7 +61,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="itpp.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="lib;$(LIB)"
+				AdditionalLibraryDirectories="lib;"
 				IgnoreDefaultLibraryNames="uuid.lib"
 				GenerateDebugInformation="false"
 				SubSystem="1"
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\"
+				AdditionalIncludeDirectories="..\;..\dvb;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -178,6 +178,22 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="utility"
+			>
+			<File
+				RelativePath="..\dvb\dvbUtility.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\dvb\dvbUtility.h"
+				>
+			</File>
+			<File
+				RelativePath="..\tests\helper_timer.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\doc\tutorial\src\ldpc_gen_codes.cpp"
 			>

@@ -5,6 +5,7 @@
 #include "ldpc_bp_decode.cuh"
 #include "helper_timer.h"
 //#include "driverUtility.h"
+#include "dvbUtility.h"
 
 using namespace std;
 using namespace itpp;
@@ -128,12 +129,20 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
+	ifstream  bitfileBCH;
+	bitfileBCH.open( "bitfileBCH.dat" );
+	if ( bitfileBCH == NULL )
+	{
+		return 0;
+	}
+
 	int COUNT_REPEAT = 10;
 	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
 	bitfile.read( (char*)&Kbch, sizeof(int)*1);
 	cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
 
 	char *bitsPacketsPadding = new char[Kbch];
+	char *bitsBCH  = new char[kldpc];
 
 
 	vec			timerValue(COUNT_REPEAT);
@@ -141,29 +150,18 @@ int main(int argc, char **argv)
 	vec			timerStepValue(COUNT_REPEAT);
 	ivec		countIteration(COUNT_REPEAT);
 
+	bvec bitsinBCHEnc( Kbch );
+
 	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 		// step 0: prepare input packets from rand data or file stream
 		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
+		convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
 
-		sdkResetTimer( &timer );
-		sdkStartTimer( &timer );
-
-		// step 1: input message
-		bvec bitsinBCHEnc( (const bin*)bitsPacketsPadding, Kbch);//randb(Kbch);
-
-		// step 2: bch encode
-		bvec bitsoutBCHEnc = zeros_b(Nbch);
-		for (int j = 0; j < nSplit; j++)
-		{
-			bvec bitsinBCHOne = bitsinBCHEnc.mid(j*K_BCH, K_BCH);
-			bvec encodedBCHOne = bch.encode(bitsinBCHOne);
-			bitsoutBCHEnc.set_subvector(j*N_BCH, encodedBCHOne);
-		}
 
 		bvec bitsinLDPCEnc = zeros_b(kldpc);
-		bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
-
+		bitfileBCH.read(bitsBCH, sizeof(char)*kldpc);
+		convertBufferToVec( bitsBCH, bitsinLDPCEnc );
 
 		// step 3: ldpc encode
 		bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
@@ -301,6 +299,8 @@ int main(int argc, char **argv)
 	free( llrOut );
 	free( bitsPacketsPadding );
 	bitfile.close();
+    free( bitsBCH );
+	bitfileBCH.close();
 
 	sdkDeleteTimer( &timer );
 	sdkDeleteTimer( &timerStep );

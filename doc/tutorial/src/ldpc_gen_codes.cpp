@@ -1,9 +1,13 @@
 // Generate some example LDPC codes
 
 #include <itpp/itcomm.h>
+#include "dvbUtility.h"
 
 using namespace itpp;
 using namespace std;
+
+#define		FILENAME_IT		"../data/random_3_6_16200.it"
+#define		EBNO			2.20
 
 #define		COUNT_REPEAT_DEF	100	// repeat time 
 #define		SIZE_PACKET		188
@@ -14,6 +18,15 @@ using namespace std;
 
 #define		VAR_SIZE_CODE		16200
 #define		CHECK_SIZE_CODE		8100//8073
+
+enum	MOD_TYPE
+{
+	MOD_BPSK,	//	0-
+	MOD_QPSK,	//	1-
+	MOD_8PSK,	//	2-
+	MOD_16APSK,	//	3- 
+	MOD_32APSK	//	4-
+};
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -61,6 +74,21 @@ int main(int argc, char **argv)
   }
 
   { // generate input bit and modulated bit
+	  LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
+	  LDPC_Code ldpc(FILENAME_IT, &G);
+
+	  BCH bch(N_BCH, T_BCH);
+
+	  MOD_TYPE	modType = MOD_QPSK;
+
+	  QPSK qpsk;
+	  BPSK bpsk;
+
+	  // Noise variance is N0/2 per dimension
+	  double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
+	  AWGN_Channel chan(N0 / 2);
+
+
 	  ofstream  bitfile;
 	  bitfile.open( "bitfile.dat" );
 	  if ( bitfile == NULL )
@@ -68,13 +96,22 @@ int main(int argc, char **argv)
 		  return 0;
 	  }
 
+	  ofstream  bitfileBCH;
+	  bitfileBCH.open( "bitfileBCH.dat" );
+	  if ( bitfileBCH == NULL )
+	  {
+		  return 0;
+	  }
+
 	  int kldpc = CHECK_SIZE_CODE;             // number of bits per codeword
 
 	  int nSplit = kldpc / N_BCH;
+	  int Nbch = nSplit * N_BCH;
 
 	  int Kbch = nSplit * K_BCH;
 
 	  char *bitsPacketsPadding = new char[Kbch];
+	  char *bitsBCH = new char[kldpc];
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
@@ -97,11 +134,37 @@ int main(int argc, char **argv)
 		  }
 
 		  bitfile.write(bitsPacketsPadding, sizeof(char)*Kbch);
+
+#if 1
+
+		  // step 1: input message
+		  bvec bitsinBCHEnc( Kbch );
+		  convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
+
+		  // step 2: bch encode
+		  bvec bitsoutBCHEnc = zeros_b(Nbch);
+		  for (int j = 0; j < nSplit; j++)
+		  {
+			  bvec bitsinBCHOne = bitsinBCHEnc.mid(j*K_BCH, K_BCH);
+			  bvec encodedBCHOne = bch.encode(bitsinBCHOne);
+			  bitsoutBCHEnc.set_subvector(j*N_BCH, encodedBCHOne);
+		  }
+
+		  bvec bitsinLDPCEnc = zeros_b(kldpc);
+		  bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
+
+		  convertVecToBuffer( bitsBCH, bitsinLDPCEnc );
+		  bitfileBCH.write(bitsBCH, sizeof(char)*kldpc);
+
+#endif
+
 	  }
 
 	  bitfile.close();
+	  bitfileBCH.close();
 
 	  free( bitsPacketsPadding );
+	  free( bitsBCH );
 
   }
 

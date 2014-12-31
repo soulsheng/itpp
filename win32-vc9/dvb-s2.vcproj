@@ -211,6 +211,14 @@
 			Name="utility"
 			>
 			<File
+				RelativePath="..\dvb\dvbUtility.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\dvb\dvbUtility.h"
+				>
+			</File>
+			<File
 				RelativePath="..\tests\helper_timer.h"
 				>
 			</File>
