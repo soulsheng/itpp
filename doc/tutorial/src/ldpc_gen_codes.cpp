@@ -161,13 +161,7 @@ int main(int argc, char **argv)
 		  convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
 
 		  // step 2: bch encode
-		  bvec bitsoutBCHEnc = zeros_b(Nbch);
-		  for (int j = 0; j < nSplit; j++)
-		  {
-			  bvec bitsinBCHOne = bitsinBCHEnc.mid(j*K_BCH, K_BCH);
-			  bvec encodedBCHOne = bch.encode(bitsinBCHOne);
-			  bitsoutBCHEnc.set_subvector(j*N_BCH, encodedBCHOne);
-		  }
+		  bvec bitsoutBCHEnc = bch.encode(bitsinBCHEnc);
 
 		  bvec bitsinLDPCEnc = zeros_b(kldpc);
 		  bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);

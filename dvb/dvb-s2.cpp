@@ -242,17 +242,10 @@ int main(int argc, char **argv)
 			bitsoutLDPCDec[j] = llrOut[j];
 
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
-		//      bvec bitsout = C.decode(softbits); // (only systematic bits)
 
 
 		// step 8: bch decode
-		bvec bitsoutBCHDec = zeros_b(Kbch);
-		for (int j = 0; j < nSplit; j++)
-		{
-			bvec bitsinBCHDecOne = bitsinBCHDec.mid(j*N_BCH, N_BCH);
-			bvec bitsoutBCHDecOne = bch.decode(bitsinBCHDecOne);
-			bitsoutBCHDec.set_subvector(j*K_BCH, bitsoutBCHDecOne);
-		}
+		bvec bitsoutBCHDec = bch.decode(bitsinBCHDec);
 
 		sdkStopTimer( &timerStep );
 		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );
