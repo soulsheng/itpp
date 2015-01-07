@@ -166,7 +166,7 @@ void LDPC_Parity::save_alist(const std::string& alist_file) const
 
 void LDPC_Parity::import_alist(const GF2mat_sparse_alist& alist)
 {
-  GF2mat_sparse X = alist.to_sparse();
+  GF2mat_sparse X = alist.to_sparse(true);
 
   initialize(X.rows(), X.cols());
   // brute force copy from X to this

@@ -119,6 +119,7 @@ void GF2mat_sparse_alist::read(const std::string &fname)
     ss << line;
     for (int j = 0; j < num_nlist(i); j++) {
       ss >> nlist(i, j);
+	  nlist(i, j) += 1;
       it_assert(!ss.fail(),
                 "GF2mat_sparse_alist::read(): Wrong alist data (nlist("
                 << i << "," << j << "))");
@@ -138,6 +139,7 @@ void GF2mat_sparse_alist::read(const std::string &fname)
     ss << line;
     for (int j = 0; j < num_mlist(i); j++) {
       ss >> mlist(i, j);
+	  mlist(i, j) += 1;
       it_assert(!ss.fail(),
                 "GF2mat_sparse_alist::read(): Wrong alist data (mlist("
                 << i << "," << j << "))");
