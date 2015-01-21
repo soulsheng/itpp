@@ -12,6 +12,7 @@ using namespace itpp;
 
 //#define		FILENAME_IT		"../data/RU_16200.it"
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
+#define		FILENAME_ALIST	"../data/dvbs2_r12.alist"
 #define		EBNO			2.20
 //#define		COUNT_REPEAT	10	// repeat time 
 #define		TIME_STEP		4	
@@ -23,6 +24,7 @@ using namespace itpp;
 #define		SIZE_PACKET		188
 
 #define		USE_GPU		1
+#define		USE_ALIST		0
 
 enum	MOD_TYPE
 {
@@ -36,7 +38,11 @@ enum	MOD_TYPE
 int main(int argc, char **argv)
 {
 	ifstream  testfile;
+#if USE_ALIST
+	testfile.open( FILENAME_ALIST );
+#else
 	testfile.open( FILENAME_IT );
+#endif
 	if ( testfile == NULL )
 	{
 		cout << "Can not find ldpc code file - \"random_3_6_16200.it\" in data path!" << endl ;
@@ -45,14 +51,18 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		cout << "Success to load ldpc code file - \"random_3_6_16200.it\" in data path!" << endl ;
+		cout << "Success to load ldpc code file - alist in data path!" << endl ;
 	}
 	testfile.close();
 
 	// step 0: intialize ldpc,bch,bpsk,awgn
+#if USE_ALIST
+	LDPC_Parity	lp( FILENAME_ALIST, "alist" );
+	LDPC_Code	ldpc( &lp );
+#else
 	LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
 	LDPC_Code ldpc(FILENAME_IT, &G);
-	
+#endif
 	BCH bch(N_BCH, T_BCH);
 
 	MOD_TYPE	modType = MOD_QPSK;
@@ -91,6 +101,34 @@ int main(int argc, char **argv)
 	int nmaxJ = max(ldpc.jind._data(), ldpc.jind.size());
 	int nminI = min(ldpc.iind._data(), ldpc.iind.size());
 	int nminJ = min(ldpc.jind._data(), ldpc.jind.size());
+
+#if 1
+	cout << "max(iind) = " << nmaxI << endl;// max(iind) = nvar*nmaxX1-1
+	cout << "max(jind) = " << nmaxJ << endl;// max(jind) = nvar*nmaxX1-1
+	cout << "min(iind) = " << nminI << endl;// min(iind) = 0
+	cout << "min(jind) = " << nminJ << endl;// min(jind) = 0
+
+	cout << "ldpc.nvar = " << ldpc.nvar << endl;		// nvar = 16200
+	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8100//8073 
+	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;	// = nvar
+	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;	// = ncheck
+	cout << "max(sumX1) = " << nmaxX1 << endl;// max(sumX1) = 3//19
+	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 6//10
+	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 3//2
+	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 6//7
+	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;			// = ncheck * max(sumX2)
+	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;		// = nvar * max(sumX1)
+	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;		// = ncheck * max(sumX2)
+
+	cout << "ldpc.mvc.size() = " << ldpc.mvc.size() << endl;		// = nvar * max(sumX1)
+	cout << "ldpc.mcv.size() = " << ldpc.mcv.size() << endl;		// = ncheck * max(sumX2)
+
+	cout << "ldpc.llrcalc.Dint1 = " << ldpc.llrcalc.Dint1 << endl;	// Dint1 = 12
+	cout << "ldpc.llrcalc.Dint2 = " << ldpc.llrcalc.Dint2 << endl;	// Dint2 = 300
+	cout << "ldpc.llrcalc.Dint3 = " << ldpc.llrcalc.Dint3 << endl;	// Dint3 = 7
+
+	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;// = 300
+#endif
 
 	ldpc_gpu	ldpc_gpu_diy;
 	ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
