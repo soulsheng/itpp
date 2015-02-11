@@ -6,6 +6,7 @@
 #include "helper_timer.h"
 //#include "driverUtility.h"
 #include "dvbUtility.h"
+#include "apsk.h"
 
 using namespace std;
 using namespace itpp;
@@ -176,6 +177,7 @@ int main(int argc, char **argv)
 
 	char *bitsPacketsPadding = new char[Kbch];
 	double *bitsMOD_N  = new double[nldpc*COUNT_REPEAT];
+	char *bitsLDPC = new char[nldpc];
 
 	vec			timerValue(COUNT_REPEAT);
 
@@ -230,6 +232,11 @@ int main(int argc, char **argv)
 			convertBufferToVec( bitsMOD_N+i*nldpc, cAWGN );
 			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
 			break;
+
+		case MOD_32APSK:
+
+			decode32( bitsMOD_N+i*nldpc, bitsLDPC, nldpc );
+
 
 		default:
 			break;;
@@ -361,6 +368,8 @@ int main(int argc, char **argv)
 
 	free( bitsMOD_N );
 	bitfileMOD.close();
+
+	free( bitsLDPC );
 
 	sdkDeleteTimer( &timer );
 	sdkDeleteTimer( &timerStep );

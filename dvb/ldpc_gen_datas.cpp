@@ -2,6 +2,7 @@
 
 #include <itpp/itcomm.h>
 #include "dvbUtility.h"
+#include "apsk.h"
 
 using namespace itpp;
 using namespace std;
@@ -166,6 +167,17 @@ int main(int argc, char **argv)
 			  cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
 			  cAWGN = chan(cMOD);
 			  convertVecToBuffer( bitsMOD, cAWGN );
+			  break;
+
+		  case MOD_32APSK:
+			  convertVecToBuffer( bitsLDPC, bitsoutLDPCEnc );
+			  encode32( bitsLDPC, bitsMOD, bitsoutLDPCEnc.size() );
+			  cMOD.set_size( bitsoutLDPCEnc.size() / 5 );
+			  convertVecToBuffer( bitsMOD, cMOD );
+
+			  cAWGN = chan(cMOD);
+			  convertVecToBuffer( bitsMOD, cAWGN );
+
 			  break;
 
 		  default:
