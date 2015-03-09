@@ -15,11 +15,13 @@
     <ClCompile Include="..\dvb\apsk32.cpp" />
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
     <ClCompile Include="..\dvb\ldpc_gen_datas.cpp" />
+    <ClCompile Include="..\dvb\modulatorAPSK.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\apsk.h" />
     <ClInclude Include="..\dvb\dvbUtility.h" />
     <ClInclude Include="..\dvb\helper_timer.h" />
+    <ClInclude Include="..\dvb\modulatorAPSK.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0D453D58-DE37-4718-A255-B8798B986983}</ProjectGuid>
