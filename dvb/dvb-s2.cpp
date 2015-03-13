@@ -6,7 +6,8 @@
 #include "helper_timer.h"
 //#include "driverUtility.h"
 #include "dvbUtility.h"
-#include "apsk.h"
+#include "modulatorAPSK.h"
+#include "modAPSK16.h"
 
 using namespace std;
 using namespace itpp;
@@ -66,10 +67,12 @@ int main(int argc, char **argv)
 #endif
 	BCH bch(N_BCH, T_BCH);
 
-	MOD_TYPE	modType = MOD_QPSK;
+	MOD_TYPE	modType = MOD_32APSK;
 
 	QPSK qpsk;
 	BPSK bpsk;
+	APSK32 apsk32(32);
+	APSK16 apsk16(16);
 
 	// Noise variance is N0/2 per dimension
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -178,6 +181,7 @@ int main(int argc, char **argv)
 	char *bitsPacketsPadding = new char[Kbch];
 	double *bitsMOD_N  = new double[nldpc*COUNT_REPEAT];
 	char *bitsLDPC = new char[nldpc];
+	double *softbits_buf = new double[nldpc];
 
 	vec			timerValue(COUNT_REPEAT);
 
@@ -220,6 +224,7 @@ int main(int argc, char **argv)
 		cvec	cAWGN( nldpc/2 );
 
 		vec softbits;
+		bvec hardbits;
 	
 		switch ( modType )
 		{
@@ -233,10 +238,31 @@ int main(int argc, char **argv)
 			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
 			break;
 
+		case MOD_16APSK:
+			convertBufferToVec( bitsMOD_N+i*nldpc, cAWGN );
+
+			cout << "cAWGN.left(4)" << cAWGN.left(4) << endl;
+#if 1
+			hardbits = apsk16.demodulate_bits( cAWGN );
+#else
+			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
+#endif
+			cout << "hardbits.left(16)" << hardbits.left(16) << endl;
+
+			break;
+
 		case MOD_32APSK:
+			convertBufferToVec( bitsMOD_N+i*nldpc, cAWGN );
+			cout << "cAWGN.left(3)" << cAWGN.left(3) << endl;
 
-			decode32( bitsMOD_N+i*nldpc, bitsLDPC, nldpc );
+#if 1
+			hardbits = apsk32.demodulate_bits( cAWGN );
+#else
+			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
+#endif
+			cout << "hardbits.left(15)" << hardbits.left(15) << endl;
 
+			break;
 
 		default:
 			break;;
@@ -370,6 +396,7 @@ int main(int argc, char **argv)
 	bitfileMOD.close();
 
 	free( bitsLDPC );
+	free( softbits_buf );
 
 	sdkDeleteTimer( &timer );
 	sdkDeleteTimer( &timerStep );

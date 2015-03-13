@@ -26,8 +26,8 @@
  * -------------------------------------------------------------------------
  */
 
-#ifndef MODULATORAPSK_H
-#define MODULATORAPSK_H
+#ifndef MODAPSK16_H
+#define MODAPSK16_H
 
 #include <itpp/base/mat.h>
 #include <itpp/base/math/elem_math.h>
@@ -64,16 +64,15 @@ namespace itpp
   It is also assumed that the channel estimates are perfect when
   calculating the soft bits.
 */
-
-class APSK32 : public Modulator<std::complex<double> >
+class APSK16 : public Modulator<std::complex<double> >
 {
 public:
   //! Default Constructor
-  APSK32() {}
+  APSK16() {}
   //! Class constructor
-  APSK32(int M) { set_M(M); }
+  APSK16(int M) { set_M(M); }
   //! Destructor
-  virtual ~APSK32() { }
+  virtual ~APSK16() { }
   //! Change the size of the signal constellation
   void set_M(int M);
 

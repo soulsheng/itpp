@@ -2,7 +2,8 @@
 
 #include <itpp/itcomm.h>
 #include "dvbUtility.h"
-#include "apsk.h"
+#include "modulatorAPSK.h"
+#include "modAPSK16.h"
 
 using namespace itpp;
 using namespace std;
@@ -10,7 +11,7 @@ using namespace std;
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		EBNO			2.20
 
-#define		COUNT_REPEAT_DEF	100	// repeat time 
+#define		COUNT_REPEAT_DEF	1	// repeat time 
 #define		SIZE_PACKET		188
 
 #define		N_BCH			31
@@ -73,10 +74,12 @@ int main(int argc, char **argv)
 
 	  BCH bch(N_BCH, T_BCH);
 
-	  MOD_TYPE	modType = MOD_QPSK;
+	  MOD_TYPE	modType = MOD_32APSK;
 
 	  QPSK qpsk;
 	  BPSK bpsk;
+	  APSK32 apsk32(32);
+	  APSK16 apsk16(16);
 
 	  // Noise variance is N0/2 per dimension
 	  double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -169,15 +172,30 @@ int main(int argc, char **argv)
 			  convertVecToBuffer( bitsMOD, cAWGN );
 			  break;
 
-		  case MOD_32APSK:
-			  convertVecToBuffer( bitsLDPC, bitsoutLDPCEnc );
-			  encode32( bitsLDPC, bitsMOD, bitsoutLDPCEnc.size() );
-			  cMOD.set_size( bitsoutLDPCEnc.size() / 5 );
+		  case MOD_16APSK:
+
+			  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
+
+			  cMOD = apsk16.modulate_bits(bitsoutLDPCEnc);
 			  convertVecToBuffer( bitsMOD, cMOD );
 
+			  cout << "cMOD.left(4)" << cMOD.left(4) << endl;
+
+			  break;
+
+		  case MOD_32APSK:
+
+			  cout << "bitsoutLDPCEnc.left(15)" << bitsoutLDPCEnc.left(15) << endl;
+
+			  cMOD = apsk32.modulate_bits(bitsoutLDPCEnc);
+#if 0
 			  cAWGN = chan(cMOD);
 			  convertVecToBuffer( bitsMOD, cAWGN );
+#else
+			  convertVecToBuffer( bitsMOD, cMOD );
 
+			  cout << "cMOD.left(3)" << cMOD.left(3) << endl;
+#endif
 			  break;
 
 		  default:

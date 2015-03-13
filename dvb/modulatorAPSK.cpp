@@ -36,10 +36,19 @@ namespace itpp
 {
 
 // ----------------------------------------------------------------------
-// PSK
+// APSK32(4,12,16)
 // ----------------------------------------------------------------------
 
-void PSK::set_M(int Mary)
+enum CODE_RATE
+{
+	C3_4,
+	C4_5,
+	C5_6,
+	C8_9,
+	C9_10
+};
+
+void APSK32::set_M(int Mary)
 {
   k = levels2bits(Mary);
   M = Mary;
@@ -47,25 +56,106 @@ void PSK::set_M(int Mary)
 
   symbols.set_size(M);
   bitmap = graycode(k);
-  bits2symbols.set_size(M);
 
-  double delta = m_2pi / M;
-  double epsilon = delta / 10000.0;
-  std::complex<double> symb;
-  for (int i = 0; i < M; i++) {
-    symb = std::complex<double>(std::polar(1.0, delta * i));
-    if (std::fabs(std::real(symb)) < epsilon) {
-      symbols(i) = std::complex<double>(0.0, std::imag(symb));
-    }
-    else if (std::fabs(std::imag(symb)) < epsilon) {
-      symbols(i) = std::complex<double>(std::real(symb), 0.0);
-    }
-    else {
-      symbols(i) = symb;
-    }
+  float r1, r2;
+  float r3 = 1.0f;
 
-    bits2symbols(bin2dec(bitmap.get_row(i))) = i;
+  CODE_RATE rate = C3_4;
+
+  switch(rate)
+  {
+  case C3_4:
+	  r1 = r3 / 5.27;
+	  r2 = r1 * 2.84;
+	  break;
+  case C4_5:
+	  r1 = r3 / 4.87;
+	  r2 = r1 * 2.72;
+	  break;
+  case C5_6:
+	  r1 = r3 / 4.64;
+	  r2 = r1 * 2.64;
+	  break;
+  case C8_9:
+	  r1 = r3 / 4.33;
+	  r2 = r1 * 2.54;
+	  break;
+  case C9_10:
+	  r1 = r3 / 4.30;
+	  r2 = r1 * 2.53;
+	  break;
+  default:
+	  r1 = 0;
+	  r2 = 0;
+	  break;
   }
+
+  cvec& m_32apsk = symbols;
+  double M_PI = pi;
+  symbols[0].real( r2 * cos(M_PI / 4.0) );
+  symbols[0].imag( r2 * sin(M_PI / 4.0));
+  m_32apsk[1].real( r2 * cos(5 * M_PI / 12.0));
+  m_32apsk[1].imag( r2 * sin(5 * M_PI / 12.0));
+  m_32apsk[2].real( r2 * cos(-M_PI / 4.0));
+  m_32apsk[2].imag( r2 * sin(-M_PI / 4.0));
+  m_32apsk[3].real( r2 * cos(-5 * M_PI / 12.0));
+  m_32apsk[3].imag( r2 * sin(-5 * M_PI / 12.0));
+  m_32apsk[4].real( r2 * cos(3 * M_PI / 4.0));
+  m_32apsk[4].imag( r2 * sin(3 * M_PI / 4.0));
+  m_32apsk[5].real( r2 * cos(7 * M_PI / 12.0));
+  m_32apsk[5].imag( r2 * sin(7 * M_PI / 12.0));
+  m_32apsk[6].real( r2 * cos(-3 * M_PI / 4.0));
+  m_32apsk[6].imag( r2 * sin(-3 * M_PI / 4.0));
+  m_32apsk[7].real( r2 * cos(-7 * M_PI / 12.0));
+  m_32apsk[7].imag( r2 * sin(-7 * M_PI / 12.0));
+  m_32apsk[8].real( r3 * cos(M_PI / 8.0));
+  m_32apsk[8].imag( r3 * sin(M_PI / 8.0));
+  m_32apsk[9].real( r3 * cos(3 * M_PI / 8.0));
+  m_32apsk[9].imag( r3 * sin(3 * M_PI / 8.0));
+  m_32apsk[10].real( r3 * cos(-M_PI / 4.0));
+  m_32apsk[10].imag( r3 * sin(-M_PI / 4.0));
+  m_32apsk[11].real( r3 * cos(-M_PI / 2.0));
+  m_32apsk[11].imag( r3 * sin(-M_PI / 2.0));
+  m_32apsk[12].real( r3 * cos(3 * M_PI / 4.0));
+  m_32apsk[12].imag( r3 * sin(3 * M_PI / 4.0));
+  m_32apsk[13].real( r3 * cos(M_PI / 2.0));
+  m_32apsk[13].imag( r3 * sin(M_PI / 2.0));
+  m_32apsk[14].real( r3 * cos(-7 * M_PI / 8.0));
+  m_32apsk[14].imag( r3 * sin(-7 * M_PI / 8.0));
+  m_32apsk[15].real( r3 * cos(-5 * M_PI / 8.0));
+  m_32apsk[15].imag( r3 * sin(-5 * M_PI / 8.0));
+  m_32apsk[16].real( r2 * cos(M_PI / 12.0));
+  m_32apsk[16].imag( r2 * sin(M_PI / 12.0));
+  m_32apsk[17].real( r1 * cos(M_PI / 4.0));
+  m_32apsk[17].imag( r1 * sin(M_PI / 4.0));
+  m_32apsk[18].real( r2 * cos(-M_PI / 12.0));
+  m_32apsk[18].imag( r2 * sin(-M_PI / 12.0));
+  m_32apsk[19].real( r1 * cos(-M_PI / 4.0));
+  m_32apsk[19].imag( r1 * sin(-M_PI / 4.0));
+  m_32apsk[20].real( r2 * cos(11 * M_PI / 12.0));
+  m_32apsk[20].imag( r2 * sin(11 * M_PI / 12.0));
+  m_32apsk[21].real( r1 * cos(3 * M_PI / 4.0));
+  m_32apsk[21].imag( r1 * sin(3 * M_PI / 4.0));
+  m_32apsk[22].real( r2 * cos(-11 * M_PI / 12.0));
+  m_32apsk[22].imag( r2 * sin(-11 * M_PI / 12.0));
+  m_32apsk[23].real( r1 * cos(-3 * M_PI / 4.0));
+  m_32apsk[23].imag( r1 * sin(-3 * M_PI / 4.0));
+  m_32apsk[24].real( r3 * cos(0.0));
+  m_32apsk[24].imag( r3 * sin(0.0));
+  m_32apsk[25].real( r3 * cos(M_PI / 4.0));
+  m_32apsk[25].imag( r3 * sin(M_PI / 4.0));
+  m_32apsk[26].real( r3 * cos(-M_PI / 8.0));
+  m_32apsk[26].imag( r3 * sin(-M_PI / 8.0));
+  m_32apsk[27].real( r3 * cos(-3 * M_PI / 8.0));
+  m_32apsk[27].imag( r3 * sin(-3 * M_PI / 8.0));
+  m_32apsk[28].real( r3 * cos(7 * M_PI / 8.0));
+  m_32apsk[28].imag( r3 * sin(7 * M_PI / 8.0));
+  m_32apsk[29].real( r3 * cos(5 * M_PI / 8.0));
+  m_32apsk[29].imag( r3 * sin(5 * M_PI / 8.0));
+  m_32apsk[30].real( r3 * cos(M_PI));
+  m_32apsk[30].imag( r3 * sin(M_PI));
+  m_32apsk[31].real( r3 * cos(-3 * M_PI / 4.0));
+  m_32apsk[31].imag( r3 * sin(-3 * M_PI / 4.0));
 
   calculate_softbit_matrices();
 
@@ -73,7 +163,7 @@ void PSK::set_M(int Mary)
 }
 
 
-void PSK::demodulate_bits(const cvec &signal, bvec &out) const
+void APSK32::demodulate_bits(const cvec &signal, bvec &out) const
 {
   it_assert_debug(setup_done, "PSK::demodulate_bits(): Modulator not ready.");
   int est_symbol;
@@ -82,14 +172,25 @@ void PSK::demodulate_bits(const cvec &signal, bvec &out) const
   out.set_size(k*signal.size(), false);
 
   for (int i = 0; i < signal.size(); i++) {
-    ang = std::arg(signal(i));
-    temp = (ang < 0) ? (m_2pi + ang) : ang;
-    est_symbol = round_i(temp * (M >> 1) / pi) % M;
-    out.replace_mid(i*k, bitmap.get_row(est_symbol));
+   
+    est_symbol = 0;
+
+	double distance2 = 1000.0f;
+	for(int j=0;j<M;j++)
+	{
+		double distTemp = std::norm( signal(i) - symbols[j] );
+		if( distTemp<distance2 )
+		{
+			distance2 = distTemp;
+			est_symbol = j;
+		}
+	}
+
+    out.replace_mid(i*k, dec2bin(k, est_symbol));
   }
 }
 
-bvec PSK::demodulate_bits(const cvec &signal) const
+bvec APSK32::demodulate_bits(const cvec &signal) const
 {
   bvec out;
   demodulate_bits(signal, out);
@@ -98,10 +199,10 @@ bvec PSK::demodulate_bits(const cvec &signal) const
 
 
 // ----------------------------------------------------------------------
-// QPSK
+// APSK32
 // ----------------------------------------------------------------------
 
-void QPSK::demodulate_soft_bits(const cvec &rx_symbols, double N0,
+void APSK32::demodulate_soft_bits(const cvec &rx_symbols, double N0,
                                 vec &soft_bits, Soft_Method) const
 {
   soft_bits.set_size(k * rx_symbols.size());
@@ -116,7 +217,7 @@ void QPSK::demodulate_soft_bits(const cvec &rx_symbols, double N0,
   }
 }
 
-vec QPSK::demodulate_soft_bits(const cvec &rx_symbols, double N0,
+vec APSK32::demodulate_soft_bits(const cvec &rx_symbols, double N0,
                                Soft_Method method) const
 {
   vec out;
@@ -125,183 +226,22 @@ vec QPSK::demodulate_soft_bits(const cvec &rx_symbols, double N0,
 }
 
 
-void QPSK::demodulate_soft_bits(const cvec &rx_symbols, const cvec &channel,
-                                double N0, vec &soft_bits,
-                                Soft_Method) const
+void APSK32::modulate_bits( const bvec& bits, cvec& output ) const
 {
-  soft_bits.set_size(2*rx_symbols.size(), false);
-  std::complex<double> temp;
-  double factor = 2 * std::sqrt(2.0) / N0;
-  std::complex<double> exp_pi4 = std::complex<double>(std::cos(pi / 4),
-                                 std::sin(pi / 4));
-  for (int i = 0; i < rx_symbols.size(); i++) {
-    temp = rx_symbols(i) * std::conj(channel(i)) * exp_pi4;
-    soft_bits((i << 1) + 1) = std::real(temp) * factor;
-    soft_bits(i << 1) = std::imag(temp) * factor;
-  }
+	int no_symbols = bits.length() / k;
+	output.set_size(no_symbols);
+	for (int i = 0; i < no_symbols; i++) {
+		bvec bits_k = bits.mid(i * k, k);
+		unsigned int symbol_in = bin2dec(bits_k);
+		output(i) = symbols( symbol_in );
+	}
 }
 
-vec QPSK::demodulate_soft_bits(const cvec &rx_symbols, const cvec &channel,
-                               double N0, Soft_Method method) const
+cvec APSK32::modulate_bits( const bvec& bits ) const
 {
-  vec out;
-  demodulate_soft_bits(rx_symbols, channel, N0, out, method);
-  return out;
-}
-
-
-// ----------------------------------------------------------------------
-// BPSK_c
-// ----------------------------------------------------------------------
-
-void BPSK_c::modulate_bits(const bvec &bits, cvec &out) const
-{
-  out.set_size(bits.size(), false);
-  for (int i = 0; i < bits.size(); i++) {
-    out(i) = (bits(i) == 0 ? 1.0 : -1.0);
-  }
-}
-
-cvec BPSK_c::modulate_bits(const bvec &bits) const
-{
-  cvec out(bits.size());
-  modulate_bits(bits, out);
-  return out;
-}
-
-
-void BPSK_c::demodulate_bits(const cvec &signal, bvec &out) const
-{
-  out.set_size(signal.size(), false);
-  for (int i = 0; i < signal.length(); i++) {
-    out(i) = (std::real(signal(i)) > 0) ? bin(0) : bin(1);
-  }
-}
-
-bvec BPSK_c::demodulate_bits(const cvec &signal) const
-{
-  bvec out(signal.size());
-  demodulate_bits(signal, out);
-  return out;
-}
-
-
-void BPSK_c::demodulate_soft_bits(const cvec &rx_symbols, double N0,
-                                  vec &soft_bits, Soft_Method) const
-{
-  double factor = 4 / N0;
-  soft_bits.set_size(rx_symbols.size(), false);
-
-  for (int i = 0; i < rx_symbols.size(); i++) {
-    soft_bits(i) = factor * std::real(rx_symbols(i));
-  }
-}
-
-vec BPSK_c::demodulate_soft_bits(const cvec &rx_symbols, double N0,
-                                 Soft_Method method) const
-{
-  vec out;
-  demodulate_soft_bits(rx_symbols, N0, out, method);
-  return out;
-}
-
-
-void BPSK_c::demodulate_soft_bits(const cvec &rx_symbols,
-                                  const cvec &channel,
-                                  double N0, vec &soft_bits,
-                                  Soft_Method) const
-{
-  double factor = 4 / N0;
-  soft_bits.set_size(rx_symbols.size(), false);
-
-  for (int i = 0; i < rx_symbols.size(); i++) {
-    soft_bits(i) = factor * std::real(rx_symbols(i) * std::conj(channel(i)));
-  }
-}
-
-vec BPSK_c::demodulate_soft_bits(const cvec &rx_symbols, const cvec &channel,
-                                 double N0, Soft_Method method) const
-{
-  vec out;
-  demodulate_soft_bits(rx_symbols, channel, N0, out, method);
-  return out;
-}
-
-
-// ----------------------------------------------------------------------
-// BPSK
-// ----------------------------------------------------------------------
-
-void BPSK::modulate_bits(const bvec &bits, vec &out) const
-{
-  out.set_size(bits.size(), false);
-  for (int i = 0; i < bits.size(); i++) {
-    out(i) = (bits(i) == 0 ? 1.0 : -1.0);
-  }
-}
-
-vec BPSK::modulate_bits(const bvec &bits) const
-{
-  vec out(bits.size());
-  modulate_bits(bits, out);
-  return out;
-}
-
-
-void BPSK::demodulate_bits(const vec &signal, bvec &out) const
-{
-  out.set_size(signal.size(), false);
-  for (int i = 0; i < signal.length(); i++) {
-    out(i) = (signal(i) > 0) ? bin(0) : bin(1);
-  }
-}
-
-bvec BPSK::demodulate_bits(const vec &signal) const
-{
-  bvec out(signal.size());
-  demodulate_bits(signal, out);
-  return out;
-}
-
-
-void BPSK::demodulate_soft_bits(const vec &rx_symbols, double N0,
-                                vec &soft_bits, Soft_Method) const
-{
-  double factor = 4 / N0;
-  soft_bits.set_size(rx_symbols.size(), false);
-
-  for (int i = 0; i < rx_symbols.size(); i++) {
-    soft_bits(i) = factor * rx_symbols(i);
-  }
-}
-
-vec BPSK::demodulate_soft_bits(const vec &rx_symbols, double N0,
-                               Soft_Method method) const
-{
-  vec out;
-  demodulate_soft_bits(rx_symbols, N0, out, method);
-  return out;
-}
-
-
-void BPSK::demodulate_soft_bits(const vec &rx_symbols, const vec &channel,
-                                double N0, vec &soft_bits,
-                                Soft_Method) const
-{
-  double factor = 4 / N0;
-  soft_bits.set_size(rx_symbols.size(), false);
-
-  for (int i = 0; i < rx_symbols.size(); i++) {
-    soft_bits(i) = factor * (rx_symbols(i) * channel(i));
-  }
-}
-
-vec BPSK::demodulate_soft_bits(const vec &rx_symbols, const vec &channel,
-                               double N0, Soft_Method method) const
-{
-  vec out;
-  demodulate_soft_bits(rx_symbols, channel, N0, out, method);
-  return out;
+	cvec output;
+	modulate_bits(bits, output);
+	return output;
 }
 
 
