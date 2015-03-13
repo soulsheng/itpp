@@ -26,7 +26,7 @@
  * -------------------------------------------------------------------------
  */
 
-#include "modulatorAPSK.h"
+#include "modAPSK32.h"
 #include <itpp/comm/commfunc.h>
 #include <itpp/base/math/elem_math.h>
 #include <itpp/base/specmat.h>

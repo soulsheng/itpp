@@ -8,8 +8,8 @@
     </ClCompile>
     <ClCompile Include="..\dvb\apsk16.cpp" />
     <ClCompile Include="..\dvb\apsk32.cpp" />
-    <ClCompile Include="..\dvb\modulatorAPSK.cpp" />
     <ClCompile Include="..\dvb\modAPSK16.cpp" />
+    <ClCompile Include="..\dvb\modAPSK32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cuda">
@@ -41,7 +41,7 @@
       <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="..\dvb\apsk.h" />
-    <ClInclude Include="..\dvb\modulatorAPSK.h" />
     <ClInclude Include="..\dvb\modAPSK16.h" />
+    <ClInclude Include="..\dvb\modAPSK32.h" />
   </ItemGroup>
 </Project>

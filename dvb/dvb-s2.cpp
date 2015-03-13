@@ -6,7 +6,7 @@
 #include "helper_timer.h"
 //#include "driverUtility.h"
 #include "dvbUtility.h"
-#include "modulatorAPSK.h"
+#include "modAPSK32.h"
 #include "modAPSK16.h"
 
 using namespace std;
