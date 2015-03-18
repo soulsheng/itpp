@@ -6,8 +6,6 @@
     <ClCompile Include="..\dvb\dvbUtility.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\dvb\apsk16.cpp" />
-    <ClCompile Include="..\dvb\apsk32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cuda">
@@ -38,6 +36,5 @@
     <ClInclude Include="..\dvb\helper_timer.h">
       <Filter>utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\dvb\apsk.h" />
   </ItemGroup>
 </Project>

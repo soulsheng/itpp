@@ -11,13 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\dvb\apsk16.cpp" />
-    <ClCompile Include="..\dvb\apsk32.cpp" />
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
     <ClCompile Include="..\dvb\ldpc_gen_datas.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\dvb\apsk.h" />
     <ClInclude Include="..\dvb\dvbUtility.h" />
     <ClInclude Include="..\dvb\helper_timer.h" />
   </ItemGroup>

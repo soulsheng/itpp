@@ -121,8 +121,6 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\dvb\apsk16.cpp" />
-    <ClCompile Include="..\dvb\apsk32.cpp" />
     <ClCompile Include="..\dvb\dvb-s2.cpp" />
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
     <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
@@ -135,7 +133,6 @@
     <None Include="..\dvb\ldpc_bp_decode_kernel.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\dvb\apsk.h" />
     <ClInclude Include="..\dvb\dvbUtility.h" />
     <ClInclude Include="..\dvb\helper_timer.h" />
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
