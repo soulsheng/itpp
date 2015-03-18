@@ -7,94 +7,33 @@
 using namespace itpp;
 using namespace std;
 
-//! Maximum value of vector
-int max(int *v, int N)
-{
-	int tmp = v[0];
-	for (int i = 1; i < N; i++)
-		if (v[i] > tmp)
-			tmp = v[i];
-	return tmp;
-}
-
-//! Minimum value of vector
-int min(int *v, int N)
-{
-	int tmp = v[0];
-	for (int i = 1; i < N; i++)
-		if (v[i] < tmp)
-			tmp = v[i];
-	return tmp;
-}
+#define TEST_HARD_BIT	1
 
 int main(int argc, char **argv)
 {
-	// generate input bit and modulated bit
-	ifstream  testfile;
-	testfile.open( FILENAME_IT );
-	if ( testfile == NULL )
-	{
-		cout << "Can not find ldpc code file - \"random_3_6_16200.it\" in data path!" << endl << "Please run ldpc_gen_codes.exe to generate one.";
-		return 0;
-	}
-	else
-	{
-		cout << "Success to load ldpc code file - \"random_3_6_16200.it\" in data path!" << endl ;
-	}
-	testfile.close();
-
-	cout << "Generating ldpc data file - \"bitfile.dat\" to data path!" << endl ;
-	cout << "Please wait for a few minutes ..." << endl;
-
-	  LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
-	  LDPC_Code ldpc(FILENAME_IT, &G);
-
-	  BCH bch(N_BCH, T_BCH);
 
 	  // Noise variance is N0/2 per dimension
-	  double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
+	  double N0 = pow(10.0, -EBNO / 10.0) / 0.5f;
 	  AWGN_Channel chan(N0 / 2);
 
 	  ModulatorFactory	mods;	// 调制解调器件库
 
-	  ofstream  bitfile;
-	  bitfile.open( "../data/bitfile.dat" );
-	  if ( bitfile == NULL )
-	  {
-		  return 0;
-	  }
-
-	  ofstream  bitfileMOD;
-	  bitfileMOD.open( "../data/bitfileMOD.dat" );
-	  if ( bitfileMOD == NULL )
-	  {
-		  return 0;
-	  }
+	  BERC berc;  // Counters for coded and uncoded BER
+	  BLERC per(SIZE_PACKET); // Counter for coded FER
 
 	  int nldpc = VAR_SIZE_CODE;
-	  int kldpc = CHECK_SIZE_CODE;             // number of bits per codeword
 
-	  int nSplit = kldpc / N_BCH;
-	  int Nbch = nSplit * N_BCH;
-
-	  int Kbch = nSplit * K_BCH;
-
-	  char *bitsPacketsPadding = new char[Kbch];
-	  char *bitsBCH = new char[kldpc];
-	  char *bitsLDPC = new char[nldpc];
-	  double *bitsMOD = new double[nldpc];
+	  char *bitsPacketsPadding = new char[nldpc];
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
-	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
-	  bitfile.write( (char*)&Kbch, sizeof(int)*1);
 
 	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	  {
 		  // step 0: prepare input packets from rand data or file stream
-		  memset( bitsPacketsPadding, 0, sizeof(char)*Kbch );
+		  memset( bitsPacketsPadding, 0, sizeof(char)*nldpc );
 		  srand( (unsigned int)i*CHECK_SIZE_CODE ) ;
 
-		  int nCountPacket = Kbch / SIZE_PACKET;
+		  int nCountPacket = nldpc / SIZE_PACKET;
 		  for (int j = 0; j < nCountPacket; j ++) 
 		  {
 			  char *onePacket = bitsPacketsPadding + j*SIZE_PACKET;
@@ -104,27 +43,11 @@ int main(int argc, char **argv)
 			  }
 		  }
 
-		  bitfile.write(bitsPacketsPadding, sizeof(char)*Kbch);
-
-
 		  // step 1: input message
-		  bvec bitsinBCHEnc( Kbch );
-		  convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
+		  bvec bitsin( nldpc );
+		  convertBufferToVec( bitsPacketsPadding, bitsin );
+		  cout << "bitsin.left(16)" << bitsin.left(16) << endl;
 
-		  bvec bitsinLDPCEnc = zeros_b(kldpc);
-
-#if	REMOVE_BCH
-		  bitsinLDPCEnc.set_subvector(0, bitsinBCHEnc);
-#else
-		  // step 2: bch encode
-		  bvec bitsoutBCHEnc = bch.encode(bitsinBCHEnc);
-
-		  bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
-#endif
-
-		  // step 3: ldpc encode
-		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
-		  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
 		  MOD_TYPE	modType = (MOD_TYPE)MOD_TYPE_DEFAULT;
@@ -136,38 +59,47 @@ int main(int argc, char **argv)
 			  continue;
 		  }
 
-		  cvec	cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
+		  cvec	cMOD = pModulator->modulate_bits(bitsin);
 			cout << "cMOD.left(8)" << cMOD.left(8) << endl;
 
 #if REMOVE_NOISE
-			convertVecToBuffer( bitsMOD, cMOD );	
+			cvec	cAWGN = cMOD;
 #else
 			cvec	cAWGN = chan(cMOD);
-			convertVecToBuffer( bitsMOD, cAWGN );
 
 			cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
 #endif
 
 		  int	nSizeMod = nldpc*2/pModulator->get_k();
 
-			
-		  for ( int j=0; j<nSizeMod; j++ )
-		  	  bitfileMOD << bitsMOD[j] << " " ;
+		  // demodulate
+#if TEST_HARD_BIT
+		  bvec hardbits = pModulator->demodulate_bits( cAWGN );
+		  cout << "hardbits.left(16)" << hardbits.left(16) << endl;
+		  vec softbits(nldpc);
+#else
+		  vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
+		  cout << "softbits.left(16)" << softbits.left(16) << endl;
+#endif
+
+
+		  berc.count(bitsin, hardbits);
+		  per.count(bitsin, hardbits);
 
 	  }
 
-	  bitfile.close();
-	  bitfileMOD.close();
+
+	  cout << "Eb/N0 = " << EBNO << endl << "  Simulated "
+		  << COUNT_REPEAT << " frames made of "
+		  << berc.get_total_bits() << " bits. "
+		  << per.get_total_blocks() << " packets. " << endl
+		  << "Obtained " << berc.get_errors() << " bit errors. "
+		  << " BER: " << berc.get_errorrate() << " . "
+		  << "Obtained " << per.get_errors() << " error packets. "
+		  << " PER: " << per.get_errorrate() << " . "
+		  << endl << endl << flush;
 
 	  free( bitsPacketsPadding );
-	  free( bitsMOD );
-
-	  if ( bitfile != NULL )
-	  {
-		  cout << "Done!" << endl << "Success to generate ldpc data file - \"bitfile.dat\" in data path!" << endl ;
-		  cout << "Please run dvb-s2.exe to demodulate and decode it." << endl ;
-		  return 0;
-	  }
 
 	  system( "pause" );
 
