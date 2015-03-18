@@ -13,10 +13,12 @@
   <ItemGroup>
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
     <ClCompile Include="..\dvb\ldpc_gen_datas.cpp" />
+    <ClCompile Include="..\dvb\modulatorFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\dvbUtility.h" />
     <ClInclude Include="..\dvb\helper_timer.h" />
+    <ClInclude Include="..\dvb\modulatorFactory.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0D453D58-DE37-4718-A255-B8798B986983}</ProjectGuid>

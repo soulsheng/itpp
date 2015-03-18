@@ -6,6 +6,7 @@
 #include "helper_timer.h"
 //#include "driverUtility.h"
 #include "dvbUtility.h"
+#include "modulatorFactory.h"
 
 using namespace std;
 using namespace itpp;
@@ -60,6 +61,8 @@ int main(int argc, char **argv)
 	// Noise variance is N0/2 per dimension
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
 	AWGN_Channel chan(N0 / 2);
+
+	ModulatorFactory	mods;	// 调制解调器件库
 
 	BERC berc;  // Counters for coded and uncoded BER
 	BLERC per(SIZE_PACKET); // Counter for coded FER
@@ -199,8 +202,13 @@ int main(int argc, char **argv)
 		// demodulate
 
 		MOD_TYPE	modType = MOD_QPSK;
-		SymbolTable* pSymbol = new SymbolTable(modType);
-		Modulator_2D * pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+		Modulator_2D* pModulator = mods.findModulator( modType );
+
+		if ( NULL == pModulator )
+		{
+			cout << "can not modulate" << endl;
+			continue;
+		}
 
 		int	nSizeMod = nldpc*2/pModulator->get_k();
 		double *bitsMOD  = new double[nSizeMod];
@@ -286,10 +294,6 @@ int main(int argc, char **argv)
 		sdkStopTimer( &timer );
 		timerValue[i] = sdkGetTimerValue( &timer );
         
-
-		delete pSymbol;
-		delete pModulator;
-
 		free( bitsMOD );
 
     }

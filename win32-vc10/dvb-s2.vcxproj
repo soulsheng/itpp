@@ -124,6 +124,7 @@
     <ClCompile Include="..\dvb\dvb-s2.cpp" />
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
     <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
+    <ClCompile Include="..\dvb\modulatorFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\dvb\ldpc_bp_decode.cu" />
@@ -136,6 +137,7 @@
     <ClInclude Include="..\dvb\dvbUtility.h" />
     <ClInclude Include="..\dvb\helper_timer.h" />
     <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
+    <ClInclude Include="..\dvb\modulatorFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

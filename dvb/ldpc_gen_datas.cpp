@@ -2,6 +2,7 @@
 
 #include <itpp/itcomm.h>
 #include "dvbUtility.h"
+#include "modulatorFactory.h"
 
 using namespace itpp;
 using namespace std;
@@ -68,6 +69,7 @@ int main(int argc, char **argv)
 	  double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
 	  AWGN_Channel chan(N0 / 2);
 
+	  ModulatorFactory	mods;	// 调制解调器件库
 
 	  ofstream  bitfile;
 	  bitfile.open( "../data/bitfile.dat" );
@@ -135,10 +137,15 @@ int main(int argc, char **argv)
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
 		  MOD_TYPE	modType = MOD_QPSK;
-		  SymbolTable* pSymbol = new SymbolTable(modType);
-		  Modulator_2D* pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+		  Modulator_2D* pModulator = mods.findModulator( modType );
 
-			cvec	cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
+		  if ( NULL == pModulator )
+		  {
+			  cout << "can not modulate" << endl;
+			  continue;
+		  }
+
+		  cvec	cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
 			cout << "cMOD.left(8)" << cMOD.left(8) << endl;
 
 			cvec	cAWGN = chan(cMOD);
@@ -151,9 +158,6 @@ int main(int argc, char **argv)
 			
 		  for ( int j=0; j<nSizeMod; j++ )
 		  	  bitfileMOD << bitsMOD[j] << " " ;
-
-		  delete pSymbol;
-		  delete pModulator;
 
 	  }
 
