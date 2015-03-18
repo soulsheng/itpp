@@ -584,4 +584,135 @@ bvec PAM::demodulate_bits(const vec &signal) const
   return temp;
 }
 
+
+SymbolTable::SymbolTable( int k, CODE_RATE rate, FRAME_TYPE framesize )
+{
+	this->k = k;
+	this->rate = rate;
+	this->framesize = framesize;
+
+	int m = 1<<k;
+	symbols.set_size( m );
+
+	bits10symbols.set_size( m );
+	bits2symbols.set_size( m );
+	for (int i=0; i<m; i++)
+	{
+		bits10symbols[i] = i;
+		bits2symbols[i] = dec2bin(k, i);
+	}
+
+	switch(k)
+	{
+	case 2:
+		r1 = 1;
+
+		symbols[0].real( r1 * cos(pi / 4.0));
+		symbols[0].imag( r1 * sin(pi / 4.0));
+		symbols[1].real( r1 * cos(-pi / 4.0));
+		symbols[1].imag( r1 * sin(-pi / 4.0));
+		symbols[2].real( r1 * cos(3 * pi / 4.0));
+		symbols[2].imag( r1 * sin(3 * pi / 4.0));
+		symbols[3].real( r1 * cos(-3 * pi / 4.0));
+		symbols[3].imag( r1 * sin(-3 * pi / 4.0));
+
+		break;
+
+	case 4:
+		r2 = 1.0f;
+		if (framesize == FECFRAME_NORMAL)
+		{
+			switch(rate)
+			{
+			case C2_3:
+				r1 = r2 / 3.15;
+				break;
+			case C3_4:
+				r1 = r2 / 2.85;
+				break;
+			case C4_5:
+				r1 = r2 / 2.75;
+				break;
+			case C5_6:
+				r1 = r2 / 2.70;
+				break;
+			case C8_9:
+				r1 = r2 / 2.60;
+				break;
+			case C9_10:
+				r1 = r2 / 2.57;
+				break;
+
+			default:
+				r1 = 0;
+				break;
+			}
+		}
+		else
+		{
+			switch(rate)
+			{
+			case C2_3:
+				r1 = r2 / 3.15;
+				break;
+			case C3_4:
+				r1 = r2 / 2.85;
+				break;
+			case C4_5:
+				r1 = r2 / 2.75;
+				break;
+			case C5_6:
+				r1 = r2 / 2.70;
+				break;
+			case C8_9:
+				r1 = r2 / 2.60;
+				break;
+
+			default:
+				r1 = 0;
+				break;
+			}
+		}
+
+
+		symbols[0].real( r2 * cos(pi / 4.0));
+		symbols[0].imag( r2 * sin(pi / 4.0));
+		symbols[1].real( r2 * cos(-pi / 4.0));
+		symbols[1].imag( r2 * sin(-pi / 4.0));
+		symbols[2].real( r2 * cos(3 * pi / 4.0));
+		symbols[2].imag( r2 * sin(3 * pi / 4.0));
+		symbols[3].real( r2 * cos(-3 * pi / 4.0));
+		symbols[3].imag( r2 * sin(-3 * pi / 4.0));
+		symbols[4].real( r2 * cos(pi / 12.0));
+		symbols[4].imag( r2 * sin(pi / 12.0));
+		symbols[5].real( r2 * cos(-pi / 12.0));
+		symbols[5].imag( r2 * sin(-pi / 12.0));
+		symbols[6].real( r2 * cos(11 * pi / 12.0));
+		symbols[6].imag( r2 * sin(11 * pi / 12.0));
+		symbols[7].real( r2 * cos(-11 * pi / 12.0));
+		symbols[7].imag( r2 * sin(-11 * pi / 12.0));
+		symbols[8].real( r2 * cos(5 * pi / 12.0));
+		symbols[8].imag( r2 * sin(5 * pi / 12.0));
+		symbols[9].real( r2 * cos(-5 * pi / 12.0));
+		symbols[9].imag( r2 * sin(-5 * pi / 12.0));
+		symbols[10].real( r2 * cos(7 * pi / 12.0));
+		symbols[10].imag( r2 * sin(7 * pi / 12.0));
+		symbols[11].real( r2 * cos(-7 * pi / 12.0));
+		symbols[11].imag( r2 * sin(-7 * pi / 12.0));
+		symbols[12].real( r1 * cos(pi / 4.0));
+		symbols[12].imag( r1 * sin(pi / 4.0));
+		symbols[13].real( r1 * cos(-pi / 4.0));
+		symbols[13].imag( r1 * sin(-pi / 4.0));
+		symbols[14].real( r1 * cos(3 * pi / 4.0));
+		symbols[14].imag( r1 * sin(3 * pi / 4.0));
+		symbols[15].real( r1 * cos(-3 * pi / 4.0));
+		symbols[15].imag( r1 * sin(-3 * pi / 4.0));
+		
+		break;
+
+	default:
+		break;
+	}
+}
+
 } // namespace itpp

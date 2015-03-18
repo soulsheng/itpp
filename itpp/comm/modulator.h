@@ -732,8 +732,41 @@ public:
   vec demodulate_soft_bits(const cvec& rx_symbols, const cvec& channel,
                            double N0, Soft_Method method = LOGMAP) const;
 };
+#if 1
 
 
+enum CODE_RATE
+{
+	C2_3,
+	C3_4,
+	C4_5,
+	C5_6,
+	C8_9,
+	C9_10
+};
+
+enum FRAME_TYPE
+{
+	FECFRAME_NORMAL,
+	FECFRAME_SHORT
+};
+
+struct SymbolTable
+{
+	cvec	symbols;
+	ivec	bits10symbols;
+	Vec<bvec>	bits2symbols;
+	int		k;
+	double  r1, r2, r3;
+	CODE_RATE rate;
+	FRAME_TYPE framesize;
+
+	SymbolTable(int k, CODE_RATE rate=C3_4, FRAME_TYPE framesize=FECFRAME_NORMAL);
+	cvec&	getSymbols()	{ return symbols;}
+	ivec&	getBits10Symbols()	{ return bits10symbols;}
+};
+
+#endif
 // ----------------------------------------------------------------------
 // BPSK_c : PSK : Modulator<std::complex<double> >
 // ----------------------------------------------------------------------

@@ -15,7 +15,7 @@ using namespace itpp;
 //#define		FILENAME_IT		"../data/RU_16200.it"
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		FILENAME_ALIST	"../data/dvbs2_r12.alist"
-#define		EBNO			2.20
+#define		EBNO			10//2.20
 //#define		COUNT_REPEAT	10	// repeat time 
 #define		TIME_STEP		4	
 
@@ -67,9 +67,15 @@ int main(int argc, char **argv)
 #endif
 	BCH bch(N_BCH, T_BCH);
 
-	MOD_TYPE	modType = MOD_32APSK;
+	MOD_TYPE	modType = MOD_QPSK;
 
+#if 0
 	QPSK qpsk;
+#else
+	SymbolTable* pSymbol = new SymbolTable(2);
+	Modulator_2D * pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+#endif
+
 	BPSK bpsk;
 	APSK32 apsk32(32);
 	APSK16 apsk16(16);
@@ -178,8 +184,31 @@ int main(int argc, char **argv)
 	bitfile.read( (char*)&Kbch, sizeof(int)*1);
 	//cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
 
+	int nSizeMod = nldpc;
+	switch( modType )
+	{
+	case MOD_QPSK:
+		nSizeMod = nldpc*2/pModulator->get_k();
+		break;
+
+	case MOD_8PSK:
+		nSizeMod = nldpc*2/3;
+		break;
+
+	case MOD_16APSK:
+		nSizeMod = nldpc*2/apsk16.get_k();
+		break;
+
+	case MOD_32APSK:
+		nSizeMod = nldpc*2/apsk32.get_k();
+		break;
+
+
+	}
+	
+
 	char *bitsPacketsPadding = new char[Kbch];
-	double *bitsMOD_N  = new double[nldpc*COUNT_REPEAT];
+	double *bitsMOD_N  = new double[nSizeMod*COUNT_REPEAT];
 	char *bitsLDPC = new char[nldpc];
 	double *softbits_buf = new double[nldpc];
 
@@ -204,8 +233,8 @@ int main(int argc, char **argv)
 
 		
 		// Received data stream, read from file by trunk length nldpc=16200
-		for ( int j=0; j<nldpc; j++ )
-			bitfileMOD >> bitsMOD_N[j+i*nldpc] ;
+		for ( int j=0; j<nSizeMod; j++ )
+			bitfileMOD >> bitsMOD_N[j+i*nSizeMod] ;
 	}
 
 	int nTimeStep = 0;
@@ -221,7 +250,7 @@ int main(int argc, char **argv)
 
 		// demodulate
 		vec		dAWGN( nldpc );
-		cvec	cAWGN( nldpc/2 );
+		cvec	cAWGN( nSizeMod/2 );
 
 		vec softbits;
 		bvec hardbits;
@@ -229,36 +258,43 @@ int main(int argc, char **argv)
 		switch ( modType )
 		{
 		case MOD_BPSK:
-			convertBufferToVec( bitsMOD_N+i*nldpc, dAWGN );
+			convertBufferToVec( bitsMOD_N+i*nSizeMod, dAWGN );
 			softbits = bpsk.demodulate_soft_bits(dAWGN, N0);
 			break;
 
 		case MOD_QPSK:
-			convertBufferToVec( bitsMOD_N+i*nldpc, cAWGN );
-			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
+			convertBufferToVec( bitsMOD_N+i*nSizeMod, cAWGN );
+
+			cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
+
+			softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
+
+			cout << "softbits.left(16)" << softbits.left(16) << endl;
+
 			break;
 
 		case MOD_16APSK:
-			convertBufferToVec( bitsMOD_N+i*nldpc, cAWGN );
+			convertBufferToVec( bitsMOD_N+i*nSizeMod, cAWGN );
 
 			cout << "cAWGN.left(4)" << cAWGN.left(4) << endl;
-#if 1
+#if 0
 			hardbits = apsk16.demodulate_bits( cAWGN );
-#else
-			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
-#endif
 			cout << "hardbits.left(16)" << hardbits.left(16) << endl;
+#else
+			softbits = apsk16.demodulate_soft_bits(cAWGN, N0);
+			cout << "softbits.left(16)" << softbits.left(16) << endl;
+#endif
 
 			break;
 
 		case MOD_32APSK:
-			convertBufferToVec( bitsMOD_N+i*nldpc, cAWGN );
+			convertBufferToVec( bitsMOD_N+i*nSizeMod, cAWGN );
 			cout << "cAWGN.left(3)" << cAWGN.left(3) << endl;
 
 #if 1
 			hardbits = apsk32.demodulate_bits( cAWGN );
 #else
-			softbits = qpsk.demodulate_soft_bits(cAWGN, N0);
+			softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
 #endif
 			cout << "hardbits.left(15)" << hardbits.left(15) << endl;
 

@@ -9,7 +9,7 @@ using namespace itpp;
 using namespace std;
 
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
-#define		EBNO			2.20
+#define		EBNO			100//2.20
 
 #define		COUNT_REPEAT_DEF	1	// repeat time 
 #define		SIZE_PACKET		188
@@ -74,9 +74,15 @@ int main(int argc, char **argv)
 
 	  BCH bch(N_BCH, T_BCH);
 
-	  MOD_TYPE	modType = MOD_32APSK;
+	  MOD_TYPE	modType = MOD_QPSK;
 
+#if 0
 	  QPSK qpsk;
+#else
+	  SymbolTable* pSymbol = new SymbolTable(2);
+	  Modulator_2D* pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+#endif
+
 	  BPSK bpsk;
 	  APSK32 apsk32(32);
 	  APSK16 apsk16(16);
@@ -112,6 +118,8 @@ int main(int argc, char **argv)
 	  char *bitsBCH = new char[kldpc];
 	  char *bitsLDPC = new char[nldpc];
 	  double *bitsMOD = new double[nldpc];
+
+	  int nSizeMod = nldpc;
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
@@ -164,12 +172,25 @@ int main(int argc, char **argv)
 			  dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
 			  dAWGN = chan(dMOD);
 			  convertVecToBuffer( bitsMOD, dAWGN );
+
+			  nSizeMod = nldpc*2/bpsk.get_k();
+
 			  break;
 
 		  case MOD_QPSK:
-			  cMOD = qpsk.modulate_bits(bitsoutLDPCEnc);
+
+			  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
+
+			  cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
+			  cout << "cMOD.left(8)" << cMOD.left(8) << endl;
+
 			  cAWGN = chan(cMOD);
 			  convertVecToBuffer( bitsMOD, cAWGN );
+
+			  cout << "cMOD.left(8)" << cAWGN.left(8) << endl;
+
+			  nSizeMod = nldpc*2/pModulator->get_k();
+
 			  break;
 
 		  case MOD_16APSK:
@@ -177,9 +198,14 @@ int main(int argc, char **argv)
 			  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
 			  cMOD = apsk16.modulate_bits(bitsoutLDPCEnc);
+			  cout << "cMOD.left(4)" << cMOD.left(4) << endl;
+			  cAWGN = chan(cMOD);
+
 			  convertVecToBuffer( bitsMOD, cMOD );
 
-			  cout << "cMOD.left(4)" << cMOD.left(4) << endl;
+			  cout << "cAWGN.left(4)" << cAWGN.left(4) << endl;
+
+			  nSizeMod = nldpc*2/apsk16.get_k();
 
 			  break;
 
@@ -196,13 +222,16 @@ int main(int argc, char **argv)
 
 			  cout << "cMOD.left(3)" << cMOD.left(3) << endl;
 #endif
+
+			  nSizeMod = nldpc*2/apsk32.get_k();
+
 			  break;
 
 		  default:
 			  break;;
 		  }
 
-		  for ( int j=0; j<nldpc; j++ )
+		  for ( int j=0; j<nSizeMod; j++ )
 		  	  bitfileMOD << bitsMOD[j] << " " ;
 
 	  }
