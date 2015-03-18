@@ -14,7 +14,6 @@ using namespace itpp;
 //#define		FILENAME_IT		"../data/RU_16200.it"
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		FILENAME_ALIST	"../data/dvbs2_r12.alist"
-#define		EBNO			2.20
 //#define		COUNT_REPEAT	10	// repeat time 
 #define		TIME_STEP		4	
 
@@ -27,6 +26,15 @@ using namespace itpp;
 #define		USE_GPU		1
 #define		USE_ALIST		0
 
+#define		REMOVE_NOISE		0
+
+#if REMOVE_NOISE
+#define		EBNO			10
+#else
+#define		EBNO			2.2
+#endif
+
+#define		REMOVE_BCH			1
 
 int main(int argc, char **argv)
 {
@@ -201,7 +209,7 @@ int main(int argc, char **argv)
 
 		// demodulate
 
-		MOD_TYPE	modType = MOD_QPSK;
+		MOD_TYPE	modType = MOD_32APSK;
 		Modulator_2D* pModulator = mods.findModulator( modType );
 
 		if ( NULL == pModulator )
@@ -223,6 +231,7 @@ int main(int argc, char **argv)
 #if 0
 		bvec hardbits = pModulator->demodulate_bits( cAWGN );
 		cout << "hardbits.left(16)" << hardbits.left(16) << endl;
+		vec softbits(nldpc);
 #else
 		vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
 		cout << "softbits.left(16)" << softbits.left(16) << endl;
@@ -274,16 +283,28 @@ int main(int argc, char **argv)
 
 
 		// step 8: bch decode
-		bvec bitsoutBCHDec = bch.decode(bitsinBCHDec);
+		bvec bitsoutBCHDec = bitsinBCHDec.left( Kbch );
+
+#if		!REMOVE_BCH
+		bitsoutBCHDec = bch.decode(bitsinBCHDec);
+
+		for( int ik=0;ik<5;ik++){
+			cout << " inBCH.left(16): " << bitsinBCHDec.mid(1000*ik,16) << "of " << ik << endl;
+			cout << "outBCH.left(16): " << bitsoutBCHDec.mid(1000*ik,16) << "of " << ik << endl;
+		}
 
 		sdkStopTimer( &timerStep );
 		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );
 
 		sdkResetTimer( &timerStep );
 		sdkStartTimer( &timerStep );
+#endif
 
 		// step 9: verify result, Count the number of errors
 		bitsinBCHEnc = bitsinBCHEnc_N.mid(i*Kbch, Kbch);
+
+		cout << " in.left(16): " << bitsinBCHEnc.left(16) << endl;
+		cout << "out.left(16): " << bitsoutBCHDec.left(16) << endl;
 
 		berc.count(bitsinBCHEnc, bitsoutBCHDec);
 		per.count(bitsinBCHEnc, bitsoutBCHDec);

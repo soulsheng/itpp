@@ -20,6 +20,8 @@ using namespace std;
 #define		VAR_SIZE_CODE		16200
 #define		CHECK_SIZE_CODE		8100//8073
 
+#define		REMOVE_NOISE		0
+#define		REMOVE_BCH			1
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -125,18 +127,23 @@ int main(int argc, char **argv)
 		  bvec bitsinBCHEnc( Kbch );
 		  convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
 
+		  bvec bitsinLDPCEnc = zeros_b(kldpc);
+
+#if	REMOVE_BCH
+		  bitsinLDPCEnc.set_subvector(0, bitsinBCHEnc);
+#else
 		  // step 2: bch encode
 		  bvec bitsoutBCHEnc = bch.encode(bitsinBCHEnc);
 
-		  bvec bitsinLDPCEnc = zeros_b(kldpc);
 		  bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
+#endif
 
 		  // step 3: ldpc encode
 		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
 		  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
-		  MOD_TYPE	modType = MOD_QPSK;
+		  MOD_TYPE	modType = MOD_32APSK;
 		  Modulator_2D* pModulator = mods.findModulator( modType );
 
 		  if ( NULL == pModulator )
@@ -148,10 +155,14 @@ int main(int argc, char **argv)
 		  cvec	cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
 			cout << "cMOD.left(8)" << cMOD.left(8) << endl;
 
+#if REMOVE_NOISE
+			convertVecToBuffer( bitsMOD, cMOD );	
+#else
 			cvec	cAWGN = chan(cMOD);
 			convertVecToBuffer( bitsMOD, cAWGN );
 
 			cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
+#endif
 
 		  int	nSizeMod = nldpc*2/pModulator->get_k();
 
