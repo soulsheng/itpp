@@ -734,6 +734,16 @@ public:
 };
 #if 1
 
+enum	MOD_TYPE
+{
+	MOD_DEFAULT,//	0
+	MOD_BPSK,	//	1
+	MOD_QPSK,	//	2
+	MOD_8PSK,	//	3
+	MOD_16APSK,	//	4
+	MOD_32APSK,	//	5
+	MOD_COUNT	//	6
+};
 
 enum CODE_RATE
 {

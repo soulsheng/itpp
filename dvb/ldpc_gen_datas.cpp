@@ -19,14 +19,6 @@ using namespace std;
 #define		VAR_SIZE_CODE		16200
 #define		CHECK_SIZE_CODE		8100//8073
 
-enum	MOD_TYPE
-{
-	MOD_BPSK,	//	0-
-	MOD_QPSK,	//	1-
-	MOD_8PSK,	//	2-
-	MOD_16APSK,	//	3- 
-	MOD_32APSK	//	4-
-};
 
 //! Maximum value of vector
 int max(int *v, int N)
@@ -72,26 +64,6 @@ int main(int argc, char **argv)
 
 	  BCH bch(N_BCH, T_BCH);
 
-	  MOD_TYPE	modType = MOD_QPSK;
-
-#if 0
-	  QPSK qpsk;
-#else
-	  SymbolTable* pSymbol = new SymbolTable(2);
-	  Modulator_2D* pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
-#endif
-
-	  BPSK bpsk;
-#if 0
-	  APSK32 apsk32(32);
-	  APSK16 apsk16(16);
-#else
-	  SymbolTable* pSymbol4 = new SymbolTable(4);
-	  Modulator_2D* pModulator4 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
-
-	  SymbolTable* pSymbol5 = new SymbolTable(5);
-	  Modulator_2D* pModulator5 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
-#endif
 	  // Noise variance is N0/2 per dimension
 	  double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
 	  AWGN_Channel chan(N0 / 2);
@@ -123,8 +95,6 @@ int main(int argc, char **argv)
 	  char *bitsBCH = new char[kldpc];
 	  char *bitsLDPC = new char[nldpc];
 	  double *bitsMOD = new double[nldpc];
-
-	  int nSizeMod = nldpc;
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
@@ -161,83 +131,29 @@ int main(int argc, char **argv)
 
 		  // step 3: ldpc encode
 		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
-
+		  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
-		  vec	dMOD;	// double vector
-		  cvec	cMOD;	// complex vector
+		  MOD_TYPE	modType = MOD_QPSK;
+		  SymbolTable* pSymbol = new SymbolTable(modType);
+		  Modulator_2D* pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
 
-		  // Received data
-		  vec	dAWGN;
-		  cvec	cAWGN;
+			cvec	cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
+			cout << "cMOD.left(8)" << cMOD.left(8) << endl;
 
-		  switch ( modType )
-		  {
-		  case MOD_BPSK:
-			  dMOD = bpsk.modulate_bits(bitsoutLDPCEnc);
-			  dAWGN = chan(dMOD);
-			  convertVecToBuffer( bitsMOD, dAWGN );
+			cvec	cAWGN = chan(cMOD);
+			convertVecToBuffer( bitsMOD, cAWGN );
 
-			  nSizeMod = nldpc*2/bpsk.get_k();
+			cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
 
-			  break;
+		  int	nSizeMod = nldpc*2/pModulator->get_k();
 
-		  case MOD_QPSK:
-
-			  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
-
-			  cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
-			  cout << "cMOD.left(8)" << cMOD.left(8) << endl;
-
-			  cAWGN = chan(cMOD);
-			  convertVecToBuffer( bitsMOD, cAWGN );
-
-			  cout << "cMOD.left(8)" << cAWGN.left(8) << endl;
-
-			  nSizeMod = nldpc*2/pModulator->get_k();
-
-			  break;
-
-		  case MOD_16APSK:
-
-			  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
-
-			  cMOD = pModulator4->modulate_bits(bitsoutLDPCEnc);
-			  cout << "cMOD.left(4)" << cMOD.left(4) << endl;
-			  cAWGN = chan(cMOD);
-
-			  convertVecToBuffer( bitsMOD, cMOD );
-
-			  cout << "cAWGN.left(4)" << cAWGN.left(4) << endl;
-
-			  nSizeMod = nldpc*2/pModulator4->get_k();
-
-			  break;
-
-		  case MOD_32APSK:
-
-			  cout << "bitsoutLDPCEnc.left(15)" << bitsoutLDPCEnc.left(15) << endl;
-
-			  cMOD = pModulator5->modulate_bits(bitsoutLDPCEnc);
-#if 0
-			  cAWGN = chan(cMOD);
-			  convertVecToBuffer( bitsMOD, cAWGN );
-#else
-			  convertVecToBuffer( bitsMOD, cMOD );
-
-			  cout << "cMOD.left(3)" << cMOD.left(3) << endl;
-#endif
-
-			  nSizeMod = nldpc*2/pModulator5->get_k();
-
-			  break;
-
-		  default:
-			  break;;
-		  }
-
+			
 		  for ( int j=0; j<nSizeMod; j++ )
 		  	  bitfileMOD << bitsMOD[j] << " " ;
+
+		  delete pSymbol;
+		  delete pModulator;
 
 	  }
 

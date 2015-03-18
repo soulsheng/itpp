@@ -26,14 +26,6 @@ using namespace itpp;
 #define		USE_GPU		1
 #define		USE_ALIST		0
 
-enum	MOD_TYPE
-{
-	MOD_BPSK,	//	0-
-	MOD_QPSK,	//	1-
-	MOD_8PSK,	//	2-
-	MOD_16APSK,	//	3- 
-	MOD_32APSK	//	4-
-};
 
 int main(int argc, char **argv)
 {
@@ -64,28 +56,6 @@ int main(int argc, char **argv)
 	LDPC_Code ldpc(FILENAME_IT, &G);
 #endif
 	BCH bch(N_BCH, T_BCH);
-
-	MOD_TYPE	modType = MOD_QPSK;
-
-#if 0
-	QPSK qpsk;
-#else
-	SymbolTable* pSymbol = new SymbolTable(2);
-	Modulator_2D * pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
-#endif
-
-	BPSK bpsk;
-
-#if 0
-	APSK32 apsk32(32);
-	APSK16 apsk16(16);
-#else
-	SymbolTable* pSymbol4 = new SymbolTable(4);
-	Modulator_2D* pModulator4 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
-
-	SymbolTable* pSymbol5 = new SymbolTable(5);
-	Modulator_2D* pModulator5 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
-#endif
 
 	// Noise variance is N0/2 per dimension
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -191,31 +161,7 @@ int main(int argc, char **argv)
 	bitfile.read( (char*)&Kbch, sizeof(int)*1);
 	//cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
 
-	int nSizeMod = nldpc;
-	switch( modType )
-	{
-	case MOD_QPSK:
-		nSizeMod = nldpc*2/pModulator->get_k();
-		break;
-
-	case MOD_8PSK:
-		nSizeMod = nldpc*2/3;
-		break;
-
-	case MOD_16APSK:
-		nSizeMod = nldpc*2/pModulator4->get_k();
-		break;
-
-	case MOD_32APSK:
-		nSizeMod = nldpc*2/pModulator5->get_k();
-		break;
-
-
-	}
-	
-
 	char *bitsPacketsPadding = new char[Kbch];
-	double *bitsMOD_N  = new double[nSizeMod*COUNT_REPEAT];
 	char *bitsLDPC = new char[nldpc];
 	double *softbits_buf = new double[nldpc];
 
@@ -237,11 +183,6 @@ int main(int argc, char **argv)
 		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
 		convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
 		bitsinBCHEnc_N.set_subvector(i*Kbch, bitsinBCHEnc);
-
-		
-		// Received data stream, read from file by trunk length nldpc=16200
-		for ( int j=0; j<nSizeMod; j++ )
-			bitfileMOD >> bitsMOD_N[j+i*nSizeMod] ;
 	}
 
 	int nTimeStep = 0;
@@ -256,60 +197,28 @@ int main(int argc, char **argv)
 		sdkStartTimer( &timerStep );
 
 		// demodulate
-		vec		dAWGN( nldpc );
+
+		MOD_TYPE	modType = MOD_QPSK;
+		SymbolTable* pSymbol = new SymbolTable(modType);
+		Modulator_2D * pModulator = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+
+		int	nSizeMod = nldpc*2/pModulator->get_k();
+		double *bitsMOD  = new double[nSizeMod];
+
+		for ( int j=0; j<nSizeMod; j++ )
+			bitfileMOD >> bitsMOD[j] ;
+
 		cvec	cAWGN( nSizeMod/2 );
+		convertBufferToVec( bitsMOD, cAWGN );
+		cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
 
-		vec softbits;
-		bvec hardbits;
-	
-		switch ( modType )
-		{
-		case MOD_BPSK:
-			convertBufferToVec( bitsMOD_N+i*nSizeMod, dAWGN );
-			softbits = bpsk.demodulate_soft_bits(dAWGN, N0);
-			break;
-
-		case MOD_QPSK:
-			convertBufferToVec( bitsMOD_N+i*nSizeMod, cAWGN );
-
-			cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
-
-			softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
-
-			cout << "softbits.left(16)" << softbits.left(16) << endl;
-
-			break;
-
-		case MOD_16APSK:
-			convertBufferToVec( bitsMOD_N+i*nSizeMod, cAWGN );
-
-			cout << "cAWGN.left(4)" << cAWGN.left(4) << endl;
 #if 0
-			hardbits = pModulator4->demodulate_bits( cAWGN );
-			cout << "hardbits.left(16)" << hardbits.left(16) << endl;
+		bvec hardbits = pModulator->demodulate_bits( cAWGN );
+		cout << "hardbits.left(16)" << hardbits.left(16) << endl;
 #else
-			softbits = pModulator4->demodulate_soft_bits(cAWGN, N0);
-			cout << "softbits.left(16)" << softbits.left(16) << endl;
+		vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
+		cout << "softbits.left(16)" << softbits.left(16) << endl;
 #endif
-
-			break;
-
-		case MOD_32APSK:
-			convertBufferToVec( bitsMOD_N+i*nSizeMod, cAWGN );
-			cout << "cAWGN.left(3)" << cAWGN.left(3) << endl;
-
-#if 1
-			hardbits = pModulator5->demodulate_bits( cAWGN );
-#else
-			softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
-#endif
-			cout << "hardbits.left(15)" << hardbits.left(15) << endl;
-
-			break;
-
-		default:
-			break;;
-		}
 
 
 		sdkStopTimer( &timerStep );
@@ -377,7 +286,12 @@ int main(int argc, char **argv)
 		sdkStopTimer( &timer );
 		timerValue[i] = sdkGetTimerValue( &timer );
         
-		
+
+		delete pSymbol;
+		delete pModulator;
+
+		free( bitsMOD );
+
     }
 
 	cout << "Eb/N0 = " << EBNO << endl << "  Simulated "
@@ -435,7 +349,6 @@ int main(int argc, char **argv)
 	free( bitsPacketsPadding );
 	bitfile.close();
 
-	free( bitsMOD_N );
 	bitfileMOD.close();
 
 	free( bitsLDPC );
