@@ -39,22 +39,6 @@ namespace itpp
 // APSK16(4,12)
 // ----------------------------------------------------------------------
 
-enum CODE_RATE
-{
-	C2_3,
-	C3_4,
-	C4_5,
-	C5_6,
-	C8_9,
-	C9_10
-};
-
-enum FRAME_TYPE
-{
-	FECFRAME_NORMAL,
-	FECFRAME_SHORT
-};
-
 void APSK16::set_M(int Mary)
 {
   k = levels2bits(Mary);
@@ -160,6 +144,19 @@ void APSK16::set_M(int Mary)
   m_16apsk[15].real( r1 * cos(-3 * M_PI / 4.0));
   m_16apsk[15].imag( r1 * sin(-3 * M_PI / 4.0));
 
+  // W1, W2
+  double rightA = r2 * cos( M_PI/4 );
+  double leftA2 = r2 * cos( M_PI*5/12 );
+  double leftA1 = r1 * cos( M_PI/4 );
+  double leftA = leftA2 > leftA1 ? leftA2 : leftA1;
+  W = ( rightA + leftA )*0.5f ;
+
+  // factor
+  double alpha = 1.2703f;
+  double amp = (4*r1 + 12*r2)/16;
+  factor = alpha * amp ;
+
+
   calculate_softbit_matrices();
 
   setup_done = true;
@@ -203,14 +200,15 @@ void APSK16::demodulate_soft_bits(const cvec &rx_symbols, double N0,
                                 vec &soft_bits, Soft_Method) const
 {
   soft_bits.set_size(k * rx_symbols.size());
-  std::complex<double> temp;
-  double factor = 2 * std::sqrt(2.0) / N0;
-  std::complex<double> exp_pi4 = std::complex<double>(std::cos(pi / 4),
-                                 std::sin(pi / 4));
+ 
   for (int i = 0; i < rx_symbols.size(); i++) {
-    temp = rx_symbols(i) * exp_pi4;
-    soft_bits((i << 1) + 1) = std::real(temp) * factor;
-    soft_bits(i << 1) = std::imag(temp) * factor;
+	double a = std::real( rx_symbols(i) );
+	double b = std::imag( rx_symbols(i) );
+   
+	soft_bits((i * k) + 3) = W - fabs(a);
+	soft_bits((i * k) + 2) = W - fabs(b);
+    soft_bits((i * k) + 1) = -a;
+    soft_bits(i * k) = -b;
   }
 }
 

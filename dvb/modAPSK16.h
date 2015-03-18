@@ -115,6 +115,8 @@ public:
   vec demodulate_soft_bits(const cvec& rx_symbols, double N0,
                            Soft_Method method = LOGMAP) const;
 
+  double	W ; // W1 = W2
+  double	factor;
 };
 
 } // namespace itpp
