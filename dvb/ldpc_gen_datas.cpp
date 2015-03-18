@@ -2,8 +2,6 @@
 
 #include <itpp/itcomm.h>
 #include "dvbUtility.h"
-#include "modAPSK32.h"
-#include "modAPSK16.h"
 
 using namespace itpp;
 using namespace std;
@@ -84,9 +82,16 @@ int main(int argc, char **argv)
 #endif
 
 	  BPSK bpsk;
+#if 0
 	  APSK32 apsk32(32);
 	  APSK16 apsk16(16);
+#else
+	  SymbolTable* pSymbol4 = new SymbolTable(4);
+	  Modulator_2D* pModulator4 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
 
+	  SymbolTable* pSymbol5 = new SymbolTable(5);
+	  Modulator_2D* pModulator5 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+#endif
 	  // Noise variance is N0/2 per dimension
 	  double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
 	  AWGN_Channel chan(N0 / 2);
@@ -197,7 +202,7 @@ int main(int argc, char **argv)
 
 			  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
-			  cMOD = apsk16.modulate_bits(bitsoutLDPCEnc);
+			  cMOD = pModulator4->modulate_bits(bitsoutLDPCEnc);
 			  cout << "cMOD.left(4)" << cMOD.left(4) << endl;
 			  cAWGN = chan(cMOD);
 
@@ -205,7 +210,7 @@ int main(int argc, char **argv)
 
 			  cout << "cAWGN.left(4)" << cAWGN.left(4) << endl;
 
-			  nSizeMod = nldpc*2/apsk16.get_k();
+			  nSizeMod = nldpc*2/pModulator4->get_k();
 
 			  break;
 
@@ -213,7 +218,7 @@ int main(int argc, char **argv)
 
 			  cout << "bitsoutLDPCEnc.left(15)" << bitsoutLDPCEnc.left(15) << endl;
 
-			  cMOD = apsk32.modulate_bits(bitsoutLDPCEnc);
+			  cMOD = pModulator5->modulate_bits(bitsoutLDPCEnc);
 #if 0
 			  cAWGN = chan(cMOD);
 			  convertVecToBuffer( bitsMOD, cAWGN );
@@ -223,7 +228,7 @@ int main(int argc, char **argv)
 			  cout << "cMOD.left(3)" << cMOD.left(3) << endl;
 #endif
 
-			  nSizeMod = nldpc*2/apsk32.get_k();
+			  nSizeMod = nldpc*2/pModulator5->get_k();
 
 			  break;
 

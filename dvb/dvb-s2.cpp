@@ -6,8 +6,6 @@
 #include "helper_timer.h"
 //#include "driverUtility.h"
 #include "dvbUtility.h"
-#include "modAPSK32.h"
-#include "modAPSK16.h"
 
 using namespace std;
 using namespace itpp;
@@ -77,8 +75,17 @@ int main(int argc, char **argv)
 #endif
 
 	BPSK bpsk;
+
+#if 0
 	APSK32 apsk32(32);
 	APSK16 apsk16(16);
+#else
+	SymbolTable* pSymbol4 = new SymbolTable(4);
+	Modulator_2D* pModulator4 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+
+	SymbolTable* pSymbol5 = new SymbolTable(5);
+	Modulator_2D* pModulator5 = new Modulator_2D( pSymbol->getSymbols(), pSymbol->getBits10Symbols() );
+#endif
 
 	// Noise variance is N0/2 per dimension
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -196,11 +203,11 @@ int main(int argc, char **argv)
 		break;
 
 	case MOD_16APSK:
-		nSizeMod = nldpc*2/apsk16.get_k();
+		nSizeMod = nldpc*2/pModulator4->get_k();
 		break;
 
 	case MOD_32APSK:
-		nSizeMod = nldpc*2/apsk32.get_k();
+		nSizeMod = nldpc*2/pModulator5->get_k();
 		break;
 
 
@@ -278,10 +285,10 @@ int main(int argc, char **argv)
 
 			cout << "cAWGN.left(4)" << cAWGN.left(4) << endl;
 #if 0
-			hardbits = apsk16.demodulate_bits( cAWGN );
+			hardbits = pModulator4->demodulate_bits( cAWGN );
 			cout << "hardbits.left(16)" << hardbits.left(16) << endl;
 #else
-			softbits = apsk16.demodulate_soft_bits(cAWGN, N0);
+			softbits = pModulator4->demodulate_soft_bits(cAWGN, N0);
 			cout << "softbits.left(16)" << softbits.left(16) << endl;
 #endif
 
@@ -292,7 +299,7 @@ int main(int argc, char **argv)
 			cout << "cAWGN.left(3)" << cAWGN.left(3) << endl;
 
 #if 1
-			hardbits = apsk32.demodulate_bits( cAWGN );
+			hardbits = pModulator5->demodulate_bits( cAWGN );
 #else
 			softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
 #endif

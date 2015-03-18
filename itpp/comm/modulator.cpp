@@ -710,6 +710,104 @@ SymbolTable::SymbolTable( int k, CODE_RATE rate, FRAME_TYPE framesize )
 		
 		break;
 
+	case 5:
+		r3 = 1.0f;
+
+		switch(rate)
+		{
+		case C3_4:
+			r1 = r3 / 5.27;
+			r2 = r1 * 2.84;
+			break;
+		case C4_5:
+			r1 = r3 / 4.87;
+			r2 = r1 * 2.72;
+			break;
+		case C5_6:
+			r1 = r3 / 4.64;
+			r2 = r1 * 2.64;
+			break;
+		case C8_9:
+			r1 = r3 / 4.33;
+			r2 = r1 * 2.54;
+			break;
+		case C9_10:
+			r1 = r3 / 4.30;
+			r2 = r1 * 2.53;
+			break;
+		default:
+			r1 = 0;
+			r2 = 0;
+			break;
+		}
+
+		symbols[0].real( r2 * cos(pi / 4.0) );
+		symbols[0].imag( r2 * sin(pi / 4.0));
+		symbols[1].real( r2 * cos(5 * pi / 12.0));
+		symbols[1].imag( r2 * sin(5 * pi / 12.0));
+		symbols[2].real( r2 * cos(-pi / 4.0));
+		symbols[2].imag( r2 * sin(-pi / 4.0));
+		symbols[3].real( r2 * cos(-5 * pi / 12.0));
+		symbols[3].imag( r2 * sin(-5 * pi / 12.0));
+		symbols[4].real( r2 * cos(3 * pi / 4.0));
+		symbols[4].imag( r2 * sin(3 * pi / 4.0));
+		symbols[5].real( r2 * cos(7 * pi / 12.0));
+		symbols[5].imag( r2 * sin(7 * pi / 12.0));
+		symbols[6].real( r2 * cos(-3 * pi / 4.0));
+		symbols[6].imag( r2 * sin(-3 * pi / 4.0));
+		symbols[7].real( r2 * cos(-7 * pi / 12.0));
+		symbols[7].imag( r2 * sin(-7 * pi / 12.0));
+		symbols[8].real( r3 * cos(pi / 8.0));
+		symbols[8].imag( r3 * sin(pi / 8.0));
+		symbols[9].real( r3 * cos(3 * pi / 8.0));
+		symbols[9].imag( r3 * sin(3 * pi / 8.0));
+		symbols[10].real( r3 * cos(-pi / 4.0));
+		symbols[10].imag( r3 * sin(-pi / 4.0));
+		symbols[11].real( r3 * cos(-pi / 2.0));
+		symbols[11].imag( r3 * sin(-pi / 2.0));
+		symbols[12].real( r3 * cos(3 * pi / 4.0));
+		symbols[12].imag( r3 * sin(3 * pi / 4.0));
+		symbols[13].real( r3 * cos(pi / 2.0));
+		symbols[13].imag( r3 * sin(pi / 2.0));
+		symbols[14].real( r3 * cos(-7 * pi / 8.0));
+		symbols[14].imag( r3 * sin(-7 * pi / 8.0));
+		symbols[15].real( r3 * cos(-5 * pi / 8.0));
+		symbols[15].imag( r3 * sin(-5 * pi / 8.0));
+		symbols[16].real( r2 * cos(pi / 12.0));
+		symbols[16].imag( r2 * sin(pi / 12.0));
+		symbols[17].real( r1 * cos(pi / 4.0));
+		symbols[17].imag( r1 * sin(pi / 4.0));
+		symbols[18].real( r2 * cos(-pi / 12.0));
+		symbols[18].imag( r2 * sin(-pi / 12.0));
+		symbols[19].real( r1 * cos(-pi / 4.0));
+		symbols[19].imag( r1 * sin(-pi / 4.0));
+		symbols[20].real( r2 * cos(11 * pi / 12.0));
+		symbols[20].imag( r2 * sin(11 * pi / 12.0));
+		symbols[21].real( r1 * cos(3 * pi / 4.0));
+		symbols[21].imag( r1 * sin(3 * pi / 4.0));
+		symbols[22].real( r2 * cos(-11 * pi / 12.0));
+		symbols[22].imag( r2 * sin(-11 * pi / 12.0));
+		symbols[23].real( r1 * cos(-3 * pi / 4.0));
+		symbols[23].imag( r1 * sin(-3 * pi / 4.0));
+		symbols[24].real( r3 * cos(0.0));
+		symbols[24].imag( r3 * sin(0.0));
+		symbols[25].real( r3 * cos(pi / 4.0));
+		symbols[25].imag( r3 * sin(pi / 4.0));
+		symbols[26].real( r3 * cos(-pi / 8.0));
+		symbols[26].imag( r3 * sin(-pi / 8.0));
+		symbols[27].real( r3 * cos(-3 * pi / 8.0));
+		symbols[27].imag( r3 * sin(-3 * pi / 8.0));
+		symbols[28].real( r3 * cos(7 * pi / 8.0));
+		symbols[28].imag( r3 * sin(7 * pi / 8.0));
+		symbols[29].real( r3 * cos(5 * pi / 8.0));
+		symbols[29].imag( r3 * sin(5 * pi / 8.0));
+		symbols[30].real( r3 * cos(pi));
+		symbols[30].imag( r3 * sin(pi));
+		symbols[31].real( r3 * cos(-3 * pi / 4.0));
+		symbols[31].imag( r3 * sin(-3 * pi / 4.0));
+
+		break;
+
 	default:
 		break;
 	}
