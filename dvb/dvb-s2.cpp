@@ -11,30 +11,12 @@
 using namespace std;
 using namespace itpp;
 
-//#define		FILENAME_IT		"../data/RU_16200.it"
-#define		FILENAME_IT		"../data/random_3_6_16200.it"
-#define		FILENAME_ALIST	"../data/dvbs2_r12.alist"
-//#define		COUNT_REPEAT	10	// repeat time 
+
 #define		TIME_STEP		4	
 
-#define		N_BCH			31
-#define		T_BCH			2
-#define		K_BCH			21
-
-#define		SIZE_PACKET		188
-
-#define		USE_GPU		1
+#define		USE_GPU			1
 #define		USE_ALIST		0
 
-#define		REMOVE_NOISE		0
-
-#if REMOVE_NOISE
-#define		EBNO			10
-#else
-#define		EBNO			2.2
-#endif
-
-#define		REMOVE_BCH			1
 
 int main(int argc, char **argv)
 {
@@ -209,7 +191,7 @@ int main(int argc, char **argv)
 
 		// demodulate
 
-		MOD_TYPE	modType = MOD_32APSK;
+		MOD_TYPE	modType = (MOD_TYPE)MOD_TYPE_DEFAULT;
 		Modulator_2D* pModulator = mods.findModulator( modType );
 
 		if ( NULL == pModulator )

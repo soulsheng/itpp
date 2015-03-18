@@ -7,22 +7,6 @@
 using namespace itpp;
 using namespace std;
 
-#define		FILENAME_IT		"../data/random_3_6_16200.it"
-#define		EBNO			2.20
-
-#define		COUNT_REPEAT_DEF	1	// repeat time 
-#define		SIZE_PACKET		188
-
-#define		N_BCH			31
-#define		T_BCH			2
-#define		K_BCH			21
-
-#define		VAR_SIZE_CODE		16200
-#define		CHECK_SIZE_CODE		8100//8073
-
-#define		REMOVE_NOISE		0
-#define		REMOVE_BCH			1
-
 //! Maximum value of vector
 int max(int *v, int N)
 {
@@ -143,7 +127,7 @@ int main(int argc, char **argv)
 		  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
-		  MOD_TYPE	modType = MOD_32APSK;
+		  MOD_TYPE	modType = (MOD_TYPE)MOD_TYPE_DEFAULT;
 		  Modulator_2D* pModulator = mods.findModulator( modType );
 
 		  if ( NULL == pModulator )
