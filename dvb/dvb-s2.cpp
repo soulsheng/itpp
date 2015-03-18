@@ -14,7 +14,7 @@ using namespace itpp;
 //#define		FILENAME_IT		"../data/RU_16200.it"
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		FILENAME_ALIST	"../data/dvbs2_r12.alist"
-#define		EBNO			10//2.20
+#define		EBNO			2.20
 //#define		COUNT_REPEAT	10	// repeat time 
 #define		TIME_STEP		4	
 

@@ -8,7 +8,7 @@ using namespace itpp;
 using namespace std;
 
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
-#define		EBNO			100//2.20
+#define		EBNO			2.20
 
 #define		COUNT_REPEAT_DEF	1	// repeat time 
 #define		SIZE_PACKET		188
