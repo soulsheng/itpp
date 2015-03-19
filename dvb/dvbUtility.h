@@ -15,7 +15,7 @@
 #define		VAR_SIZE_CODE		16200
 #define		CHECK_SIZE_CODE		8100//8073
 
-#define		REMOVE_NOISE		1
+#define		REMOVE_NOISE		0
 
 #if REMOVE_NOISE
 #define		EBNO			10
@@ -25,7 +25,7 @@
 
 #define		REMOVE_BCH			1
 
-#define		MOD_TYPE_DEFAULT	5
+#define		MOD_TYPE_DEFAULT	2
 
 #include <itpp/itcomm.h>
 #include <iostream>

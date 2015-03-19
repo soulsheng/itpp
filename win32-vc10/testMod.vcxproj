@@ -12,13 +12,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
+    <ClCompile Include="..\dvb\ldpc_bp_decode.cpp" />
     <ClCompile Include="..\dvb\modulatorFactory.cpp" />
     <ClCompile Include="..\dvb\testMod.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dvb\dvbUtility.h" />
     <ClInclude Include="..\dvb\helper_timer.h" />
+    <ClInclude Include="..\dvb\ldpc_bp_decode.h" />
     <ClInclude Include="..\dvb\modulatorFactory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\dvb\ldpc_bp_decode.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
+    <None Include="..\dvb\ldpc_bp_decode.cuh" />
+    <None Include="..\dvb\ldpc_bp_decode_kernel.cuh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D72345EE-1FB4-4BD6-800B-8CB29E9F0704}</ProjectGuid>
@@ -38,6 +47,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 5.5.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -104,7 +114,7 @@
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>itpp_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>itpp_debug.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>lib;$(LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>uuid.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -120,8 +130,12 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <CudaCompile>
+      <CodeGeneration>compute_20,sm_20</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 5.5.targets" />
   </ImportGroup>
 </Project>
