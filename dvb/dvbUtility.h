@@ -20,12 +20,12 @@
 #if REMOVE_NOISE
 #define		EBNO			10
 #else
-#define		EBNO			2.2
+#define		EBNO			9.0//10 2-2.2	3-5.6	4-8.9	5-12.4
 #endif
 
 #define		REMOVE_BCH			1
 
-#define		MOD_TYPE_DEFAULT	2
+#define		MOD_TYPE_DEFAULT	4
 
 #include <itpp/itcomm.h>
 #include <iostream>

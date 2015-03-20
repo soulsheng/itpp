@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 		  // step 1: input message
 		  bvec bitsinLDPCEnc( kldpc );
 		  convertBufferToVec( bitsPacketsPadding, bitsinLDPCEnc );
-		  cout << "bitsinLDPCEnc.left(16)" << bitsinLDPCEnc.left(16) << endl;
+		  cout << " bitsinLDPCEnc.left(16)" << bitsinLDPCEnc.left(16) << endl;
 
 		  // ldpc encode
 		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 		  cout << "hardbits.left(16)" << hardbits.left(16) << endl;
 		  vec softbits(nldpc);
 #else
-		  vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
+		  vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0, APPROX);
 		  cout << "softbits.left(16)" << softbits.left(16) << endl;
 #endif
 
@@ -142,6 +142,10 @@ int main(int argc, char **argv)
 		  berc.count(bitsinLDPCEnc, bitsoutLDPCDec);
 		  per.count(bitsinLDPCEnc, bitsoutLDPCDec);
 
+		  cout << " bitsinLDPCEnc.left(16)" << bitsinLDPCEnc.left(16) << endl;
+		  cout << "bitsoutLDPCDec.left(16)" << bitsoutLDPCDec.left(16) << endl;
+
+
 	  }
 
 
@@ -154,6 +158,19 @@ int main(int argc, char **argv)
 		  << "Obtained " << per.get_errors() << " error packets. "
 		  << " PER: " << per.get_errorrate() << " . "
 		  << endl << endl << flush;
+
+	  double countIterationAverage = 0.0f;
+	  for (int i=0;i<COUNT_REPEAT;i++)
+	  {
+		  cout << countIteration[i] << " iteration, " ;
+
+		  if (countIteration[i]<0)
+			  countIteration[i] *= -1;
+
+		  countIterationAverage += countIteration[i];
+	  }
+	  countIterationAverage = (int)(countIterationAverage/COUNT_REPEAT+0.5) ;
+	  cout << endl << countIterationAverage << " iterations in decoding one ldpc code" << endl << endl ;
 
 	  free( bitsPacketsPadding );
 	  free( llrOut );
