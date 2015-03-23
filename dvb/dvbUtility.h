@@ -5,7 +5,7 @@
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		FILENAME_ALIST	"../data/dvbs2_r12.alist"
 
-#define		COUNT_REPEAT_DEF	1	// repeat time 
+#define		COUNT_REPEAT_DEF	10	// repeat time 
 #define		SIZE_PACKET		188
 
 #define		N_BCH			31
@@ -20,7 +20,7 @@
 #if REMOVE_NOISE
 #define		EBNO			10
 #else
-#define		EBNO			9.0//10 2-2.2	3-5.6	4-8.9	5-12.4
+#define		EBNO			12.6//10 2-2.2	3-5.6	4-8.9	5-12.4
 #endif
 
 #define		REMOVE_BCH			1

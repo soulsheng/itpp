@@ -86,14 +86,18 @@ int main(int argc, char **argv)
 		  // step 1: input message
 		  bvec bitsinLDPCEnc( kldpc );
 		  convertBufferToVec( bitsPacketsPadding, bitsinLDPCEnc );
-		  cout << " bitsinLDPCEnc.left(16)" << bitsinLDPCEnc.left(16) << endl;
+		  //cout << " bitsinLDPCEnc.left(16)" << bitsinLDPCEnc.left(16) << endl;
 
 		  // ldpc encode
 		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
-		  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
+		  //cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
-		  MOD_TYPE	modType = (MOD_TYPE)MOD_TYPE_DEFAULT;
+
+		  int nModTypeRAND = rand()%4 + 2;
+		  cout << "nModTypeRAND = " << nModTypeRAND << endl;
+
+		  MOD_TYPE	modType = (MOD_TYPE)nModTypeRAND;
 		  Modulator_2D* pModulator = mods.findModulator( modType );
 
 		  if ( NULL == pModulator )
@@ -103,14 +107,14 @@ int main(int argc, char **argv)
 		  }
 
 		  cvec	cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
-			cout << "cMOD.left(8)" << cMOD.left(8) << endl;
+			//cout << "cMOD.left(8)" << cMOD.left(8) << endl;
 
 #if REMOVE_NOISE
 			cvec	cAWGN = cMOD;
 #else
 			cvec	cAWGN = chan(cMOD);
 
-			cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
+			//cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
 #endif
 
 		  int	nSizeMod = nldpc*2/pModulator->get_k();
@@ -122,7 +126,7 @@ int main(int argc, char **argv)
 		  vec softbits(nldpc);
 #else
 		  vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0, APPROX);
-		  cout << "softbits.left(16)" << softbits.left(16) << endl;
+		  //cout << "softbits.left(16)" << softbits.left(16) << endl;
 #endif
 
 		  QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
@@ -148,8 +152,8 @@ int main(int argc, char **argv)
 		  berc.count(bitsinLDPCEnc, bitsoutLDPCDec);
 		  per.count(bitsinLDPCEnc, bitsoutLDPCDec);
 
-		  cout << " bitsinLDPCEnc.left(16)" << bitsinLDPCEnc.left(16) << endl;
-		  cout << "bitsoutLDPCDec.left(16)" << bitsoutLDPCDec.left(16) << endl;
+		  //cout << " bitsinLDPCEnc.left(16)" << bitsinLDPCEnc.left(16) << endl;
+		  //cout << "bitsoutLDPCDec.left(16)" << bitsoutLDPCDec.left(16) << endl;
 
 
 	  }
