@@ -153,8 +153,13 @@ int main(int argc, char **argv)
 	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
 	bitfile.read( (char*)&Kbch, sizeof(int)*1);
 	//cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
+#if REMOVE_BCH
+	int nLengthMSG = kldpc;
+#else
+	int nLengthMSG = Kbch;
+#endif
 
-	char *bitsPacketsPadding = new char[Kbch];
+	char *bitsPacketsPadding = new char[nLengthMSG];
 	char *bitsLDPC = new char[nldpc];
 	double *softbits_buf = new double[nldpc];
 
@@ -163,8 +168,8 @@ int main(int argc, char **argv)
 	vec			timerStepValue(COUNT_REPEAT*TIME_STEP);
 	ivec		countIteration(COUNT_REPEAT);
 
-	bvec bitsinBCHEnc( Kbch );
-	bvec bitsinBCHEnc_N( Kbch*COUNT_REPEAT );
+	bvec bitsinEnc( nLengthMSG );
+	bvec bitsinEnc_N( nLengthMSG*COUNT_REPEAT );
 
 
 	cout << "Demodulating and decoding the bit stream !" << endl ;
@@ -173,9 +178,9 @@ int main(int argc, char **argv)
 	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 		// step 0: prepare input packets from rand data or file stream
-		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
-		convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
-		bitsinBCHEnc_N.set_subvector(i*Kbch, bitsinBCHEnc);
+		bitfile.read(bitsPacketsPadding, sizeof(char)*nLengthMSG);
+		convertBufferToVec( bitsPacketsPadding, bitsinEnc );
+		bitsinEnc_N.set_subvector(i*nLengthMSG, bitsinEnc);
 	}
 
 	int nTimeStep = 0;
@@ -263,12 +268,11 @@ int main(int argc, char **argv)
 
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
 
-
+#if		REMOVE_BCH
 		// step 8: bch decode
-		bvec bitsoutBCHDec = bitsinBCHDec.left( Kbch );
-
-#if		!REMOVE_BCH
-		bitsoutBCHDec = bch.decode(bitsinBCHDec);
+		bvec bitsoutDec = bitsoutLDPCDec.left( nLengthMSG );
+#else
+		bitsoutDec = bch.decode(bitsinBCHDec);
 
 		for( int ik=0;ik<5;ik++){
 			cout << " inBCH.left(16): " << bitsinBCHDec.mid(1000*ik,16) << "of " << ik << endl;
@@ -283,13 +287,13 @@ int main(int argc, char **argv)
 #endif
 
 		// step 9: verify result, Count the number of errors
-		bitsinBCHEnc = bitsinBCHEnc_N.mid(i*Kbch, Kbch);
+		bitsinEnc = bitsinEnc_N.mid(i*nLengthMSG, nLengthMSG);
 
-		cout << " in.left(16): " << bitsinBCHEnc.left(16) << endl;
-		cout << "out.left(16): " << bitsoutBCHDec.left(16) << endl;
+		cout << " in.left(16): " << bitsinEnc.left(16) << endl;
+		cout << "out.left(16): " << bitsoutDec.left(16) << endl;
 
-		berc.count(bitsinBCHEnc, bitsoutBCHDec);
-		per.count(bitsinBCHEnc, bitsoutBCHDec);
+		berc.count(bitsinEnc, bitsoutDec);
+		per.count(bitsinEnc, bitsoutDec);
 
 		sdkStopTimer( &timerStep );
 		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );

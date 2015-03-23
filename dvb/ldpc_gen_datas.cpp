@@ -78,23 +78,28 @@ int main(int argc, char **argv)
 	  int Nbch = nSplit * N_BCH;
 
 	  int Kbch = nSplit * K_BCH;
+#if REMOVE_BCH
+	  int nLengthMSG = kldpc;
+#else
+	  int nLengthMSG = Kbch;
+#endif
 
-	  char *bitsPacketsPadding = new char[Kbch];
+	  char *bitsPacketsPadding = new char[nLengthMSG];
 	  char *bitsBCH = new char[kldpc];
 	  char *bitsLDPC = new char[nldpc];
 	  double *bitsMOD = new double[nldpc];
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
-	  bitfile.write( (char*)&Kbch, sizeof(int)*1);
+	  bitfile.write( (char*)&nLengthMSG, sizeof(int)*1);
 
 	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	  {
 		  // step 0: prepare input packets from rand data or file stream
-		  memset( bitsPacketsPadding, 0, sizeof(char)*Kbch );
+		  memset( bitsPacketsPadding, 0, sizeof(char)*nLengthMSG );
 		  srand( (unsigned int)i*CHECK_SIZE_CODE ) ;
 
-		  int nCountPacket = Kbch / SIZE_PACKET;
+		  int nCountPacket = nLengthMSG / SIZE_PACKET;
 		  for (int j = 0; j < nCountPacket; j ++) 
 		  {
 			  char *onePacket = bitsPacketsPadding + j*SIZE_PACKET;
@@ -104,11 +109,11 @@ int main(int argc, char **argv)
 			  }
 		  }
 
-		  bitfile.write(bitsPacketsPadding, sizeof(char)*Kbch);
+		  bitfile.write(bitsPacketsPadding, sizeof(char)*nLengthMSG);
 
 
 		  // step 1: input message
-		  bvec bitsinBCHEnc( Kbch );
+		  bvec bitsinBCHEnc( nLengthMSG );
 		  convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
 
 		  bvec bitsinLDPCEnc = zeros_b(kldpc);

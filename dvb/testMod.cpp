@@ -61,13 +61,19 @@ int main(int argc, char **argv)
 
 	  ivec		countIteration(COUNT_REPEAT);
 
+#if REMOVE_BCH
+	  int nLengthMSG = kldpc;
+#else
+	  int nLengthMSG = Kbch;
+#endif
+
 	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	  {
 		  // step 0: prepare input packets from rand data or file stream
-		  memset( bitsPacketsPadding, 0, sizeof(char)*kldpc );
+		  memset( bitsPacketsPadding, 0, sizeof(char)*nLengthMSG );
 		  srand( (unsigned int)i*CHECK_SIZE_CODE ) ;
 
-		  int nCountPacket = kldpc / SIZE_PACKET;
+		  int nCountPacket = nLengthMSG / SIZE_PACKET;
 		  for (int j = 0; j < nCountPacket; j ++) 
 		  {
 			  char *onePacket = bitsPacketsPadding + j*SIZE_PACKET;
