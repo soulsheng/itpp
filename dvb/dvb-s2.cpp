@@ -12,7 +12,7 @@ using namespace std;
 using namespace itpp;
 
 
-#define		TIME_STEP		4	
+#define		TIME_STEP		3	
 
 #define		USE_GPU			1
 #define		USE_ALIST		0
@@ -149,7 +149,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	int COUNT_REPEAT = 10;
+	int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
 	bitfile.read( (char*)&Kbch, sizeof(int)*1);
 	//cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
@@ -196,7 +196,11 @@ int main(int argc, char **argv)
 
 		// demodulate
 
-		MOD_TYPE	modType = (MOD_TYPE)MOD_TYPE_DEFAULT;
+		int nModTypeRAND = 0;
+		bitfileMOD >> nModTypeRAND ;
+		cout << "nModTypeRAND = " << nModTypeRAND << endl;
+
+		MOD_TYPE	modType = (MOD_TYPE)nModTypeRAND;
 		Modulator_2D* pModulator = mods.findModulator( modType );
 
 		if ( NULL == pModulator )

@@ -129,10 +129,14 @@ int main(int argc, char **argv)
 
 		  // step 3: ldpc encode
 		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
-		  cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
+		  //cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
-		  MOD_TYPE	modType = (MOD_TYPE)MOD_TYPE_DEFAULT;
+
+		  int nModTypeRAND = rand()%4 + 2;
+		  cout << "nModTypeRAND = " << nModTypeRAND << endl;
+
+		  MOD_TYPE	modType = (MOD_TYPE)nModTypeRAND;
 		  Modulator_2D* pModulator = mods.findModulator( modType );
 
 		  if ( NULL == pModulator )
@@ -142,7 +146,7 @@ int main(int argc, char **argv)
 		  }
 
 		  cvec	cMOD = pModulator->modulate_bits(bitsoutLDPCEnc);
-			cout << "cMOD.left(8)" << cMOD.left(8) << endl;
+			//cout << "cMOD.left(8)" << cMOD.left(8) << endl;
 
 #if REMOVE_NOISE
 			convertVecToBuffer( bitsMOD, cMOD );	
@@ -150,11 +154,12 @@ int main(int argc, char **argv)
 			cvec	cAWGN = chan(cMOD);
 			convertVecToBuffer( bitsMOD, cAWGN );
 
-			cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
+			//cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
 #endif
 
 		  int	nSizeMod = nldpc*2/pModulator->get_k();
 
+		  bitfileMOD << nModTypeRAND << " " ;
 			
 		  for ( int j=0; j<nSizeMod; j++ )
 		  	  bitfileMOD << bitsMOD[j] << " " ;
