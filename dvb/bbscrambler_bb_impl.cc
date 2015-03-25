@@ -18,138 +18,58 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <gnuradio/io_signature.h>
 #include "bbscrambler_bb_impl.h"
 #include <stdio.h>
 
-namespace gr {
-  namespace dvbs2 {
 
-    bbscrambler_bb::sptr
-    bbscrambler_bb::make(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
+    bbscrambler_bb*
+    bbscrambler_bb::make(CODE_RATE rate, FRAME_TYPE framesize)
     {
-      return gnuradio::get_initial_sptr
-        (new bbscrambler_bb_impl(rate, framesize));
+      return new bbscrambler_bb_impl(rate, framesize);
     }
 
     /*
      * The private constructor
      */
-    bbscrambler_bb_impl::bbscrambler_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize)
-      : gr::sync_block("bbscrambler_bb",
-              gr::io_signature::make(1, 1, sizeof(unsigned char)),
-              gr::io_signature::make(1, 1, sizeof(unsigned char)))
+    bbscrambler_bb_impl::bbscrambler_bb_impl(CODE_RATE rate, FRAME_TYPE framesize)
     {
-        if (framesize == gr::dvbs2::FECFRAME_NORMAL)
+        if (framesize == FECFRAME_NORMAL)
         {
             switch (rate)
             {
-                case gr::dvbs2::C1_4:
+                case C1_4:
                     kbch = 16008;
                     break;
-                case gr::dvbs2::C1_3:
+                case C1_3:
                     kbch = 21408;
                     break;
-                case gr::dvbs2::C2_5:
+                case C2_5:
                     kbch = 25728;
                     break;
-                case gr::dvbs2::C1_2:
+                case C1_2:
                     kbch = 32208;
                     break;
-                case gr::dvbs2::C3_5:
+                case C3_5:
                     kbch = 38688;
                     break;
-                case gr::dvbs2::C2_3:
+                case C2_3:
                     kbch = 43040;
                     break;
-                case gr::dvbs2::C3_4:
+                case C3_4:
                     kbch = 48408;
                     break;
-                case gr::dvbs2::C4_5:
+                case C4_5:
                     kbch = 51648;
                     break;
-                case gr::dvbs2::C5_6:
+                case C5_6:
                     kbch = 53840;
                     break;
-                case gr::dvbs2::C8_9:
+                case C8_9:
                     kbch = 57472;
                     break;
-                case gr::dvbs2::C9_10:
+                case C9_10:
                     kbch = 58192;
-                    break;
-                case gr::dvbs2::C13_45:
-                    kbch = 18528;
-                    break;
-                case gr::dvbs2::C9_20:
-                    kbch = 28968;
-                    break;
-                case gr::dvbs2::C90_180:
-                    kbch = 32208;
-                    break;
-                case gr::dvbs2::C96_180:
-                    kbch = 34368;
-                    break;
-                case gr::dvbs2::C11_20:
-                    kbch = 35448;
-                    break;
-                case gr::dvbs2::C100_180:
-                    kbch = 35808;
-                    break;
-                case gr::dvbs2::C104_180:
-                    kbch = 37248;
-                    break;
-                case gr::dvbs2::C26_45:
-                    kbch = 37248;
-                    break;
-                case gr::dvbs2::C18_30:
-                    kbch = 38688;
-                    break;
-                case gr::dvbs2::C28_45:
-                    kbch = 40128;
-                    break;
-                case gr::dvbs2::C23_36:
-                    kbch = 41208;
-                    break;
-                case gr::dvbs2::C116_180:
-                    kbch = 41568;
-                    break;
-                case gr::dvbs2::C20_30:
-                    kbch = 43008;
-                    break;
-                case gr::dvbs2::C124_180:
-                    kbch = 44448;
-                    break;
-                case gr::dvbs2::C25_36:
-                    kbch = 44808;
-                    break;
-                case gr::dvbs2::C128_180:
-                    kbch = 45888;
-                    break;
-                case gr::dvbs2::C13_18:
-                    kbch = 46608;
-                    break;
-                case gr::dvbs2::C132_180:
-                    kbch = 47328;
-                    break;
-                case gr::dvbs2::C22_30:
-                    kbch = 47328;
-                    break;
-                case gr::dvbs2::C135_180:
-                    kbch = 48408;
-                    break;
-                case gr::dvbs2::C140_180:
-                    kbch = 50208;
-                    break;
-                case gr::dvbs2::C7_9:
-                    kbch = 50208;
-                    break;
-                case gr::dvbs2::C154_180:
-                    kbch = 55248;
-                    break;
+                    break;                
                 default:
                     kbch = 0;
                     break;
@@ -159,68 +79,47 @@ namespace gr {
         {
             switch (rate)
             {
-                case gr::dvbs2::C1_4:
+                case C1_4:
                     kbch = 3072;
                     break;
-                case gr::dvbs2::C1_3:
+                case C1_3:
                     kbch = 5232;
                     break;
-                case gr::dvbs2::C2_5:
+                case C2_5:
                     kbch = 6312;
                     break;
-                case gr::dvbs2::C1_2:
+                case C1_2:
                     kbch = 7032;
                     break;
-                case gr::dvbs2::C3_5:
+                case C3_5:
                     kbch = 9552;
                     break;
-                case gr::dvbs2::C2_3:
+                case C2_3:
                     kbch = 10632;
                     break;
-                case gr::dvbs2::C3_4:
+                case C3_4:
                     kbch = 11712;
                     break;
-                case gr::dvbs2::C4_5:
+                case C4_5:
                     kbch = 12432;
                     break;
-                case gr::dvbs2::C5_6:
+                case C5_6:
                     kbch = 13152;
                     break;
-                case gr::dvbs2::C8_9:
+                case C8_9:
                     kbch = 14232;
                     break;
-                case gr::dvbs2::C9_10:
+                case C9_10:
                     fprintf(stderr, "9/10 code rate not supported for DVB-S2 short FECFRAME.\n");
                     exit(1);
-                    break;
-                case gr::dvbs2::C11_45:
-                    kbch = 3792;
-                    break;
-                case gr::dvbs2::C4_15:
-                    kbch = 4152;
-                    break;
-                case gr::dvbs2::C14_45:
-                    kbch = 4872;
-                    break;
-                case gr::dvbs2::C7_15:
-                    kbch = 7392;
-                    break;
-                case gr::dvbs2::C8_15:
-                    kbch = 8472;
-                    break;
-                case gr::dvbs2::C26_45:
-                    kbch = 9192;
-                    break;
-                case gr::dvbs2::C32_45:
-                    kbch = 11352;
-                    break;
+                    break;                
                 default:
                     kbch = 0;
                     break;
             }
         }
         init_bb_randomiser();
-        set_output_multiple(kbch);
+        //set_output_multiple(kbch);
     }
 
     /*
@@ -244,11 +143,11 @@ void bbscrambler_bb_impl::init_bb_randomiser(void)
 
     int
     bbscrambler_bb_impl::work(int noutput_items,
-			  gr_vector_const_void_star &input_items,
-			  gr_vector_void_star &output_items)
+			  const void *input_items,
+			  void *output_items)
     {
-        const unsigned char *in = (const unsigned char *) input_items[0];
-        unsigned char *out = (unsigned char *) output_items[0];
+        const unsigned char *in = (const unsigned char *) input_items;
+        unsigned char *out = (unsigned char *) output_items;
 
         for (int i = 0; i < noutput_items; i += kbch)
         {
@@ -261,7 +160,3 @@ void bbscrambler_bb_impl::init_bb_randomiser(void)
         // Tell runtime system how many output items we produced.
         return noutput_items;
     }
-
-  } /* namespace dvbs2 */
-} /* namespace gr */
-

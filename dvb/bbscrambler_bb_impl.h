@@ -21,10 +21,7 @@
 #ifndef INCLUDED_DVBS2_BBSCRAMBLER_BB_IMPL_H
 #define INCLUDED_DVBS2_BBSCRAMBLER_BB_IMPL_H
 
-#include <dvbs2/bbscrambler_bb.h>
-
-namespace gr {
-  namespace dvbs2 {
+#include "bbscrambler_bb.h"
 
     class bbscrambler_bb_impl : public bbscrambler_bb
     {
@@ -34,17 +31,14 @@ namespace gr {
       void init_bb_randomiser(void);
 
      public:
-      bbscrambler_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      bbscrambler_bb_impl(CODE_RATE rate, FRAME_TYPE framesize);
       ~bbscrambler_bb_impl();
 
       // Where all the action really happens
       int work(int noutput_items,
-	       gr_vector_const_void_star &input_items,
-	       gr_vector_void_star &output_items);
+		  const void *input_items,
+		  void *output_items);
     };
-
-  } // namespace dvbs2
-} // namespace gr
 
 #endif /* INCLUDED_DVBS2_BBSCRAMBLER_BB_IMPL_H */
 

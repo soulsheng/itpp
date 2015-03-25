@@ -21,7 +21,7 @@
 #ifndef INCLUDED_DVBS2_BBHEADER_BB_IMPL_H
 #define INCLUDED_DVBS2_BBHEADER_BB_IMPL_H
 
-#include <dvbs2/bbheader_bb.h>
+#include "bbheader_bb.h"
 
 typedef struct{
     int ts_gs;
@@ -41,9 +41,6 @@ typedef struct{
    BBHeader bb_header;
 }FrameFormat;
 
-namespace gr {
-  namespace dvbs2 {
-
     class bbheader_bb_impl : public bbheader_bb
     {
      private:
@@ -59,20 +56,16 @@ namespace gr {
       int add_crc8_bits(unsigned char *, int);
 
      public:
-      bbheader_bb_impl(dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff, dvbs2_framesize_t framesize);
+      bbheader_bb_impl(CODE_RATE rate, Rolloff_Factor rolloff, FRAME_TYPE framesize);
       ~bbheader_bb_impl();
 
       // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      void forecast (int noutput_items, int &ninput_items_required);
 
-      int general_work(int noutput_items,
-		       gr_vector_int &ninput_items,
-		       gr_vector_const_void_star &input_items,
-		       gr_vector_void_star &output_items);
+	  int general_work(int noutput_items,
+		  const void *input_items,
+		  void *output_items);
     };
-
-  } // namespace dvbs2
-} // namespace gr
 
 #endif /* INCLUDED_DVBS2_BBHEADER_BB_IMPL_H */
 

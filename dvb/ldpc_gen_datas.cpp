@@ -3,6 +3,8 @@
 #include <itpp/itcomm.h>
 #include "dvbUtility.h"
 #include "modulatorFactory.h"
+#include "bbheader_bb.h"
+#include "bbscrambler_bb.h"
 
 using namespace itpp;
 using namespace std;
@@ -93,6 +95,10 @@ int main(int argc, char **argv)
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
 	  bitfile.write( (char*)&nLengthMSG, sizeof(int)*1);
 
+	  // header
+	  bbheader_bb*	pBBHeader = bbheader_bb::make(C1_2, RO_0_20, FECFRAME_SHORT);
+	  bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(C1_2, FECFRAME_SHORT);
+
 	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	  {
 		  // step 0: prepare input packets from rand data or file stream
@@ -165,6 +171,9 @@ int main(int argc, char **argv)
 		  	  bitfileMOD << bitsMOD[j] << " " ;
 
 	  }
+
+	  delete pBBHeader;
+	  delete pBBScrambler;
 
 	  bitfile.close();
 	  bitfileMOD.close();

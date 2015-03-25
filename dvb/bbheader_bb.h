@@ -22,22 +22,16 @@
 #ifndef INCLUDED_DVBS2_BBHEADER_BB_H
 #define INCLUDED_DVBS2_BBHEADER_BB_H
 
-#include <dvbs2/api.h>
-#include <dvbs2/dvbs2_config.h>
-#include <gnuradio/block.h>
-
-namespace gr {
-  namespace dvbs2 {
+#include "modulatorDefinition.h"
 
     /*!
      * \brief <+description of block+>
      * \ingroup dvbs2
      *
      */
-    class DVBS2_API bbheader_bb : virtual public gr::block
+    class bbheader_bb 
     {
      public:
-      typedef boost::shared_ptr<bbheader_bb> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of dvbs2::bbheader_bb.
@@ -47,11 +41,8 @@ namespace gr {
        * class. dvbs2::bbheader_bb::make is the public interface for
        * creating new instances.
        */
-      static sptr make(dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff, dvbs2_framesize_t framesize);
+      static bbheader_bb* make(CODE_RATE rate, Rolloff_Factor rolloff, FRAME_TYPE framesize);
     };
-
-  } // namespace dvbs2
-} // namespace gr
 
 #endif /* INCLUDED_DVBS2_BBHEADER_BB_H */
 

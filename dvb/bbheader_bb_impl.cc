@@ -18,142 +18,62 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <gnuradio/io_signature.h>
 #include "bbheader_bb_impl.h"
 #include <stdio.h>
 
-namespace gr {
-  namespace dvbs2 {
 
-    bbheader_bb::sptr
-    bbheader_bb::make(dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff, dvbs2_framesize_t framesize)
+    bbheader_bb*
+    bbheader_bb::make(CODE_RATE rate, Rolloff_Factor rolloff, FRAME_TYPE framesize)
     {
-      return gnuradio::get_initial_sptr
-        (new bbheader_bb_impl(rate, rolloff, framesize));
+      return new bbheader_bb_impl(rate, rolloff, framesize);
     }
 
     /*
      * The private constructor
      */
-    bbheader_bb_impl::bbheader_bb_impl(dvbs2_code_rate_t rate, dvbs2_rolloff_factor_t rolloff, dvbs2_framesize_t framesize)
-      : gr::block("bbheader_bb",
-              gr::io_signature::make(1, 1, sizeof(unsigned char)),
-              gr::io_signature::make(1, 1, sizeof(unsigned char)))
-    {
+    bbheader_bb_impl::bbheader_bb_impl(CODE_RATE rate, Rolloff_Factor rolloff, FRAME_TYPE framesize)
+   {
         count = 0;
         crc = 0x47;
-        dvbs2x = FALSE;
-        alternate = TRUE;
+        dvbs2x = false;
+        alternate = true;
         BBHeader *f = &m_format[0].bb_header;
-        if (framesize == gr::dvbs2::FECFRAME_NORMAL)
+        if (framesize == FECFRAME_NORMAL)
         {
             switch (rate)
             {
-                case gr::dvbs2::C1_4:
+                case C1_4:
                     kbch = 16008;
                     break;
-                case gr::dvbs2::C1_3:
+                case C1_3:
                     kbch = 21408;
                     break;
-                case gr::dvbs2::C2_5:
+                case C2_5:
                     kbch = 25728;
                     break;
-                case gr::dvbs2::C1_2:
+                case C1_2:
                     kbch = 32208;
                     break;
-                case gr::dvbs2::C3_5:
+                case C3_5:
                     kbch = 38688;
                     break;
-                case gr::dvbs2::C2_3:
+                case C2_3:
                     kbch = 43040;
                     break;
-                case gr::dvbs2::C3_4:
+                case C3_4:
                     kbch = 48408;
                     break;
-                case gr::dvbs2::C4_5:
+                case C4_5:
                     kbch = 51648;
                     break;
-                case gr::dvbs2::C5_6:
+                case C5_6:
                     kbch = 53840;
                     break;
-                case gr::dvbs2::C8_9:
+                case C8_9:
                     kbch = 57472;
                     break;
-                case gr::dvbs2::C9_10:
+                case C9_10:
                     kbch = 58192;
-                    break;
-                case gr::dvbs2::C13_45:
-                    kbch = 18528;
-                    break;
-                case gr::dvbs2::C9_20:
-                    kbch = 28968;
-                    break;
-                case gr::dvbs2::C90_180:
-                    kbch = 32208;
-                    break;
-                case gr::dvbs2::C96_180:
-                    kbch = 34368;
-                    break;
-                case gr::dvbs2::C11_20:
-                    kbch = 35448;
-                    break;
-                case gr::dvbs2::C100_180:
-                    kbch = 35808;
-                    break;
-                case gr::dvbs2::C104_180:
-                    kbch = 37248;
-                    break;
-                case gr::dvbs2::C26_45:
-                    kbch = 37248;
-                    break;
-                case gr::dvbs2::C18_30:
-                    kbch = 38688;
-                    break;
-                case gr::dvbs2::C28_45:
-                    kbch = 40128;
-                    break;
-                case gr::dvbs2::C23_36:
-                    kbch = 41208;
-                    break;
-                case gr::dvbs2::C116_180:
-                    kbch = 41568;
-                    break;
-                case gr::dvbs2::C20_30:
-                    kbch = 43008;
-                    break;
-                case gr::dvbs2::C124_180:
-                    kbch = 44448;
-                    break;
-                case gr::dvbs2::C25_36:
-                    kbch = 44808;
-                    break;
-                case gr::dvbs2::C128_180:
-                    kbch = 45888;
-                    break;
-                case gr::dvbs2::C13_18:
-                    kbch = 46608;
-                    break;
-                case gr::dvbs2::C132_180:
-                    kbch = 47328;
-                    break;
-                case gr::dvbs2::C22_30:
-                    kbch = 47328;
-                    break;
-                case gr::dvbs2::C135_180:
-                    kbch = 48408;
-                    break;
-                case gr::dvbs2::C140_180:
-                    kbch = 50208;
-                    break;
-                case gr::dvbs2::C7_9:
-                    kbch = 50208;
-                    break;
-                case gr::dvbs2::C154_180:
-                    kbch = 55248;
                     break;
                 default:
                     kbch = 0;
@@ -164,61 +84,40 @@ namespace gr {
         {
             switch (rate)
             {
-                case gr::dvbs2::C1_4:
+                case C1_4:
                     kbch = 3072;
                     break;
-                case gr::dvbs2::C1_3:
+                case C1_3:
                     kbch = 5232;
                     break;
-                case gr::dvbs2::C2_5:
+                case C2_5:
                     kbch = 6312;
                     break;
-                case gr::dvbs2::C1_2:
+                case C1_2:
                     kbch = 7032;
                     break;
-                case gr::dvbs2::C3_5:
+                case C3_5:
                     kbch = 9552;
                     break;
-                case gr::dvbs2::C2_3:
+                case C2_3:
                     kbch = 10632;
                     break;
-                case gr::dvbs2::C3_4:
+                case C3_4:
                     kbch = 11712;
                     break;
-                case gr::dvbs2::C4_5:
+                case C4_5:
                     kbch = 12432;
                     break;
-                case gr::dvbs2::C5_6:
+                case C5_6:
                     kbch = 13152;
                     break;
-                case gr::dvbs2::C8_9:
+                case C8_9:
                     kbch = 14232;
                     break;
-                case gr::dvbs2::C9_10:
+                case C9_10:
                     fprintf(stderr, "9/10 code rate not supported for DVB-S2 short FECFRAME.\n");
                     exit(1);
-                    break;
-                case gr::dvbs2::C11_45:
-                    kbch = 3792;
-                    break;
-                case gr::dvbs2::C4_15:
-                    kbch = 4152;
-                    break;
-                case gr::dvbs2::C14_45:
-                    kbch = 4872;
-                    break;
-                case gr::dvbs2::C7_15:
-                    kbch = 7392;
-                    break;
-                case gr::dvbs2::C8_15:
-                    kbch = 8472;
-                    break;
-                case gr::dvbs2::C26_45:
-                    kbch = 9192;
-                    break;
-                case gr::dvbs2::C32_45:
-                    kbch = 11352;
-                    break;
+                    break;                
                 default:
                     kbch = 0;
                     break;
@@ -235,12 +134,12 @@ namespace gr {
         f->sync    = 0x47;
         if (rolloff & 0x4)
         {
-            dvbs2x = TRUE;
+            dvbs2x = true;
         }
         f->ro      = rolloff & 0x3;
 
         build_crc8_table();
-        set_output_multiple(kbch);
+        //set_output_multiple(kbch);
     }
 
     /*
@@ -251,9 +150,9 @@ namespace gr {
     }
 
     void
-    bbheader_bb_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    bbheader_bb_impl::forecast (int noutput_items, int &ninput_items_required)
     {
-        ninput_items_required[0] = ((noutput_items - 80) / 8);
+        ninput_items_required = ((noutput_items - 80) / 8);
     }
 
 #define CRC_POLY 0xAB
@@ -316,17 +215,17 @@ void bbheader_bb_impl::add_bbheader(unsigned char *out, int count)
     m_frame[3] = h->ccm_acm;
     m_frame[4] = h->issyi & 1;
     m_frame[5] = h->npd & 1;
-    if (dvbs2x == TRUE)
+    if (dvbs2x == true)
     {
-        if (alternate == TRUE)
+        if (alternate == true)
         {
-            alternate = FALSE;
+            alternate = false;
             m_frame[6] = 1;
             m_frame[7] = 1;
         }
         else
         {
-            alternate = TRUE;
+            alternate = true;
             m_frame[6] = h->ro >> 1;
             m_frame[7] = h->ro & 1;
         }
@@ -384,12 +283,11 @@ void bbheader_bb_impl::add_bbheader(unsigned char *out, int count)
 
     int
     bbheader_bb_impl::general_work (int noutput_items,
-                       gr_vector_int &ninput_items,
-                       gr_vector_const_void_star &input_items,
-                       gr_vector_void_star &output_items)
+                       const void *input_items,
+                       void *output_items)
     {
-        const unsigned char *in = (const unsigned char *) input_items[0];
-        unsigned char *out = (unsigned char *) output_items[0];
+        const unsigned char *in = (const unsigned char *) input_items;
+        unsigned char *out = (unsigned char *) output_items;
         int consumed = 0;
         int offset = 0;
         unsigned char b;
@@ -428,12 +326,9 @@ void bbheader_bb_impl::add_bbheader(unsigned char *out, int count)
 
         // Tell runtime system how many input items we consumed on
         // each input stream.
-        consume_each (consumed);
+        //consume_each (consumed);
 
         // Tell runtime system how many output items we produced.
         return noutput_items;
     }
-
-  } /* namespace dvbs2 */
-} /* namespace gr */
 
