@@ -42,7 +42,11 @@
        * creating new instances.
        */
       static bbheader_bb* make(CODE_RATE rate, Rolloff_Factor rolloff, FRAME_TYPE framesize);
-    };
+	  virtual void general_work(int noutput_items,
+		  const void *input_items,
+		  void *output_items){ }
+	  virtual int getkBCH()	{ return 0;}
+	};
 
 #endif /* INCLUDED_DVBS2_BBHEADER_BB_H */
 

@@ -7,6 +7,8 @@
 //#include "driverUtility.h"
 #include "dvbUtility.h"
 #include "modulatorFactory.h"
+#include "bbheader_bb.h"
+#include "bbscrambler_bb.h"
 
 using namespace std;
 using namespace itpp;
@@ -69,7 +71,7 @@ int main(int argc, char **argv)
 	int nSplit = kldpc / N_BCH;
 	int Nbch = nSplit * N_BCH;
 
-	int Kbch = nSplit * K_BCH;
+	//int Kbch = nSplit * K_BCH;
 
 	// print parameter value
 	int nmaxX1 = max(ldpc.sumX1._data(), ldpc.sumX1.size());
@@ -151,15 +153,9 @@ int main(int argc, char **argv)
 
 	int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
-	bitfile.read( (char*)&Kbch, sizeof(int)*1);
 	//cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
-#if REMOVE_BCH
-	int nLengthMSG = kldpc;
-#else
-	int nLengthMSG = Kbch;
-#endif
 
-	char *bitsPacketsPadding = new char[nLengthMSG];
+	char *bitsPacketsPadding = new char[nldpc];
 	char *bitsLDPC = new char[nldpc];
 	double *softbits_buf = new double[nldpc];
 
@@ -168,19 +164,27 @@ int main(int argc, char **argv)
 	vec			timerStepValue(COUNT_REPEAT*TIME_STEP);
 	ivec		countIteration(COUNT_REPEAT);
 
-	bvec bitsinEnc( nLengthMSG );
-	bvec bitsinEnc_N( nLengthMSG*COUNT_REPEAT );
 
 
 	cout << "Demodulating and decoding the bit stream !" << endl ;
 	cout << "Please wait for a few seconds ..." << endl << endl;
 
+	// header
+	bbheader_bb*	pBBHeader = bbheader_bb::make(C1_2, RO_0_20, FECFRAME_SHORT);
+	bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(C1_2, FECFRAME_SHORT);
+
+	int Kbch = pBBHeader->getkBCH();
+
+	bvec bitsinEnc( Kbch );
+	bvec bitsinEnc_N( Kbch*COUNT_REPEAT );
+
 	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
+		bitfile.read( (char*)&Kbch, sizeof(int)*1);
 		// step 0: prepare input packets from rand data or file stream
-		bitfile.read(bitsPacketsPadding, sizeof(char)*nLengthMSG);
+		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
 		convertBufferToVec( bitsPacketsPadding, bitsinEnc );
-		bitsinEnc_N.set_subvector(i*nLengthMSG, bitsinEnc);
+		bitsinEnc_N.set_subvector(i*Kbch, bitsinEnc);
 	}
 
 	int nTimeStep = 0;
@@ -217,7 +221,7 @@ int main(int argc, char **argv)
 
 		cvec	cAWGN( nSizeMod/2 );
 		convertBufferToVec( bitsMOD, cAWGN );
-		cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
+		//cout << "cAWGN.left(8)" << cAWGN.left(8) << endl;
 
 #if 0
 		bvec hardbits = pModulator->demodulate_bits( cAWGN );
@@ -225,7 +229,7 @@ int main(int argc, char **argv)
 		vec softbits(nldpc);
 #else
 		vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
-		cout << "softbits.left(16)" << softbits.left(16) << endl;
+		//cout << "softbits.left(16)" << softbits.left(16) << endl;
 #endif
 
 
@@ -274,7 +278,7 @@ int main(int argc, char **argv)
 
 #if		REMOVE_BCH
 		// step 8: bch decode
-		bvec bitsoutDec = bitsoutLDPCDec.left( nLengthMSG );
+		bvec bitsoutDec = bitsoutLDPCDec.left( Kbch );
 #else
 		bitsoutDec = bch.decode(bitsinBCHDec);
 
@@ -291,10 +295,10 @@ int main(int argc, char **argv)
 #endif
 
 		// step 9: verify result, Count the number of errors
-		bitsinEnc = bitsinEnc_N.mid(i*nLengthMSG, nLengthMSG);
+		bitsinEnc = bitsinEnc_N.mid(i*Kbch, Kbch);
 
-		cout << " in.left(16): " << bitsinEnc.left(16) << endl;
-		cout << "out.left(16): " << bitsoutDec.left(16) << endl;
+		//cout << " in.left(16): " << bitsinEnc.left(16) << endl;
+		//cout << "out.left(16): " << bitsoutDec.left(16) << endl;
 
 		berc.count(bitsinEnc, bitsoutDec);
 		per.count(bitsinEnc, bitsoutDec);

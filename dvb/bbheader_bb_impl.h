@@ -62,10 +62,12 @@ typedef struct{
       // Where all the action really happens
       void forecast (int noutput_items, int &ninput_items_required);
 
-	  int general_work(int noutput_items,
+	  void general_work(int noutput_items,
 		  const void *input_items,
 		  void *output_items);
-    };
+
+	  int getkBCH()	{ return kbch; }
+	};
 
 #endif /* INCLUDED_DVBS2_BBHEADER_BB_IMPL_H */
 

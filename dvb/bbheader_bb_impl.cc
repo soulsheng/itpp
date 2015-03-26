@@ -281,7 +281,7 @@ void bbheader_bb_impl::add_bbheader(unsigned char *out, int count)
     m_frame_offset_bits += add_crc8_bits(m_frame, len);
 }
 
-    int
+    void
     bbheader_bb_impl::general_work (int noutput_items,
                        const void *input_items,
                        void *output_items)
@@ -298,7 +298,9 @@ void bbheader_bb_impl::add_bbheader(unsigned char *out, int count)
             add_bbheader(&out[offset], count);
             offset = offset + 80;
 
-            for (int j = 0; j < (int)((kbch - 80) / 8); j++)
+			int nUPLByte = (int)((kbch - 80) / 8);
+
+            for (int j = 0; j < nUPLByte; j++)
             {
                 if (count == 0)
                 {
@@ -329,6 +331,6 @@ void bbheader_bb_impl::add_bbheader(unsigned char *out, int count)
         //consume_each (consumed);
 
         // Tell runtime system how many output items we produced.
-        return noutput_items;
+        //return noutput_items;
     }
 

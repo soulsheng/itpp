@@ -79,48 +79,46 @@ int main(int argc, char **argv)
 	  int nSplit = kldpc / N_BCH;
 	  int Nbch = nSplit * N_BCH;
 
-	  int Kbch = nSplit * K_BCH;
-#if REMOVE_BCH
-	  int nLengthMSG = kldpc;
-#else
-	  int nLengthMSG = Kbch;
-#endif
-
-	  char *bitsPacketsPadding = new char[nLengthMSG];
+	  unsigned char *bitsPacketsPadding = new unsigned char[nldpc];
+	  char *bitsPacketsPaddingBB = new char[nldpc];
 	  char *bitsBCH = new char[kldpc];
 	  char *bitsLDPC = new char[nldpc];
 	  double *bitsMOD = new double[nldpc];
 
 	  int COUNT_REPEAT = COUNT_REPEAT_DEF;
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
-	  bitfile.write( (char*)&nLengthMSG, sizeof(int)*1);
 
 	  // header
 	  bbheader_bb*	pBBHeader = bbheader_bb::make(C1_2, RO_0_20, FECFRAME_SHORT);
 	  bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(C1_2, FECFRAME_SHORT);
 
+	  int Kbch = pBBHeader->getkBCH();
+
 	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	  {
 		  // step 0: prepare input packets from rand data or file stream
-		  memset( bitsPacketsPadding, 0, sizeof(char)*nLengthMSG );
+		  int nUPLByte = (int)((Kbch - 80) / 8);
+		  memset( bitsPacketsPadding, 0, sizeof(char)*nUPLByte );
 		  srand( (unsigned int)i*CHECK_SIZE_CODE ) ;
 
-		  int nCountPacket = nLengthMSG / SIZE_PACKET;
+		  int nCountPacket = nUPLByte / SIZE_PACKET;
 		  for (int j = 0; j < nCountPacket; j ++) 
 		  {
-			  char *onePacket = bitsPacketsPadding + j*SIZE_PACKET;
+			  unsigned char *onePacket = bitsPacketsPadding + j*SIZE_PACKET;
 			  for (int k = 0; k < SIZE_PACKET; k ++) 
 			  {
-				onePacket[k] = rand()%2;
+				onePacket[k] = rand()%256;
 			  }
 		  }
 
-		  bitfile.write(bitsPacketsPadding, sizeof(char)*nLengthMSG);
+		  pBBHeader->general_work( Kbch, bitsPacketsPadding, bitsPacketsPaddingBB );
 
+		  bitfile.write( (char*)&Kbch, sizeof(int)*1);
+		  bitfile.write(bitsPacketsPaddingBB, sizeof(char)*Kbch);
 
 		  // step 1: input message
-		  bvec bitsinBCHEnc( nLengthMSG );
-		  convertBufferToVec( bitsPacketsPadding, bitsinBCHEnc );
+		  bvec bitsinBCHEnc( Kbch );
+		  convertBufferToVec( bitsPacketsPaddingBB, bitsinBCHEnc );
 
 		  bvec bitsinLDPCEnc = zeros_b(kldpc);
 
@@ -135,7 +133,8 @@ int main(int argc, char **argv)
 
 		  // step 3: ldpc encode
 		  bvec bitsoutLDPCEnc = ldpc.encode(bitsinLDPCEnc);
-		  //cout << "bitsoutLDPCEnc.left(16)" << bitsoutLDPCEnc.left(16) << endl;
+		  //cout << " bitsinLDPCEnc.left(80)" << bitsinLDPCEnc.left(80) << endl;
+		  //cout << "bitsoutLDPCEnc.left(80)" << bitsoutLDPCEnc.left(80) << endl;
 
 		  // step 4-6: modulate	-- awgn -- Demodulate
 
@@ -179,6 +178,7 @@ int main(int argc, char **argv)
 	  bitfileMOD.close();
 
 	  free( bitsPacketsPadding );
+	  free( bitsPacketsPaddingBB );
 	  free( bitsMOD );
 
 	  if ( bitfile != NULL )

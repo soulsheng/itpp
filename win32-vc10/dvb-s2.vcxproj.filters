@@ -7,6 +7,12 @@
       <Filter>utility</Filter>
     </ClCompile>
     <ClCompile Include="..\dvb\modulatorFactory.cpp" />
+    <ClCompile Include="..\dvb\bbheader_bb_impl.cc">
+      <Filter>bb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dvb\bbscrambler_bb_impl.cc">
+      <Filter>bb</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cuda">
@@ -14,6 +20,9 @@
     </Filter>
     <Filter Include="utility">
       <UniqueIdentifier>{3736b0f1-3f4c-4756-917d-9cd291b6c1bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bb">
+      <UniqueIdentifier>{6918728a-c631-4090-b7c6-0683144d533d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -38,5 +47,17 @@
       <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="..\dvb\modulatorFactory.h" />
+    <ClInclude Include="..\dvb\bbheader_bb.h">
+      <Filter>bb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dvb\bbheader_bb_impl.h">
+      <Filter>bb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dvb\bbscrambler_bb.h">
+      <Filter>bb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dvb\bbscrambler_bb_impl.h">
+      <Filter>bb</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
