@@ -30,6 +30,14 @@ using namespace std;
 #define FRAME_SIZE_NORMAL 64800
 #define FRAME_SIZE_SHORT  16200
 
+// BCH Code
+#define BCH_CODE_N8  0
+#define BCH_CODE_N10 1
+#define BCH_CODE_N12 2
+#define BCH_CODE_S12 3
+
+#define LDPC_ENCODE_TABLE_LENGTH (FRAME_SIZE_NORMAL * 10)
+
 enum	MOD_TYPE
 {
 	MOD_DEFAULT,//	0
@@ -73,3 +81,6 @@ enum Rolloff_Factor
 	RO_0_10,
 	RO_0_05,
 };
+
+#define		CODE_RATE_DEFAULT	C1_2
+#define		FRAME_TYPE_DEFAULT	FECFRAME_SHORT

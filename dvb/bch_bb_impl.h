@@ -21,10 +21,7 @@
 #ifndef INCLUDED_DVBS2_BCH_BB_IMPL_H
 #define INCLUDED_DVBS2_BCH_BB_IMPL_H
 
-#include <dvbs2/bch_bb.h>
-
-namespace gr {
-  namespace dvbs2 {
+#include "bch_bb.h"
 
     class bch_bb_impl : public bch_bb
     {
@@ -45,20 +42,17 @@ namespace gr {
       void bch_poly_build_tables(void);
 
      public:
-      bch_bb_impl(dvbs2_code_rate_t rate, dvbs2_framesize_t framesize);
+      bch_bb_impl(CODE_RATE rate, FRAME_TYPE framesize);
       ~bch_bb_impl();
 
       // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      void forecast (int noutput_items, int* ninput_items_required);
 
       int general_work(int noutput_items,
-		       gr_vector_int &ninput_items,
-		       gr_vector_const_void_star &input_items,
-		       gr_vector_void_star &output_items);
+		       int* ninput_items,
+		       const void* input_items,
+		       void* output_items);
     };
-
-  } // namespace dvbs2
-} // namespace gr
 
 #endif /* INCLUDED_DVBS2_BCH_BB_IMPL_H */
 

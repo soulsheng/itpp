@@ -5,6 +5,7 @@
 #include "modulatorFactory.h"
 #include "bbheader_bb.h"
 #include "bbscrambler_bb.h"
+#include "bch_bb.h"
 
 using namespace itpp;
 using namespace std;
@@ -89,8 +90,9 @@ int main(int argc, char **argv)
 	  bitfile.write( (char*)&COUNT_REPEAT, sizeof(int)*1);
 
 	  // header
-	  bbheader_bb*	pBBHeader = bbheader_bb::make(C1_2, RO_0_20, FECFRAME_SHORT);
-	  bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(C1_2, FECFRAME_SHORT);
+	  bbheader_bb*	pBBHeader = bbheader_bb::make(CODE_RATE_DEFAULT, RO_0_20, FRAME_TYPE_DEFAULT);
+	  bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT);
+	  bch_bb*	pBCH = bch_bb::make(CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT);
 
 	  int Kbch = pBBHeader->getkBCH();
 
