@@ -367,16 +367,7 @@
     <ClInclude Include="..\itpp\itcomm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\itpp\itfixed.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\itpp\itmex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\itoptim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\itprotocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\itpp\itsignal.h">
@@ -670,12 +661,5 @@
     <ClInclude Include="..\itpp\stat\mog_generic.h">
       <Filter>Header Files\stat</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\AUTHORS" />
-    <None Include="..\ChangeLog" />
-    <None Include="..\COPYING" />
-    <None Include="..\NEWS" />
-    <None Include="..\README" />
   </ItemGroup>
 </Project>

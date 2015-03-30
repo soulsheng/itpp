@@ -191,10 +191,7 @@
     <ClInclude Include="..\itpp\config_msvc.h" />
     <ClInclude Include="..\itpp\itbase.h" />
     <ClInclude Include="..\itpp\itcomm.h" />
-    <ClInclude Include="..\itpp\itfixed.h" />
     <ClInclude Include="..\itpp\itmex.h" />
-    <ClInclude Include="..\itpp\itoptim.h" />
-    <ClInclude Include="..\itpp\itprotocol.h" />
     <ClInclude Include="..\itpp\itsignal.h" />
     <ClInclude Include="..\itpp\itsrccode.h" />
     <ClInclude Include="..\itpp\itstat.h" />
@@ -292,13 +289,6 @@
     <ClInclude Include="..\itpp\stat\mog_diag_em.h" />
     <ClInclude Include="..\itpp\stat\mog_diag_kmeans.h" />
     <ClInclude Include="..\itpp\stat\mog_generic.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\AUTHORS" />
-    <None Include="..\ChangeLog" />
-    <None Include="..\COPYING" />
-    <None Include="..\NEWS" />
-    <None Include="..\README" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
