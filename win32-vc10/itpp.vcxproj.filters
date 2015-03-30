@@ -23,9 +23,6 @@
     <Filter Include="Source Files\srccode">
       <UniqueIdentifier>{f493bd62-8018-436f-aa50-f699ba52d684}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\fixedpoint">
-      <UniqueIdentifier>{370db42c-7c23-4d0e-aaed-6dfff0a28180}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\protocol">
       <UniqueIdentifier>{92908467-5651-4189-b654-d05ebb0e77a8}</UniqueIdentifier>
     </Filter>
@@ -59,9 +56,6 @@
     </Filter>
     <Filter Include="Header Files\srccode">
       <UniqueIdentifier>{6b91bff6-f93b-49b0-a9c1-356e39010124}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\fixed">
-      <UniqueIdentifier>{4b792229-2d95-49d0-aaef-09b49e521d16}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\protocol">
       <UniqueIdentifier>{0d5cd140-51fb-4efe-8730-05e86903c754}</UniqueIdentifier>
@@ -328,30 +322,6 @@
     </ClCompile>
     <ClCompile Include="..\itpp\srccode\vqtrain.cpp">
       <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\cfix.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\cfixed.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\fix.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\fix_base.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\fix_factory.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\fix_functions.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\fix_operators.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\fixed\fixed.cpp">
-      <Filter>Source Files\fixedpoint</Filter>
     </ClCompile>
     <ClCompile Include="..\itpp\protocol\events.cpp">
       <Filter>Source Files\protocol</Filter>
@@ -684,30 +654,6 @@
     </ClInclude>
     <ClInclude Include="..\itpp\srccode\vqtrain.h">
       <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\cfix.h">
-      <Filter>Header Files\fixed</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\cfixed.h">
-      <Filter>Header Files\fixed</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\fix.h">
-      <Filter>Header Files\fixed</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\fix_base.h">
-      <Filter>Header Files\fixed</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\fix_factory.h">
-      <Filter>Header Files\fixed</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\fix_functions.h">
-      <Filter>Header Files\fixed</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\fix_operators.h">
-      <Filter>Header Files\fixed</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\fixed\fixed.h">
-      <Filter>Header Files\fixed</Filter>
     </ClInclude>
     <ClInclude Include="..\itpp\protocol\events.h">
       <Filter>Header Files\protocol</Filter>
