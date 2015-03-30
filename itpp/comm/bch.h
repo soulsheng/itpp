@@ -68,6 +68,8 @@ public:
    */
   BCH(int in_n, int in_k, int in_t, const ivec &genpolynom, bool sys = false);
 
+  BCH(int in_n, int in_k, int in_t, const bvec &genpolynom, bool sys = false);
+
   /*!
    * \brief Initialize a (n,k)-code that can correct t errors
    * \author Stephan Ludwig

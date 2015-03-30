@@ -280,11 +280,11 @@ int main(int argc, char **argv)
 		// step 8: bch decode
 		bvec bitsoutDec = bitsoutLDPCDec.left( Kbch );
 #else
-		bitsoutDec = bch.decode(bitsinBCHDec);
+		bvec bitsoutDec = bch.decode(bitsinBCHDec);
 
 		for( int ik=0;ik<5;ik++){
 			cout << " inBCH.left(16): " << bitsinBCHDec.mid(1000*ik,16) << "of " << ik << endl;
-			cout << "outBCH.left(16): " << bitsoutBCHDec.mid(1000*ik,16) << "of " << ik << endl;
+			cout << "outBCH.left(16): " << bitsoutDec.mid(1000*ik,16) << "of " << ik << endl;
 		}
 
 		sdkStopTimer( &timerStep );

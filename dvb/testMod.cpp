@@ -61,11 +61,8 @@ int main(int argc, char **argv)
 
 	  ivec		countIteration(COUNT_REPEAT);
 
-#if REMOVE_BCH
+
 	  int nLengthMSG = kldpc;
-#else
-	  int nLengthMSG = Kbch;
-#endif
 
 	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	  {

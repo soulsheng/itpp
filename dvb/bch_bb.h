@@ -42,6 +42,10 @@
        * creating new instances.
        */
       static bch_bb* make(CODE_RATE rate, FRAME_TYPE framesize);
+
+	  virtual int*	getPolyNomial( int& nSize ){ return NULL;}
+	  virtual int	getN(){ return 0;}
+	  virtual int	getK(){ return 0;}
     };
 
 #endif /* INCLUDED_DVBS2_BCH_BB_H */

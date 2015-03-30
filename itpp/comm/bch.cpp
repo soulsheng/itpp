@@ -146,6 +146,16 @@ BCH::BCH(int in_n, int in_t, bool sys):
   k = n - g.get_true_degree();
 }
 
+BCH::BCH( int in_n, int in_k, int in_t, const bvec &genpolynom, bool sys /*= false*/ ):
+n(in_n), k(in_k), t(in_t), systematic(sys)
+{
+	ivec exponents = zeros_i(n - k + 1);
+	bvec temp = genpolynom;
+	for (int i = 0; i < temp.length(); i++) {
+		exponents(i) = static_cast<int>(temp(temp.length() - i - 1)) - 1;
+	}
+	g.set(n + 1, exponents);
+}
 
 void BCH::encode(const bvec &uncoded_bits, bvec &coded_bits)
 {

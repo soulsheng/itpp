@@ -52,7 +52,6 @@ int main(int argc, char **argv)
 	  LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
 	  LDPC_Code ldpc(FILENAME_IT, &G);
 
-	  BCH bch(N_BCH, T_BCH);
 
 	  // Noise variance is N0/2 per dimension
 	  double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -128,6 +127,15 @@ int main(int argc, char **argv)
 		  bitsinLDPCEnc.set_subvector(0, bitsinBCHEnc);
 #else
 		  // step 2: bch encode
+
+		  //BCH bch(N_BCH, T_BCH);
+		  int nSizePoly = 0;
+		  int* pPolyNomial = pBCH->getPolyNomial( nSizePoly );
+		  ivec	bitPolyNomial( pPolyNomial, nSizePoly );
+		  int kBCH = pBCH->getK();
+		  int nBCH = pBCH->getN();
+		  BCH bch( nBCH, kBCH, 12, to_bvec(bitPolyNomial) );
+
 		  bvec bitsoutBCHEnc = bch.encode(bitsinBCHEnc);
 
 		  bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);

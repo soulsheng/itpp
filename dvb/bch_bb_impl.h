@@ -33,6 +33,8 @@
       unsigned int m_poly_n_10[5];
       unsigned int m_poly_n_12[6];
       unsigned int m_poly_s_12[6];
+	  int m_poly_nomial[4][200];
+	  
       int poly_mult(const int*, int, const int*, int, int*);
       void poly_pack(const int*, unsigned int*, int);
       void poly_reverse(int*, int*, int);
@@ -52,6 +54,10 @@
 		       int* ninput_items,
 		       const void* input_items,
 		       void* output_items);
+
+	  int* getPolyNomial( int& nSize );
+	  int	getN(){ return nbch;}
+	  int	getK(){ return kbch;}
     };
 
 #endif /* INCLUDED_DVBS2_BCH_BB_IMPL_H */
