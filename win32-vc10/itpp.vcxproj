@@ -165,12 +165,6 @@
     <ClCompile Include="..\itpp\comm\spread.cpp" />
     <ClCompile Include="..\itpp\comm\stc.cpp" />
     <ClCompile Include="..\itpp\comm\turbo.cpp" />
-    <ClCompile Include="..\itpp\srccode\audiofile.cpp" />
-    <ClCompile Include="..\itpp\srccode\gmm.cpp" />
-    <ClCompile Include="..\itpp\srccode\lpcfunc.cpp" />
-    <ClCompile Include="..\itpp\srccode\pnm.cpp" />
-    <ClCompile Include="..\itpp\srccode\vq.cpp" />
-    <ClCompile Include="..\itpp\srccode\vqtrain.cpp" />
     <ClCompile Include="..\itpp\signal\fastica.cpp" />
     <ClCompile Include="..\itpp\signal\filter.cpp" />
     <ClCompile Include="..\itpp\signal\filter_design.cpp" />
@@ -193,7 +187,6 @@
     <ClInclude Include="..\itpp\itcomm.h" />
     <ClInclude Include="..\itpp\itmex.h" />
     <ClInclude Include="..\itpp\itsignal.h" />
-    <ClInclude Include="..\itpp\itsrccode.h" />
     <ClInclude Include="..\itpp\itstat.h" />
     <ClInclude Include="..\itpp\base\array.h" />
     <ClInclude Include="..\itpp\base\bessel.h" />
@@ -267,12 +260,6 @@
     <ClInclude Include="..\itpp\comm\spread.h" />
     <ClInclude Include="..\itpp\comm\stc.h" />
     <ClInclude Include="..\itpp\comm\turbo.h" />
-    <ClInclude Include="..\itpp\srccode\audiofile.h" />
-    <ClInclude Include="..\itpp\srccode\gmm.h" />
-    <ClInclude Include="..\itpp\srccode\lpcfunc.h" />
-    <ClInclude Include="..\itpp\srccode\pnm.h" />
-    <ClInclude Include="..\itpp\srccode\vq.h" />
-    <ClInclude Include="..\itpp\srccode\vqtrain.h" />
     <ClInclude Include="..\itpp\signal\fastica.h" />
     <ClInclude Include="..\itpp\signal\filter.h" />
     <ClInclude Include="..\itpp\signal\filter_design.h" />

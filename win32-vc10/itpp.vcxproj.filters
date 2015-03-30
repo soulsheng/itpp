@@ -20,12 +20,6 @@
     <Filter Include="Source Files\comm">
       <UniqueIdentifier>{1006a21f-895d-46a2-a3f7-ca9e7c4c96ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\srccode">
-      <UniqueIdentifier>{f493bd62-8018-436f-aa50-f699ba52d684}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\signal">
-      <UniqueIdentifier>{7266f555-8590-492b-b931-b62a31ad20ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\stat">
       <UniqueIdentifier>{d17123e0-1e65-4677-b2ea-e6df04fa3569}</UniqueIdentifier>
     </Filter>
@@ -47,12 +41,6 @@
     </Filter>
     <Filter Include="Header Files\comm">
       <UniqueIdentifier>{1d654b5a-d0b4-4cc6-8d81-19c34b891c09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\srccode">
-      <UniqueIdentifier>{6b91bff6-f93b-49b0-a9c1-356e39010124}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\signal">
-      <UniqueIdentifier>{5f73f7f1-b0e2-4f40-b35b-233463b805dc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\stat">
       <UniqueIdentifier>{84ef5e8c-9fc4-44b1-8a30-19b33b98a5c2}</UniqueIdentifier>
@@ -293,54 +281,6 @@
     <ClCompile Include="..\itpp\comm\turbo.cpp">
       <Filter>Source Files\comm</Filter>
     </ClCompile>
-    <ClCompile Include="..\itpp\srccode\audiofile.cpp">
-      <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\srccode\gmm.cpp">
-      <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\srccode\lpcfunc.cpp">
-      <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\srccode\pnm.cpp">
-      <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\srccode\vq.cpp">
-      <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\srccode\vqtrain.cpp">
-      <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\fastica.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\filter.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\filter_design.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\freq_filt.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\poly.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\resampling.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\sigfun.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\source.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\transforms.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\signal\window.cpp">
-      <Filter>Source Files\signal</Filter>
-    </ClCompile>
     <ClCompile Include="..\itpp\stat\misc_stat.cpp">
       <Filter>Source Files\stat</Filter>
     </ClCompile>
@@ -368,12 +308,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\itpp\itmex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\itsignal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\itsrccode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\itpp\itstat.h">
@@ -594,54 +528,6 @@
     </ClInclude>
     <ClInclude Include="..\itpp\comm\turbo.h">
       <Filter>Header Files\comm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\srccode\audiofile.h">
-      <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\srccode\gmm.h">
-      <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\srccode\lpcfunc.h">
-      <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\srccode\pnm.h">
-      <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\srccode\vq.h">
-      <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\srccode\vqtrain.h">
-      <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\fastica.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\filter.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\filter_design.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\freq_filt.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\poly.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\resampling.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\sigfun.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\source.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\transforms.h">
-      <Filter>Header Files\signal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\signal\window.h">
-      <Filter>Header Files\signal</Filter>
     </ClInclude>
     <ClInclude Include="..\itpp\stat\histogram.h">
       <Filter>Header Files\stat</Filter>
