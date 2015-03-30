@@ -23,9 +23,6 @@
     <Filter Include="Source Files\srccode">
       <UniqueIdentifier>{f493bd62-8018-436f-aa50-f699ba52d684}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\protocol">
-      <UniqueIdentifier>{92908467-5651-4189-b654-d05ebb0e77a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\signal">
       <UniqueIdentifier>{7266f555-8590-492b-b931-b62a31ad20ae}</UniqueIdentifier>
     </Filter>
@@ -53,9 +50,6 @@
     </Filter>
     <Filter Include="Header Files\srccode">
       <UniqueIdentifier>{6b91bff6-f93b-49b0-a9c1-356e39010124}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\protocol">
-      <UniqueIdentifier>{0d5cd140-51fb-4efe-8730-05e86903c754}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\signal">
       <UniqueIdentifier>{5f73f7f1-b0e2-4f40-b35b-233463b805dc}</UniqueIdentifier>
@@ -316,24 +310,6 @@
     </ClCompile>
     <ClCompile Include="..\itpp\srccode\vqtrain.cpp">
       <Filter>Source Files\srccode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\protocol\events.cpp">
-      <Filter>Source Files\protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\protocol\front_drop_queue.cpp">
-      <Filter>Source Files\protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\protocol\packet_channel.cpp">
-      <Filter>Source Files\protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\protocol\packet_generator.cpp">
-      <Filter>Source Files\protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\protocol\selective_repeat.cpp">
-      <Filter>Source Files\protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\protocol\tcp.cpp">
-      <Filter>Source Files\protocol</Filter>
     </ClCompile>
     <ClCompile Include="..\itpp\signal\fastica.cpp">
       <Filter>Source Files\signal</Filter>
@@ -645,33 +621,6 @@
     </ClInclude>
     <ClInclude Include="..\itpp\srccode\vqtrain.h">
       <Filter>Header Files\srccode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\events.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\front_drop_queue.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\packet.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\packet_channel.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\packet_generator.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\selective_repeat.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\signals_slots.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\tcp.h">
-      <Filter>Header Files\protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\protocol\tcp_client_server.h">
-      <Filter>Header Files\protocol</Filter>
     </ClInclude>
     <ClInclude Include="..\itpp\signal\fastica.h">
       <Filter>Header Files\signal</Filter>
