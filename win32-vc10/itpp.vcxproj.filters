@@ -32,9 +32,6 @@
     <Filter Include="Source Files\stat">
       <UniqueIdentifier>{d17123e0-1e65-4677-b2ea-e6df04fa3569}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\optim">
-      <UniqueIdentifier>{46eaf689-85bc-46a9-b13d-90b5f299a201}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -65,9 +62,6 @@
     </Filter>
     <Filter Include="Header Files\stat">
       <UniqueIdentifier>{84ef5e8c-9fc4-44b1-8a30-19b33b98a5c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\optim">
-      <UniqueIdentifier>{5686b1a1-a1d9-47b8-a40e-df824822737e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -385,9 +379,6 @@
     </ClCompile>
     <ClCompile Include="..\itpp\stat\mog_generic.cpp">
       <Filter>Source Files\stat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\optim\newton_search.cpp">
-      <Filter>Source Files\optim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -729,9 +720,6 @@
     </ClInclude>
     <ClInclude Include="..\itpp\stat\mog_generic.h">
       <Filter>Header Files\stat</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\optim\newton_search.h">
-      <Filter>Header Files\optim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

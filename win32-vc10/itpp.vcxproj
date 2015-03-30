@@ -192,7 +192,6 @@
     <ClCompile Include="..\itpp\stat\mog_diag_em.cpp" />
     <ClCompile Include="..\itpp\stat\mog_diag_kmeans.cpp" />
     <ClCompile Include="..\itpp\stat\mog_generic.cpp" />
-    <ClCompile Include="..\itpp\optim\newton_search.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\itpp\config_msvc.h" />
@@ -308,7 +307,6 @@
     <ClInclude Include="..\itpp\stat\mog_diag_em.h" />
     <ClInclude Include="..\itpp\stat\mog_diag_kmeans.h" />
     <ClInclude Include="..\itpp\stat\mog_generic.h" />
-    <ClInclude Include="..\itpp\optim\newton_search.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\AUTHORS" />
