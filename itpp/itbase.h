@@ -103,7 +103,7 @@
 #include <itpp/base/math/trig_hyp.h>
 
 #include <itpp/base/array.h>
-#include <itpp/base/bessel.h>
+//#include <itpp/base/bessel.h>
 #include <itpp/base/binary.h>
 #include <itpp/base/binfile.h>
 #include <itpp/base/circular_buffer.h>
