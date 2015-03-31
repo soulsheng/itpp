@@ -8,9 +8,6 @@
     <Filter Include="Source Files\base">
       <UniqueIdentifier>{22f9e746-1a0f-42c8-b3cd-ccc57b531680}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\base\bessel">
-      <UniqueIdentifier>{fb114fd5-d1d1-4f6a-bd40-1f357c655a0a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\base\algebra">
       <UniqueIdentifier>{eebd46ed-939b-4917-8a75-817a2dc6a9ee}</UniqueIdentifier>
     </Filter>
@@ -29,9 +26,6 @@
     </Filter>
     <Filter Include="Header Files\base">
       <UniqueIdentifier>{6274a8d6-4d4a-4e1e-ac89-e3d80b911423}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\base\bessel">
-      <UniqueIdentifier>{9d8d6ffe-7286-450b-b5f0-85bc025afbc9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\base\algebra">
       <UniqueIdentifier>{1db2a27a-4c41-4eae-a3bc-ed08e13977ae}</UniqueIdentifier>
@@ -53,9 +47,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\itpp\base\bessel.cpp">
-      <Filter>Source Files\base</Filter>
-    </ClCompile>
     <ClCompile Include="..\itpp\base\binary.cpp">
       <Filter>Source Files\base</Filter>
     </ClCompile>
@@ -115,45 +106,6 @@
     </ClCompile>
     <ClCompile Include="..\itpp\base\vec.cpp">
       <Filter>Source Files\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\airy.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\chbevl.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\gamma.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\hyperg.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\i0.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\i1.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\iv.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\jv.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\k0.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\k1.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\kn.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\polevl.cpp">
-      <Filter>Source Files\base\bessel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\itpp\base\bessel\struve.cpp">
-      <Filter>Source Files\base\bessel</Filter>
     </ClCompile>
     <ClCompile Include="..\itpp\base\algebra\cholesky.cpp">
       <Filter>Source Files\base\algebra</Filter>
@@ -352,9 +304,6 @@
     <ClInclude Include="..\itpp\base\array.h">
       <Filter>Header Files\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\itpp\base\bessel.h">
-      <Filter>Header Files\base</Filter>
-    </ClInclude>
     <ClInclude Include="..\itpp\base\binary.h">
       <Filter>Header Files\base</Filter>
     </ClInclude>
@@ -432,9 +381,6 @@
     </ClInclude>
     <ClInclude Include="..\itpp\base\vec.h">
       <Filter>Header Files\base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\itpp\base\bessel\bessel_internal.h">
-      <Filter>Header Files\base\bessel</Filter>
     </ClInclude>
     <ClInclude Include="..\itpp\base\algebra\cholesky.h">
       <Filter>Header Files\base\algebra</Filter>

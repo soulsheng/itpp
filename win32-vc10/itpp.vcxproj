@@ -87,7 +87,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\itpp\base\bessel.cpp" />
     <ClCompile Include="..\itpp\base\binary.cpp" />
     <ClCompile Include="..\itpp\base\binfile.cpp" />
     <ClCompile Include="..\itpp\base\converters.cpp" />
@@ -108,19 +107,6 @@
     <ClCompile Include="..\itpp\base\svec.cpp" />
     <ClCompile Include="..\itpp\base\timing.cpp" />
     <ClCompile Include="..\itpp\base\vec.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\airy.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\chbevl.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\gamma.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\hyperg.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\i0.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\i1.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\iv.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\jv.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\k0.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\k1.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\kn.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\polevl.cpp" />
-    <ClCompile Include="..\itpp\base\bessel\struve.cpp" />
     <ClCompile Include="..\itpp\base\algebra\cholesky.cpp" />
     <ClCompile Include="..\itpp\base\algebra\det.cpp" />
     <ClCompile Include="..\itpp\base\algebra\eigen.cpp" />
@@ -189,7 +175,6 @@
     <ClInclude Include="..\itpp\itsignal.h" />
     <ClInclude Include="..\itpp\itstat.h" />
     <ClInclude Include="..\itpp\base\array.h" />
-    <ClInclude Include="..\itpp\base\bessel.h" />
     <ClInclude Include="..\itpp\base\binary.h" />
     <ClInclude Include="..\itpp\base\binfile.h" />
     <ClInclude Include="..\itpp\base\blas.h" />
@@ -216,7 +201,6 @@
     <ClInclude Include="..\itpp\base\svec.h" />
     <ClInclude Include="..\itpp\base\timing.h" />
     <ClInclude Include="..\itpp\base\vec.h" />
-    <ClInclude Include="..\itpp\base\bessel\bessel_internal.h" />
     <ClInclude Include="..\itpp\base\algebra\cholesky.h" />
     <ClInclude Include="..\itpp\base\algebra\det.h" />
     <ClInclude Include="..\itpp\base\algebra\eigen.h" />

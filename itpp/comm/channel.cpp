@@ -447,8 +447,8 @@ vec FIR_Fading_Generator::Jakes_filter(double norm_dopp, int order)
   int L = order / 2;
   vec x_pos(L), x_neg(L), x(2*L + 1), h(2*L + 1);
   for (int i = 1; i <= L; i++) {
-    x_pos(i - 1) = besselj(0.25, m_2pi * norm_dopp * i) / std::pow(i, 0.25);
-    // / std::sqrt(std::sqrt(static_cast<double>(i)));
+    // / x_pos(i - 1) = besselj(0.25, m_2pi * norm_dopp * i) / std::pow(i, 0.25);
+    x_pos(i - 1) = std::sqrt(std::sqrt(static_cast<double>(i)));
   }
   double x0 = 1.468813 * std::pow(norm_dopp, 0.25); // std::sqrt(std::sqrt(norm_dopp));
   x_neg = reverse(x_pos);
