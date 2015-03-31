@@ -45,6 +45,12 @@
     <Filter Include="Header Files\stat">
       <UniqueIdentifier>{84ef5e8c-9fc4-44b1-8a30-19b33b98a5c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\signal">
+      <UniqueIdentifier>{dedc949b-1a5f-4d74-bbf3-5e41c87b994a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\signal">
+      <UniqueIdentifier>{ac576b30-a460-49d8-9e5c-6fc035063da5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\itpp\base\bessel.cpp">
@@ -296,6 +302,36 @@
     <ClCompile Include="..\itpp\stat\mog_generic.cpp">
       <Filter>Source Files\stat</Filter>
     </ClCompile>
+    <ClCompile Include="..\itpp\signal\fastica.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\window.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\filter.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\filter_design.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\freq_filt.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\poly.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\resampling.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\sigfun.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\source.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\itpp\signal\transforms.cpp">
+      <Filter>Source Files\signal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\itpp\config_msvc.h">
@@ -546,6 +582,39 @@
     </ClInclude>
     <ClInclude Include="..\itpp\stat\mog_generic.h">
       <Filter>Header Files\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\itsignal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\fastica.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\filter.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\filter_design.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\freq_filt.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\poly.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\resampling.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\sigfun.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\source.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\transforms.h">
+      <Filter>Header Files\signal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\itpp\signal\window.h">
+      <Filter>Header Files\signal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
