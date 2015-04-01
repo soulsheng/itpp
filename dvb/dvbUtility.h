@@ -24,7 +24,7 @@
 #endif
 
 #define		REMOVE_BCH			1
-
+#define		SHORT_BCH			1
 #define		MOD_TYPE_DEFAULT	4
 
 #include <itpp/itcomm.h>

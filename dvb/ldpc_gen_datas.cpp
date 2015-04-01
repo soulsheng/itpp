@@ -127,15 +127,16 @@ int main(int argc, char **argv)
 		  bitsinLDPCEnc.set_subvector(0, bitsinBCHEnc);
 #else
 		  // step 2: bch encode
-
-		  //BCH bch(N_BCH, T_BCH);
+#if SHORT_BCH
+		  BCH bch(N_BCH, T_BCH);
+#else
 		  int nSizePoly = 0;
 		  int* pPolyNomial = pBCH->getPolyNomial( nSizePoly );
 		  ivec	bitPolyNomial( pPolyNomial, nSizePoly );
 		  int kBCH = pBCH->getK();
 		  int nBCH = pBCH->getN();
 		  BCH bch( nBCH, kBCH, 12, to_bvec(bitPolyNomial) );
-
+#endif
 		  bvec bitsoutBCHEnc = bch.encode(bitsinBCHEnc);
 
 		  bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
