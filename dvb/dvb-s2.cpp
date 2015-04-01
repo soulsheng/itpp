@@ -116,7 +116,6 @@ int main(int argc, char **argv)
 	ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
 		nmaxX1, nmaxX2, 
 		ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(), ldpc.V._data(), 	// Parity check matrix parameterization
-		ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
 		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
 		ldpc.llrcalc.logexp_table._data());
 
@@ -129,7 +128,7 @@ int main(int argc, char **argv)
 	writeArray( ldpc.llrcalc.logexp_table._data(), ldpc.llrcalc.Dint2, "../data/logexp.txt" );
 #endif
 
-	char * llrOut = (char*)malloc( nldpc * sizeof(char) );
+	char * bitOut = (char*)malloc( nldpc * sizeof(char) );
 
 	ifstream  bitfile;
 	bitfile.open( "../data/bitfile.dat" );
@@ -250,7 +249,7 @@ int main(int argc, char **argv)
 #endif
 
 #if		USE_GPU
-		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), llrOut ); 
+		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), bitOut ); 
 #else
 		countIteration[i] = bp_decode( llrIn._data(), llrOut, 
 			ldpc.nvar, ldpc.ncheck, 
@@ -272,7 +271,7 @@ int main(int argc, char **argv)
 
 		bvec bitsoutLDPCDec(nldpc);
 		for (int j=0;j<nldpc;j++)
-			bitsoutLDPCDec[j] = llrOut[j];
+			bitsoutLDPCDec[j] = bitOut[j];
 
 		bvec bitsinBCHDec = bitsoutLDPCDec.left(Nbch);
 
@@ -364,7 +363,7 @@ int main(int argc, char **argv)
 	
 	cout << endl << countIterationAverage << " iterations in decoding one ldpc code" << endl << endl ;
 
-	free( llrOut );
+	free( bitOut );
 	free( bitsPacketsPadding );
 	bitfile.close();
 

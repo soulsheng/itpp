@@ -47,7 +47,6 @@ int main(int argc, char **argv)
 	  ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
 		  nmaxX1, nmaxX2, 
 		  ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(), ldpc.V._data(), 	// Parity check matrix parameterization
-		  ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
 		  ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
 		  ldpc.llrcalc.logexp_table._data());
 

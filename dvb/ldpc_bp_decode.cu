@@ -218,7 +218,6 @@ bool ldpc_gpu::check_parity_cpu(char *LLR)
 bool ldpc_gpu::initialize( int nvar, int ncheck,
 	int nmaxX1, int nmaxX2,
 	int* sumX1, int* sumX2, int* iind, int* jind, int* V, 	// Parity check matrix parameterization
-	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
 	short int Dint1, short int Dint2, short int Dint3,
 	int* logexp_table		//! The lookup tables for the decoder
 	)
