@@ -16,26 +16,26 @@
 #define DRIFT 0 // adding extra errors
 
 #if 0
-enum	CODE_RATE_TAG
+enum	CODE_RATE
 {
-	RATE_1_4,	//	n = 16200; k=16008; t=12;
-	RATE_1_3,	//	n = 21600; k=21408; t=12;
-	RATE_2_5,	//	n = 25920; k=25728; t=12;
-	RATE_1_2,	//	n = 32400; k=32208; t=12;
-	RATE_3_5,	//	n = 38880; k=38688; t=12;
-	RATE_2_3,	//	n = 43200; k=43040; t=10;
-	RATE_3_4,	//	n = 48600; k=48408; t=12;
-	RATE_4_5,	//	n = 51840; k=51648; t=12;
-	RATE_5_6,	//	n = 54000; k=53840; t=10;
-	RATE_8_9,	//	n = 57600; k=57472; t=8;
-	RATE_9_10,	//	n = 58320; k=58192; t=8;
-	RATE_COUNT
+	C1_4,	//	n = 16200; k=16008; t=12;
+	C1_3,	//	n = 21600; k=21408; t=12;
+	C2_5,	//	n = 25920; k=25728; t=12;
+	C1_2,	//	n = 32400; k=32208; t=12;
+	C3_5,	//	n = 38880; k=38688; t=12;
+	C2_3,	//	n = 43200; k=43040; t=10;
+	C3_4,	//	n = 48600; k=48408; t=12;
+	C4_5,	//	n = 51840; k=51648; t=12;
+	C5_6,	//	n = 54000; k=53840; t=10;
+	C8_9,	//	n = 57600; k=57472; t=8;
+	C9_10,	//	n = 58320; k=58192; t=8;
+	CCOUNT
 };
 
-enum	CODE_TYPE_TAG
+enum	FRAME_TYPE
 {
-	CODE_TYPE_NORMAL,
-	CODE_TYPE_SHORT
+	FECFRAME_NORMAL,
+	FECFRAME_SHORT
 };
 #endif
 
@@ -73,26 +73,26 @@ void gfField(int m, // Base 2 logarithm of cardinality of the Field
 	int* indexAlpha);
 
 /*********************** Error detection   *******************************/
-bool error_detection( int n, int k, int* codeword);
+bool error_detection( int n, int k, char* codeword);
 
 /*********************** Error correction   *******************************/
 void BerlMass( int n, int k );
 
 /*********************** final step of BCH decoder ********************************/
-void BCH_final_dec(int n, int k, int* message, int* codeword);
+void BCH_final_dec(int n, int k, char* message, char* codeword);
 
 void release();
 
 public:
 
 /*********************** print msg and code  *******************************/
-void printNK(int n,int k, int* message, int* codeword, int length);
+void printNK(int n,int k, char* message, char* codeword, int length);
 
 /*********************** verify result  *******************************/
-bool verifyResult(int n, int k, int* message, int* messageRef);
+bool verifyResult(int n, int k, char* message, char* messageRef);
 
 /*********************** Message generator **********************************/
-void message_gen(int n,int k, unsigned long int  *seed, int* message);
+void message_gen(int n,int k, unsigned long int  *seed, char* message);
 
 public:
 
@@ -104,9 +104,9 @@ int getN( );
 int getK( );
 
 /*********************** Serial BCH encoder ********************************/
-void encode(int n, int k, int* message, int* codeword);
+void encode(int n, int k, char* message, char* codeword);
 
-void decode(int n, int k, int* message, int* codeword);
+void decode(int n, int k, char* message, char* codeword);
 
 private:
 	int *powAlphaNormal, *indexAlphaNormal;
