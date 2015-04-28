@@ -2,6 +2,7 @@
 #ifndef __BCH_H__
 #define __BCH_H__
 
+#include "modulatorDefinition.h"
 //////////////////////////// MACRO //////////////////////////////
 // It returns corrective capacity of the code with (n,k) given //
 /////////////////////////////////////////////////////////////////
@@ -14,7 +15,7 @@
 #define MAXT 12         // Max corrective capacity
 #define DRIFT 0 // adding extra errors
 
-
+#if 0
 enum	CODE_RATE_TAG
 {
 	RATE_1_4,	//	n = 16200; k=16008; t=12;
@@ -36,6 +37,7 @@ enum	CODE_TYPE_TAG
 	CODE_TYPE_NORMAL,
 	CODE_TYPE_SHORT
 };
+#endif
 
 class BCH_BM
 {
@@ -96,7 +98,7 @@ public:
 
 void initialize();
 
-void setCode( CODE_RATE_TAG rate, CODE_TYPE_TAG type );
+void setCode( CODE_RATE rate, FRAME_TYPE type );
 
 int getN( );
 int getK( );
@@ -123,8 +125,8 @@ private:
 
 	int S[(MAXT + DRIFT)*2];          // Syndrome vector
 
-	CODE_RATE_TAG	code_rate; 
-	CODE_TYPE_TAG	code_type; 
+	CODE_RATE	code_rate; 
+	FRAME_TYPE	code_type; 
 };
 
 #endif

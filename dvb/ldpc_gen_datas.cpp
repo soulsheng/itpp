@@ -92,6 +92,9 @@ int main(int argc, char **argv)
 	  bbheader_bb*	pBBHeader = bbheader_bb::make(CODE_RATE_DEFAULT, RO_0_20, FRAME_TYPE_DEFAULT);
 	  bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT);
 	  
+	  BCH_BM	bch;
+	  bch.initialize();
+	  bch.setCode( CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT );
 
 	  int Kbch = pBBHeader->getkBCH();
 
