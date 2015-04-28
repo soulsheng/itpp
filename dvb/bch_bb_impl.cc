@@ -318,17 +318,17 @@ void bch_bb_impl::bch_poly_build_tables(void)
     len = poly_mult(polyn07, 17, polyout[0], len, polyout[1]);
     len = poly_mult(polyn08, 17, polyout[1], len, polyout[0]);
     poly_pack(polyout[0], m_poly_n_8, 128);
-	memcpy_s( &m_poly_nomial[0][0], 200, polyout[0], 128 );
+	memcpy_s( &m_poly_nomial[0][0], 200*sizeof(int), polyout[0], 128*sizeof(int) );
 
     len = poly_mult(polyn09, 17, polyout[0], len, polyout[1]);
     len = poly_mult(polyn10, 17, polyout[1], len, polyout[0]);
     poly_pack(polyout[0], m_poly_n_10, 160);
-	memcpy_s( &m_poly_nomial[1][0], 200, polyout[0], 160 );
+	memcpy_s( &m_poly_nomial[1][0], 200*sizeof(int), polyout[0], 160*sizeof(int) );
 
     len = poly_mult(polyn11, 17, polyout[0], len, polyout[1]);
     len = poly_mult(polyn12, 17, polyout[1], len, polyout[0]);
     poly_pack(polyout[0], m_poly_n_12, 192);
-	memcpy_s( &m_poly_nomial[2][0], 200, polyout[0], 192 );
+	memcpy_s( &m_poly_nomial[2][0], 200*sizeof(int), polyout[0], 192*sizeof(int) );
 
     len = poly_mult(polys01, 15, polys02,    15,  polyout[0]);
     len = poly_mult(polys03, 15, polyout[0], len, polyout[1]);
@@ -342,7 +342,7 @@ void bch_bb_impl::bch_poly_build_tables(void)
     len = poly_mult(polys11, 15, polyout[0], len, polyout[1]);
     len = poly_mult(polys12, 15, polyout[1], len, polyout[0]);
     poly_pack(polyout[0], m_poly_s_12, 168);
-	memcpy_s( &m_poly_nomial[3][0], 200, polyout[0], 168 );
+	memcpy_s( &m_poly_nomial[3][0], 200*sizeof(int), polyout[0], 168*sizeof(int) );
 }
 
     int
