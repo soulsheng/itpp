@@ -14,6 +14,7 @@
     <ClCompile Include="..\dvb\bbheader_bb_impl.cc" />
     <ClCompile Include="..\dvb\bbscrambler_bb_impl.cc" />
     <ClCompile Include="..\dvb\bch_bb_impl.cc" />
+    <ClCompile Include="..\dvb\bch_bm.cpp" />
     <ClCompile Include="..\dvb\dvbUtility.cpp" />
     <ClCompile Include="..\dvb\ldpc_gen_datas.cpp" />
     <ClCompile Include="..\dvb\modulatorFactory.cpp" />
@@ -25,6 +26,7 @@
     <ClInclude Include="..\dvb\bbscrambler_bb_impl.h" />
     <ClInclude Include="..\dvb\bch_bb.h" />
     <ClInclude Include="..\dvb\bch_bb_impl.h" />
+    <ClInclude Include="..\dvb\bch_bm.h" />
     <ClInclude Include="..\dvb\dvbUtility.h" />
     <ClInclude Include="..\dvb\helper_timer.h" />
     <ClInclude Include="..\dvb\modulatorDefinition.h" />
