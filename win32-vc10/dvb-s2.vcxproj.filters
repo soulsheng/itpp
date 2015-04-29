@@ -13,6 +13,9 @@
     <ClCompile Include="..\dvb\bbscrambler_bb_impl.cc">
       <Filter>bb</Filter>
     </ClCompile>
+    <ClCompile Include="..\dvb\bch_bm.cpp">
+      <Filter>fec</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cuda">
@@ -23,6 +26,9 @@
     </Filter>
     <Filter Include="bb">
       <UniqueIdentifier>{6918728a-c631-4090-b7c6-0683144d533d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fec">
+      <UniqueIdentifier>{953eb1d3-274f-4374-a1ea-abb48dac510b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="..\dvb\bbscrambler_bb_impl.h">
       <Filter>bb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dvb\bch_bm.h">
+      <Filter>fec</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

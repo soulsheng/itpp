@@ -9,12 +9,13 @@
 #include "modulatorFactory.h"
 #include "bbheader_bb.h"
 #include "bbscrambler_bb.h"
+#include "bch_bm.h"
 
 using namespace std;
 using namespace itpp;
 
 
-#define		TIME_STEP		3	
+#define		TIME_STEP		4	
 
 #define		USE_GPU			1
 #define		USE_ALIST		0
@@ -48,7 +49,14 @@ int main(int argc, char **argv)
 	LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
 	LDPC_Code ldpc(FILENAME_IT, &G);
 #endif
+
+#if SHORT_BCH
 	BCH bch(N_BCH, T_BCH);
+#else
+	BCH_BM	bch;
+	bch.initialize();
+	bch.setCode( CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT );
+#endif
 
 	// Noise variance is N0/2 per dimension
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
@@ -69,8 +77,11 @@ int main(int argc, char **argv)
 	int kldpc = ldpc.get_ninfo();             // number of bits per codeword
 
 	int nSplit = kldpc / N_BCH;
+#if SHORT_BCH
 	int Nbch = nSplit * N_BCH;
-
+#else
+	int Nbch = bch.getN();
+#endif
 	//int Kbch = nSplit * K_BCH;
 
 	// print parameter value
@@ -157,6 +168,7 @@ int main(int argc, char **argv)
 	char *bitsPacketsPadding = new char[nldpc];
 	char *bitsLDPC = new char[nldpc];
 	double *softbits_buf = new double[nldpc];
+	char messageRecv[65535]={0};		// information received
 
 	vec			timerValue(COUNT_REPEAT);
 
@@ -279,13 +291,20 @@ int main(int argc, char **argv)
 		// step 8: bch decode
 		bvec bitsoutDec = bitsoutLDPCDec.left( Kbch );
 #else
+
+#if SHORT_BCH
 		bvec bitsoutDec = bch.decode(bitsinBCHDec);
 
 		for( int ik=0;ik<5;ik++){
 			cout << " inBCH.left(16): " << bitsinBCHDec.mid(1000*ik,16) << "of " << ik << endl;
 			cout << "outBCH.left(16): " << bitsoutDec.mid(1000*ik,16) << "of " << ik << endl;
 		}
+#else
+		bch.decode( messageRecv, bitOut );
 
+		bvec bitsoutDec(Kbch);
+		convertBufferToVec( messageRecv+bch.getN()-bch.getK(), bitsoutDec );
+#endif
 		sdkStopTimer( &timerStep );
 		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );
 

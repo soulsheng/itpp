@@ -76,9 +76,6 @@ int main(int argc, char **argv)
 	  int nldpc = VAR_SIZE_CODE;
 	  int kldpc = CHECK_SIZE_CODE;             // number of bits per codeword
 
-	  int nSplit = kldpc / N_BCH;
-	  int Nbch = nSplit * N_BCH;
-
 	  unsigned char *bitsPacketsPadding = new unsigned char[nldpc];
 	  char *bitsPacketsPaddingBB = new char[nldpc];
 	  char *bitsBCH = new char[kldpc];
@@ -92,11 +89,27 @@ int main(int argc, char **argv)
 	  bbheader_bb*	pBBHeader = bbheader_bb::make(CODE_RATE_DEFAULT, RO_0_20, FRAME_TYPE_DEFAULT);
 	  bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT);
 	  
+#if SHORT_BCH
+	  BCH bch(N_BCH, T_BCH);
+#else
 	  BCH_BM	bch;
 	  bch.initialize();
 	  bch.setCode( CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT );
+#endif
+
+
+	  int nSplit = kldpc / N_BCH;
+#if SHORT_BCH
+	  int Nbch = nSplit * N_BCH;
+#else
+	  int Nbch = bch.getN();
+#endif
 
 	  int Kbch = pBBHeader->getkBCH();
+
+	  char message[65535];				// information bits
+	  char codeword[65535]={0};			// codeword bits
+	  char messageRecv[65535]={0};		// information received
 
 	  for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	  {
@@ -131,18 +144,17 @@ int main(int argc, char **argv)
 #else
 		  // step 2: bch encode
 #if SHORT_BCH
-		  BCH bch(N_BCH, T_BCH);
-#else
-		  int nSizePoly = 0;
-		  int* pPolyNomial = pBCH->getPolyNomial( nSizePoly );
-		  ivec	bitPolyNomial( pPolyNomial, nSizePoly );
-		  int kBCH = pBCH->getK();
-		  int nBCH = pBCH->getN();
-		  BCH bch( nBCH, kBCH, 12, to_bvec(bitPolyNomial) );
-#endif
 		  bvec bitsoutBCHEnc = bch.encode(bitsinBCHEnc);
 
 		  bitsinLDPCEnc.set_subvector(0, bitsoutBCHEnc);
+#else
+		  memset( message, 0, sizeof(message) );
+		  memcpy_s( message+Nbch-Kbch, Kbch, bitsPacketsPaddingBB, Kbch );
+		  bch.encode( message, codeword );
+
+		  convertBufferToVec( codeword, bitsinLDPCEnc );
+#endif
+
 #endif
 
 		  // step 3: ldpc encode

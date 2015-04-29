@@ -23,8 +23,8 @@
 #define		EBNO			12.6//10 2-2.2	3-5.6	4-8.9	5-12.4
 #endif
 
-#define		REMOVE_BCH			1
-#define		SHORT_BCH			1
+#define		REMOVE_BCH			0
+#define		SHORT_BCH			0
 #define		MOD_TYPE_DEFAULT	4
 
 #include <itpp/itcomm.h>
