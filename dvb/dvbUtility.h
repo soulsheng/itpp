@@ -15,10 +15,10 @@
 #define		VAR_SIZE_CODE		16200
 #define		CHECK_SIZE_CODE		8100//8073
 
-#define		REMOVE_NOISE		0
+#define		REMOVE_NOISE		1
 
 #if REMOVE_NOISE
-#define		EBNO			10
+#define		EBNO			20
 #else
 #define		EBNO			12.6//10 2-2.2	3-5.6	4-8.9	5-12.4
 #endif
