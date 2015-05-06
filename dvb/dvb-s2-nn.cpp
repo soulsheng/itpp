@@ -23,19 +23,24 @@ using namespace itpp;
 
 int main(int argc, char **argv)
 {
+		
+	ifstream  bitDownload;
+	bitDownload.open( FILENAME_CODE_DOWNLOAD );
 
+	CODE_RATE	rate = C3_4;
+	FRAME_TYPE	type = FECFRAME_NORMAL;
 	// step 0: intialize ldpc,bch,bpsk,awgn
 #if USE_ALIST
 	LDPC_Parity	lp( FILENAME_ALIST, "alist" );
 	LDPC_Code	ldpc( &lp );
 #else
 	LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
-	LDPC_Code ldpc(FILENAME_IT, &G);
+	LDPC_Code ldpc(FILENAME_IT34, &G);
 #endif
 
 	BCH_BM	bch;
 	bch.initialize();
-	bch.setCode( CODE_RATE_DEFAULT, FRAME_TYPE_DEFAULT );
+	bch.setCode( C3_4, FECFRAME_NORMAL );
 	double N0 = pow(10.0, -EBNO / 10.0) / ldpc.get_rate();
 
 	ModulatorFactory	mods;	// 调制解调器件库
@@ -102,21 +107,13 @@ int main(int argc, char **argv)
 
 	char * bitOut = (char*)malloc( nldpc * sizeof(char) );
 
-	ifstream  bitfile;
-	bitfile.open( "../data/bitfile.dat" );
-
-	ifstream  bitfileMOD;
-	bitfileMOD.open( "../data/bitfileMOD.dat" );
-	
 
 	int COUNT_REPEAT = COUNT_REPEAT_DEF;
-	bitfile.read( (char*)&COUNT_REPEAT, sizeof(int)*1);
-	//cout << "COUNT_REPEAT = " << COUNT_REPEAT << endl;	// COUNT_REPEAT = 100
 
 	char *bitsPacketsPadding = new char[nldpc];
 	char *bitsLDPC = new char[nldpc];
 	double *softbits_buf = new double[nldpc];
-	char messageRecv[65535]={0};		// information received
+	char messageRef[65535]={0};		// information received
 
 	vec			timerValue(COUNT_REPEAT);
 
@@ -132,28 +129,17 @@ int main(int argc, char **argv)
 	bbheader_bb*	pBBHeader = bbheader_bb::make(C1_2, RO_0_20, FECFRAME_SHORT);
 	bbscrambler_bb*	pBBScrambler = bbscrambler_bb::make(C1_2, FECFRAME_SHORT);
 
-	int Kbch = pBBHeader->getkBCH();
-
-	bvec bitsinEnc( Kbch );
-	bvec bitsinEnc_N( Kbch*COUNT_REPEAT );
-
-	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
-	{
-		bitfile.read( (char*)&Kbch, sizeof(int)*1);
-		// step 0: prepare input packets from rand data or file stream
-		bitfile.read(bitsPacketsPadding, sizeof(char)*Kbch);
-		convertBufferToVec( bitsPacketsPadding, bitsinEnc );
-		bitsinEnc_N.set_subvector(i*Kbch, bitsinEnc);
-	}
+	int Kbch = bch.getK();
 
 	for (int64_t i = 0; i < COUNT_REPEAT; i ++) 
 	{
 		// demodulate
 
-		int nModTypeRAND = 0;
+		int nModTypeRAND = MOD_16APSK;
+#if 0
 		bitfileMOD >> nModTypeRAND ;
 		cout << "nModTypeRAND = " << nModTypeRAND << endl;
-
+#endif
 		MOD_TYPE	modType = (MOD_TYPE)nModTypeRAND;
 		Modulator_2D* pModulator = mods.findModulator( modType );
 
@@ -167,7 +153,7 @@ int main(int argc, char **argv)
 		double *bitsMOD  = new double[nSizeMod];
 
 		for ( int j=0; j<nSizeMod; j++ )
-			bitfileMOD >> bitsMOD[j] ;
+			bitDownload >> bitsMOD[j] ;
 
 		cvec	cAWGN( nSizeMod/2 );
 		convertBufferToVec( bitsMOD, cAWGN );
@@ -200,7 +186,8 @@ int main(int argc, char **argv)
 		convertBufferToVec( bitOut+bch.getN()-bch.getK(), bitsoutDec );
 
 		// step 9: verify result, Count the number of errors
-		bitsinEnc = bitsinEnc_N.mid(i*Kbch, Kbch);
+		bvec bitsinEnc(Kbch);
+		convertBufferToVec( messageRef, bitsinEnc );
 
 		berc.count(bitsinEnc, bitsoutDec);
 		per.count(bitsinEnc, bitsoutDec);
@@ -238,9 +225,7 @@ int main(int argc, char **argv)
 
 	free( bitOut );
 	free( bitsPacketsPadding );
-	bitfile.close();
 
-	bitfileMOD.close();
 
 	free( bitsLDPC );
 	free( softbits_buf );

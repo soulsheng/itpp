@@ -6,23 +6,24 @@ using namespace itpp;
 using namespace std;
 
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
-#define		FILENAME_ALIST	"../data/dvbs2_r12.alist"
+#define		FILENAME_ALIST12	"../data/dvbs2_r12.alist"
+#define		FILENAME_ALIST34	"../data/dvbs2_r34.alist"
 #define		FILENAME_IT12	"../data/dvbs2_r12.it"
+#define		FILENAME_IT34	"../data/dvbs2_r34.it"
 
 int main(int argc, char **argv)
 {
 
 	cout << "Generating ldpc code file - \"random_3_6_16200.it\" to data path!" << endl ;
 	cout << "Please wait for a few hours(may be 3h) ..." << endl << endl;
-	if( 0 )
+	if( 1 )
 	{
-		LDPC_Parity lp(FILENAME_ALIST, "alist");
-		LDPC_Generator_Systematic G(&lp); // for codes created with ldpc_gen_codes since generator exists
-		LDPC_Code ldpc(&lp, &G);
-		ldpc.save_code(FILENAME_IT12);
+		LDPC_Parity	lp( FILENAME_ALIST34, "alist" );
+		LDPC_Code	ldpc( &lp );
+		ldpc.save_code(FILENAME_IT34);
 	}
 
-  if( 1 )
+  if( 0 )
   { // 16200 bits REGULAR (takes 3 hours to run), (3,6) code with k = 8100
     cout << "========= RANDOM (3,6) CODE ==========" << endl;
     LDPC_Parity_Regular H;
