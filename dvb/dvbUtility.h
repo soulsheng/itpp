@@ -5,7 +5,7 @@
 #define		FILENAME_IT		"../data/random_3_6_16200.it"
 #define		FILENAME_IT34		"../data/dvbs2_r34.it"
 #define		FILENAME_ALIST	"../data/dvbs2_r34.alist"
-#define		FILENAME_CODE_DOWNLOAD	"../s31.1_16apsk_34_long.dat"
+#define		FILENAME_CODE_DOWNLOAD	"../data/s311_16apsk_34_long.dat"
 
 #define		COUNT_REPEAT_DEF	10	// repeat time 
 #define		SIZE_PACKET		188

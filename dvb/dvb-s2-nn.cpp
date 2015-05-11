@@ -23,9 +23,18 @@ using namespace itpp;
 
 int main(int argc, char **argv)
 {
-		
+#if 1
+	FILE	*fp;
+	fp = fopen( FILENAME_CODE_DOWNLOAD, "rb" );
+	if( fp == NULL )
+	{
+		cout << FILENAME_CODE_DOWNLOAD << " can not open " << endl;
+		return 0;
+	}
+#else
 	ifstream  bitDownload;
 	bitDownload.open( FILENAME_CODE_DOWNLOAD );
+#endif
 
 	CODE_RATE	rate = C3_4;
 	FRAME_TYPE	type = FECFRAME_NORMAL;
@@ -151,12 +160,18 @@ int main(int argc, char **argv)
 
 		int	nSizeMod = nldpc*2/pModulator->get_k();
 		double *bitsMOD  = new double[nSizeMod];
+		short	*bitsMODS  = new short[nSizeMod];
 
+		fread( bitsMODS, sizeof(short), nSizeMod, fp );
 		for ( int j=0; j<nSizeMod; j++ )
-			bitDownload >> bitsMOD[j] ;
+		{
+			bitsMOD[j] = bitsMODS[j]/float(1<<13) ;
+		}
 
 		cvec	cAWGN( nSizeMod/2 );
 		convertBufferToVec( bitsMOD, cAWGN );
+
+		cout << "cAWGN.left( 10 )" << cAWGN.left( 10 ) << endl;
 
 		vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
 
@@ -188,6 +203,8 @@ int main(int argc, char **argv)
 		// step 9: verify result, Count the number of errors
 		bvec bitsinEnc(Kbch);
 		convertBufferToVec( messageRef, bitsinEnc );
+
+		cout << "bitsoutDec.left(100)" << bitsoutDec.left(100) << endl << endl;
 
 		berc.count(bitsinEnc, bitsoutDec);
 		per.count(bitsinEnc, bitsoutDec);
