@@ -66,6 +66,8 @@ typedef struct{
 		  const void *input_items,
 		  void *output_items);
 
+	  bool verify( const void *input_items );
+
 	  int getkBCH()	{ return kbch; }
 	};
 

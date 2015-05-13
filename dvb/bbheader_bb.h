@@ -45,6 +45,9 @@
 	  virtual void general_work(int noutput_items,
 		  const void *input_items,
 		  void *output_items){ }
+
+	  virtual bool verify( const void *input_items ){ return true;}
+
 	  virtual int getkBCH()	{ return 0;}
 	};
 

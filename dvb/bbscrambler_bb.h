@@ -42,6 +42,10 @@
        * creating new instances.
        */
       static bbscrambler_bb* make(CODE_RATE rate, FRAME_TYPE framesize);
+
+	  virtual int work(int noutput_items,
+		  const void *input_items,
+		  void *output_items){ return 0; }
     };
 
 #endif /* INCLUDED_DVBS2_BBSCRAMBLER_BB_H */

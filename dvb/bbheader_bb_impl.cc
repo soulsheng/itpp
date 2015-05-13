@@ -334,3 +334,77 @@ void bbheader_bb_impl::add_bbheader(unsigned char *out, int count)
         //return noutput_items;
     }
 
+	bool bbheader_bb_impl::verify( const void *input_items )
+	{
+		bool bStatus = true;
+
+		int temp, m_frame_offset_bits;
+		const unsigned char *m_frame = (const unsigned char *)input_items;
+		BBHeader *h = &m_format[0].bb_header;
+
+		// First byte (MATYPE-1)
+		h->ts_gs	=  m_frame[0] << 1;
+		h->ts_gs	+= m_frame[1];
+		h->sis_mis	=  m_frame[2];
+		h->ccm_acm	=  m_frame[3];
+		h->issyi	=  m_frame[4];
+		h->npd		=  m_frame[5];
+
+		h->ro		= m_frame[6] << 1;
+		h->ro		+= m_frame[7];
+
+		m_frame_offset_bits = 8;
+
+		// Second byte (MATYPE-2)
+		if (h->sis_mis == SIS_MIS_MULTIPLE)
+		{
+			temp = 0;
+			for (int n = 7; n >= 0; n--)
+			{
+				temp += m_frame[m_frame_offset_bits++] << n;// = temp & (1 << n) ? 1 : 0;
+			}
+			h->isi = temp;
+		}
+		else
+		{
+			for (int n = 7; n >= 0 ; n--)
+			{
+				m_frame_offset_bits++;
+			}
+		}
+
+		// UPL (2 bytes)
+		temp = 0;
+		for (int n = 15; n >= 0; n--)
+		{
+			temp += m_frame[m_frame_offset_bits++] << n;
+		}
+		h->upl = temp;
+
+		// DFL (2 byte)
+		temp = 0;
+		for (int n = 15; n >= 0; n--)
+		{
+			temp += m_frame[m_frame_offset_bits++] << n;
+		}
+		h->dfl = temp;
+
+		// SYNC (1 byte)
+		temp = 0;
+		for (int n = 7; n >= 0; n--)
+		{
+			temp += m_frame[m_frame_offset_bits++] << n;
+		}
+		h->sync = temp;
+
+		// Calculate syncd (2 byte), this should point to the MSB of the CRC
+		temp = 0;
+		for (int n = 15; n >= 0; n--)
+		{
+			temp += m_frame[m_frame_offset_bits++] << n;
+		}
+		h->syncd = temp;
+
+		return bStatus;
+	}
+

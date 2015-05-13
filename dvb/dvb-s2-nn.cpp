@@ -114,7 +114,8 @@ int main(int argc, char **argv)
 		ldpc.llrcalc.logexp_table._data());
 #endif
 
-	char * bitOut = (char*)malloc( nldpc * sizeof(char) );
+	char bitOut[FRAME_SIZE_NORMAL]={0};
+	char bitOutTmp[FRAME_SIZE_NORMAL]={0};
 
 
 	int COUNT_REPEAT = COUNT_REPEAT_DEF;
@@ -122,7 +123,7 @@ int main(int argc, char **argv)
 	char *bitsPacketsPadding = new char[nldpc];
 	char *bitsLDPC = new char[nldpc];
 	double *softbits_buf = new double[nldpc];
-	char messageRef[65535]={0};		// information received
+	char messageRef[FRAME_SIZE_NORMAL]={0};		// information received
 
 	vec			timerValue(COUNT_REPEAT);
 
@@ -197,13 +198,18 @@ int main(int argc, char **argv)
 		for (int j=0;j<nldpc;j++)
 			bitsoutLDPCDec[j] = bitOut[j];
 
-		bvec bitsoutDec(Kbch);
-		convertBufferToVec( bitOut+bch.getN()-bch.getK(), bitsoutDec );
+		pBBScrambler->work( Kbch, bitOut, bitOutTmp );
+
+		bool bStatus = pBBHeader->verify( bitOutTmp );
+
+		bvec bitsoutDec(Kbch-80);
+		convertBufferToVec( bitOutTmp+80 , bitsoutDec );
 
 		// step 9: verify result, Count the number of errors
-		bvec bitsinEnc(Kbch);
+		bvec bitsinEnc(Kbch-80);
 		convertBufferToVec( messageRef, bitsinEnc );
 
+		cout << "bitsoutLDPCDec.left(100)" << bitsoutLDPCDec.left(100) << endl << endl;
 		cout << "bitsoutDec.left(100)" << bitsoutDec.left(100) << endl << endl;
 
 		berc.count(bitsinEnc, bitsoutDec);
@@ -240,7 +246,7 @@ int main(int argc, char **argv)
 	
 	cout << endl << countIterationAverage << " iterations in decoding one ldpc code" << endl << endl ;
 
-	free( bitOut );
+	//free( bitOut );
 	free( bitsPacketsPadding );
 
 
