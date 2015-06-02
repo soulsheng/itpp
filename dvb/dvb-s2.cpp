@@ -123,12 +123,16 @@ int main(int argc, char **argv)
 	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;// = 300
 #endif
 
+#if USE_GPU
 	ldpc_gpu	ldpc_gpu_diy;
 	ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
 		nmaxX1, nmaxX2, 
 		ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(), ldpc.V._data(), 	// Parity check matrix parameterization
 		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
 		ldpc.llrcalc.logexp_table._data());
+#else
+	ldpc_decoder	ldpc_cpu;
+#endif
 
 #if WRITE_FILE_FOR_DRIVER
 	writeArray( ldpc.sumX1._data(), ldpc.nvar, "../data/sumX1.txt" );
@@ -263,7 +267,7 @@ int main(int argc, char **argv)
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), bitOut ); 
 #else
-		countIteration[i] = bp_decode( llrIn._data(), bitOut, 
+		countIteration[i] = ldpc_cpu.bp_decode( llrIn._data(), bitOut, 
 			ldpc.nvar, ldpc.ncheck, 
 			nmaxX1, nmaxX2, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization

@@ -6,6 +6,9 @@ int max(int *v, int N);
 //! Minimum value of vector
 int min(int *v, int N);
 
+class ldpc_decoder{
+public:
+
 bool syndrome_check(char* LLR,
 	int ncheck, 
 	int* sumX2, 
@@ -29,3 +32,17 @@ int bp_decode(int *LLRin, char *LLRout,
 	int* logexp_table,		//! The lookup tables for the decoder
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
+
+void updateCheckNode( int ncheck, int* sumX2, 
+	int* mcv, int* mvc, int* jind, 
+	short int Dint1, short int Dint2, short int Dint3, 
+	int* logexp_table );
+
+void updateVariableNode( int nvar, int* sumX1, 
+	int* mcv, int* mvc, int* iind, 
+	int * LLRin, char * LLRout );
+
+void initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin );
+
+
+};

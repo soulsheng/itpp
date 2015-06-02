@@ -27,7 +27,7 @@ int min(int *v, int N)
 	return tmp;
 }
 
-bool syndrome_check(char *LLR,
+bool ldpc_decoder::syndrome_check(char *LLR,
 	int ncheck, 
 	int* sumX2, 
 	int* V ) 
@@ -53,7 +53,7 @@ bool syndrome_check(char *LLR,
 	return true;   // codeword is valid
 }
 
-int  logexp(int x,
+int  ldpc_decoder::logexp(int x,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	int* logexp_table )		//! The lookup tables for the decoder
 {
@@ -65,7 +65,7 @@ int  logexp(int x,
 	return logexp_table[ind];
 }
 
-int Boxplus(int a, int b,
+int ldpc_decoder::Boxplus(int a, int b,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	int* logexp_table )		//! The lookup tables for the decoder
 {
@@ -104,7 +104,7 @@ int Boxplus(int a, int b,
 	return result;
 }
 
-void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table ) 
+void ldpc_decoder::updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, short int Dint1, short int Dint2, short int Dint3, int* logexp_table ) 
 {
 
 	//! Maximum check node degree that the class can handle
@@ -237,7 +237,7 @@ void updateCheckNode( int ncheck, int* sumX2, int* mcv, int* mvc, int* jind, sho
 	}
 }
 
-void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, int * LLRin, char * LLRout ) 
+void ldpc_decoder::updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, int * LLRin, char * LLRout ) 
 {
 	for (int i = 0; i < nvar; i++) {
 		
@@ -312,7 +312,7 @@ void updateVariableNode( int nvar, int* sumX1, int* mcv, int* mvc, int* iind, in
 	}
 }
 
-void initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin ) 
+void ldpc_decoder::initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin ) 
 {
 	for (int i = 0; i < nvar; i++) {
 		int index = i;
@@ -323,7 +323,7 @@ void initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin )
 	}
 }
 
-int bp_decode(int *LLRin, char *LLRout,
+int ldpc_decoder::bp_decode(int *LLRin, char *LLRout,
 	int nvar, int ncheck, 
 	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
