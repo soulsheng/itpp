@@ -17,7 +17,7 @@ using namespace itpp;
 
 #define		TIME_STEP		4	
 
-#define		USE_GPU			1
+#define		USE_GPU			0
 #define		USE_ALIST		0
 
 
@@ -263,7 +263,7 @@ int main(int argc, char **argv)
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), bitOut ); 
 #else
-		countIteration[i] = bp_decode( llrIn._data(), llrOut, 
+		countIteration[i] = bp_decode( llrIn._data(), bitOut, 
 			ldpc.nvar, ldpc.ncheck, 
 			nmaxX1, nmaxX2, 
 			ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
