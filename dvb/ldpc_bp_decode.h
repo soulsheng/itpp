@@ -22,8 +22,7 @@ int Boxplus(int a, int b,
 	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
 	int* logexp_table );		//! The lookup tables for the decoder
 
-int bp_decode(int *LLRin, char *LLRout,
-	int nvar, int ncheck, 
+void initialize(	int nvar, int ncheck, 
 	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
 	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
 	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
@@ -44,5 +43,16 @@ void updateVariableNode( int nvar, int* sumX1,
 
 void initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin );
 
+int bp_decode(int *LLRin, char *LLRout);
 
+protected:
+	int *LLRin; char *LLRout;
+	int nvar, ncheck;
+	int nmaxX1, nmaxX2; // max(sumX1) max(sumX2)
+	int* V, * sumX1, * sumX2, * iind, * jind;	// Parity check matrix parameterization
+	int* mvc; int* mcv;	// temporary storage for decoder (memory allocated when codec defined)
+	short int Dint1, Dint2, Dint3;	//! Decoder (lookup-table) parameters
+	int* logexp_table;		//! The lookup tables for the decoder
+	bool psc;			//!< check syndrom after each iteration
+	int max_iters;
 };

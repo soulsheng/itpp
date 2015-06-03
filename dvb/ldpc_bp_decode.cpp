@@ -323,17 +323,11 @@ void ldpc_decoder::initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin )
 	}
 }
 
-int ldpc_decoder::bp_decode(int *LLRin, char *LLRout,
-	int nvar, int ncheck, 
-	int nmaxX1, int nmaxX2, // max(sumX1) max(sumX2)
-	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
-	int* mvc, int* mcv,	// temporary storage for decoder (memory allocated when codec defined)
-	//LLR_calc_unit& llrcalc,		//!< LLR calculation unit
-	short int Dint1, short int Dint2, short int Dint3,	//! Decoder (lookup-table) parameters
-	int* logexp_table,		//! The lookup tables for the decoder
-	bool psc /*= true*/,			//!< check syndrom after each iteration
-	int max_iters /*= 50*/ )		//!< Maximum number of iterations
+int ldpc_decoder::bp_decode(int *LLRin, char *LLRout)		//!< Maximum number of iterations
 {
+	this->LLRin = LLRin; 
+	this->LLRout = LLRout;
+
 	StopWatchInterface	*timerStep;
 	sdkCreateTimer( &timerStep );
 	vector<float>	timerStepValue( (max_iters+1)*3 );
@@ -417,4 +411,25 @@ int ldpc_decoder::bp_decode(int *LLRin, char *LLRout,
   sdkDeleteTimer( &timerStep );
 
   return (is_valid_codeword ? iter : -iter);
+}
+
+void ldpc_decoder::initialize(int nvar, int ncheck, int nmaxX1, int nmaxX2, /* max(sumX1) max(sumX2) */ int* V, int* sumX1, int* sumX2, int* iind, int* jind, /* Parity check matrix parameterization */ int* mvc, int* mcv, /* temporary storage for decoder (memory allocated when codec defined) */ /*LLR_calc_unit& llrcalc, //!< LLR calculation unit */ short int Dint1, short int Dint2, short int Dint3, /*! Decoder (lookup-table) parameters */ int* logexp_table, /*! The lookup tables for the decoder */ bool psc /*= true*/, /*!< check syndrom after each iteration */ int max_iters /*= 50 */ )
+{
+	this->nvar = nvar;
+	this->ncheck = ncheck;
+	this->nmaxX1 = nmaxX1;
+	this->nmaxX2 = nmaxX2; // max(sumX1) max(sumX2)
+	this->V = V;
+	this->sumX1 = sumX1;
+	this->sumX2 = sumX2;
+	this->iind = iind;
+	this->jind = jind;	// Parity check matrix parameterization
+	this->mvc = mvc; 
+	this->mcv = mcv;	// temporary storage for decoder (memory allocated when codec defined)
+	this->Dint1 = Dint1;
+	this->Dint2 = Dint2;
+	this->Dint3 = Dint3;	//! Decoder (lookup-table) parameters
+	this->logexp_table = logexp_table;		//! The lookup tables for the decoder
+	this->psc = psc;			//!< check syndrom after each iteration
+	this->max_iters = max_iters;
 }
