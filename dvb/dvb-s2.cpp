@@ -1,4 +1,3 @@
-#include <itpp/itcomm.h>
 #include <sstream>
 #include <cuda_runtime.h>
 #include "ldpc_bp_decode.h"
@@ -42,12 +41,16 @@ int main(int argc, char **argv)
 	testfile.close();
 
 	// step 0: intialize ldpc,bch,bpsk,awgn
-#if USE_ALIST
-	LDPC_Parity	lp( FILENAME_ALIST, "alist" );
-	LDPC_Code	ldpc( &lp );
+#if USE_GPU
+	ldpc_gpu	ldpc_gpu_diy;
+	ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
+		nmaxX1, nmaxX2, 
+		ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(), ldpc.V._data(), 	// Parity check matrix parameterization
+		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
+		ldpc.llrcalc.logexp_table._data());
 #else
-	LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
-	LDPC_Code ldpc(FILENAME_IT, &G);
+	ldpc_decoder	ldpc;
+	ldpc.initialize();
 #endif
 
 #if SHORT_BCH
@@ -85,61 +88,7 @@ int main(int argc, char **argv)
 	//int Kbch = nSplit * K_BCH;
 
 	// print parameter value
-	int nmaxX1 = max(ldpc.sumX1._data(), ldpc.sumX1.size());
-	int nmaxX2 = max(ldpc.sumX2._data(), ldpc.sumX2.size());
-	int nminX1 = min(ldpc.sumX1._data(), ldpc.sumX1.size());
-	int nminX2 = min(ldpc.sumX2._data(), ldpc.sumX2.size());
 
-	int nmaxI = max(ldpc.iind._data(), ldpc.iind.size());
-	int nmaxJ = max(ldpc.jind._data(), ldpc.jind.size());
-	int nminI = min(ldpc.iind._data(), ldpc.iind.size());
-	int nminJ = min(ldpc.jind._data(), ldpc.jind.size());
-
-#if 1
-	cout << "max(iind) = " << nmaxI << endl;// max(iind) = nvar*nmaxX1-1
-	cout << "max(jind) = " << nmaxJ << endl;// max(jind) = nvar*nmaxX1-1
-	cout << "min(iind) = " << nminI << endl;// min(iind) = 0
-	cout << "min(jind) = " << nminJ << endl;// min(jind) = 0
-
-	cout << "ldpc.nvar = " << ldpc.nvar << endl;		// nvar = 16200
-	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8100//8073 
-	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;	// = nvar
-	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;	// = ncheck
-	cout << "max(sumX1) = " << nmaxX1 << endl;// max(sumX1) = 3//19
-	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 6//10
-	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 3//2
-	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 6//7
-	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;			// = ncheck * max(sumX2)
-	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;		// = nvar * max(sumX1)
-	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;		// = ncheck * max(sumX2)
-
-	cout << "ldpc.mvc.size() = " << ldpc.mvc.size() << endl;		// = nvar * max(sumX1)
-	cout << "ldpc.mcv.size() = " << ldpc.mcv.size() << endl;		// = ncheck * max(sumX2)
-
-	cout << "ldpc.llrcalc.Dint1 = " << ldpc.llrcalc.Dint1 << endl;	// Dint1 = 12
-	cout << "ldpc.llrcalc.Dint2 = " << ldpc.llrcalc.Dint2 << endl;	// Dint2 = 300
-	cout << "ldpc.llrcalc.Dint3 = " << ldpc.llrcalc.Dint3 << endl;	// Dint3 = 7
-
-	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;// = 300
-#endif
-
-#if USE_GPU
-	ldpc_gpu	ldpc_gpu_diy;
-	ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
-		nmaxX1, nmaxX2, 
-		ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(), ldpc.V._data(), 	// Parity check matrix parameterization
-		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
-		ldpc.llrcalc.logexp_table._data());
-#else
-	ldpc_decoder	ldpc_cpu;
-	ldpc_cpu.initialize(ldpc.nvar, ldpc.ncheck, 
-		nmaxX1, nmaxX2, 
-		ldpc.V._data(), ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(),	// Parity check matrix parameterization
-		ldpc.mvc._data(), ldpc.mcv._data(),	// temporary storage for decoder (memory allocated when codec defined)
-		//ldpc.llrcalc );		//!< LLR calculation unit
-		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
-		ldpc.llrcalc.logexp_table._data() );
-#endif
 
 #if WRITE_FILE_FOR_DRIVER
 	writeArray( ldpc.sumX1._data(), ldpc.nvar, "../data/sumX1.txt" );
@@ -263,9 +212,7 @@ int main(int argc, char **argv)
 		sdkStartTimer( &timerStep );
 
 		// ldpc Decode the received bits
-		//QLLRvec llr(nldpc);
-		QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
-		
+	
 #if WRITE_FILE_FOR_DRIVER
 		if( i==0 )
 			writeArray( llrIn._data(), ldpc.nvar, "../data/input.txt" );
@@ -274,7 +221,7 @@ int main(int argc, char **argv)
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), bitOut ); 
 #else
-		countIteration[i] = ldpc_cpu.bp_decode( llrIn._data(), bitOut);	
+		countIteration[i] = ldpc.bp_decode( softbits, bitOut);	
 
 #endif
 
