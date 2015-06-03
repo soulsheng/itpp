@@ -44,6 +44,7 @@ void initializeMVC( int nvar, int* sumX1, int* mvc, int * LLRin );
 
 int bp_decode(int *LLRin, char *LLRout);
 int bp_decode(vec& softbits, char *LLRout);		//!< Maximum number of iterations
+int bp_decode(double* softbits, char *LLRout);		//!< Maximum number of iterations
 
 public:
 	int get_nvar() const { return nvar; }

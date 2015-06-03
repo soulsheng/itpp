@@ -202,6 +202,8 @@ int main(int argc, char **argv)
 		vec softbits = pModulator->demodulate_soft_bits(cAWGN, N0);
 		//cout << "softbits.left(16)" << softbits.left(16) << endl;
 #endif
+		double*	pSoftBits = new double[nldpc];
+		convertVecToBuffer( pSoftBits, softbits );
 
 
 		sdkStopTimer( &timerStep );
@@ -221,9 +223,10 @@ int main(int argc, char **argv)
 #if		USE_GPU
 		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), bitOut ); 
 #else
-		countIteration[i] = ldpc.bp_decode( softbits, bitOut);	
+		countIteration[i] = ldpc.bp_decode( pSoftBits, bitOut);	
 
 #endif
+		free( pSoftBits );
 
 		sdkStopTimer( &timerStep );
 		timerStepValue[nTimeStep++] = sdkGetTimerValue( &timerStep );

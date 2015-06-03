@@ -421,6 +421,13 @@ int ldpc_decoder::bp_decode( vec& softbits, char *LLRout )
 	return bp_decode( llrIn._data(), LLRout);	
 }
 
+int ldpc_decoder::bp_decode( double* softbits, char *LLRout )
+{
+	vec  softVec( nvar );
+	convertBufferToVec( softbits, softVec );
+	return bp_decode( softVec, LLRout );
+}
+
 void ldpc_decoder::initialize(
 	bool psc /*= true*/, /*!< check syndrom after each iteration */ 
 	int max_iters /*= 50 */ )
