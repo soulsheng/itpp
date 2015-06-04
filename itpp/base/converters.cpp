@@ -159,7 +159,7 @@ bvec pol2bin(const ivec &inpol)
 
 
 // Round to nearest integer, return result in double
-double round(double x) { return ::rint(x); }
+double roundl(double x) { return ::rint(x); }
 // Round to nearest integer
 vec round(const vec &x) { return apply_function<double>(::rint, x); }
 // Round to nearest integer

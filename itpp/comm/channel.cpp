@@ -28,7 +28,7 @@
  */
 
 #include <itpp/comm/channel.h>
-#include <itpp/base/math/error.h>
+//#include <itpp/base/math/error.h>
 #include <itpp/base/math/trig_hyp.h>
 //#include <itpp/base/bessel.h>
 #include <itpp/base/matfunc.h>
@@ -43,7 +43,7 @@
 namespace itpp
 {
 
-
+#if 0
 // --------------------------------------------------------------------------
 // Fading_Generator class
 // --------------------------------------------------------------------------
@@ -330,7 +330,7 @@ void Rice_Fading_Generator::generate(int no_samples, cvec &output)
 
   time_offset += no_samples;
 }
-
+#if 0
 void Rice_Fading_Generator::init_MEDS()
 {
   vec n;
@@ -378,6 +378,7 @@ void Rice_Fading_Generator::init_MEDS()
     it_error("Rice_Fading_Generator::init_MEDS(): Wrong spectrum method for this fading generator");
   };
 }
+#endif
 
 
 // --------------------------------------------------------------------------
@@ -1540,7 +1541,7 @@ bvec BSC::operator()(const bvec &input)
   return output;
 }
 
-
+#endif
 // --------------------------------------------------------------------------
 // AWGN_Channel class methods
 // --------------------------------------------------------------------------

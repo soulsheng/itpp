@@ -213,7 +213,7 @@ enum DOPPLER_SPECTRUM {
   GaussII = 2, Gauss2 = 2, GII = 2, G2 = 2
 };
 
-
+#if 0
 /*!
  * \brief Fading generator class
  * \author Tony Ottosson, Adam Piatyszek and Zbigniew Dlugaszewski
@@ -1016,6 +1016,7 @@ private:
   double p;
 };
 
+#endif
 
 
 /*!
