@@ -8,8 +8,7 @@
 using namespace std;
 
 
-#define		MAX_CHECK_NODE		6//10
-#define		MAX_VAR_NODE		3//19
+#define		MAX_LOCAL_CACHE		20
 
 
 #define		SIZE_BLOCK			256
@@ -37,7 +36,7 @@ void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int*
 
 	int mvc_temp = LLRin[i];
 
-	int m[MAX_VAR_NODE];
+	int m[MAX_LOCAL_CACHE];
 
 	for (int jp = 0; jp < sumX1[i]; jp++)
 		m[jp] = mcv[ iind[i + jp*nvar] ];
@@ -65,7 +64,7 @@ void updateVariableNodeOpti2D_kernel( const int nvar, const int ncheck, const in
 		return;
 		
 	__shared__ int mvc_temp[SIZE_BLOCK_2D_X];
-	__shared__ int m[MAX_VAR_NODE][SIZE_BLOCK_2D_X];
+	__shared__ int m[MAX_LOCAL_CACHE][SIZE_BLOCK_2D_X];
 	
 
 	if( threadIdx.y < sumX1[i] )
@@ -161,11 +160,11 @@ void 	readArray(T* pArray, int nSize, char* strFileName)
 	fclose(fp);
 }
 
-driverUpdataVar::driverUpdataVar(int var, int check)
+driverUpdataVar::driverUpdataVar(int var, int check, int maxvar, int maxcheck)
 	: nvar( var )
 	, ncheck( check )
-	, nmaxX1( MAX_VAR_NODE )
-	, nmaxX2( MAX_CHECK_NODE )
+	, nmaxX1( maxvar )
+	, nmaxX2( maxcheck )
 {
 	sumX1 = (int*)malloc(nvar * sizeof(int));
 	iind = (int*)malloc(nvar * nmaxX1 * sizeof(int));
