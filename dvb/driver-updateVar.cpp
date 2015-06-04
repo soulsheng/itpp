@@ -10,7 +10,7 @@ void main()
 {
 	bool bStatus = false;
 
-	driverUpdataVar ldpc;
+	driverUpdataVar ldpc(16200, 8100);
 
 	if( !ldpc.launch() )
 		cout << "Failed to launch" << endl;

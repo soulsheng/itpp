@@ -10,8 +10,8 @@ using namespace std;
 
 #define		MAX_CHECK_NODE		6//10
 #define		MAX_VAR_NODE		3//19
-#define		VAR_SIZE_CODE		16200
-#define		CHECK_SIZE_CODE		8100
+
+
 #define		SIZE_BLOCK			256
 #define		SIZE_BLOCK_2D_X		32
 
@@ -161,9 +161,9 @@ void 	readArray(T* pArray, int nSize, char* strFileName)
 	fclose(fp);
 }
 
-driverUpdataVar::driverUpdataVar()
-	: nvar( VAR_SIZE_CODE )
-	, ncheck( CHECK_SIZE_CODE )
+driverUpdataVar::driverUpdataVar(int var, int check)
+	: nvar( var )
+	, ncheck( check )
 	, nmaxX1( MAX_VAR_NODE )
 	, nmaxX2( MAX_CHECK_NODE )
 {
