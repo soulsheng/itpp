@@ -1,5 +1,6 @@
 
 #pragma once
+#include <itpp/itcomm.h>
 
 class ldpc_gpu
 {
@@ -29,6 +30,8 @@ int bp_decode(int *LLRin, int *LLRout,
 int bp_decode_once(int *LLRin, char *LLRout,
 	bool psc = true,			//!< check syndrom after each iteration
 	int max_iters = 50 );		//!< Maximum number of iterations
+int bp_decode_once(itpp::vec& softbits, char *LLRout);		//!< Maximum number of iterations
+int bp_decode_once(double* softbits, char *LLRout);		//!< Maximum number of iterations
 
 	/*!
 	   * LDPC解码器初始化   *
@@ -44,14 +47,14 @@ int bp_decode_once(int *LLRin, char *LLRout,
 		* \param	Dint1/2/3		参数输入：同对数似然比class LLR_calc_unit
 		* \param	logexp_table	参数输入：对数似然比查找表
 	*/
-	bool	initialize( int nvar, int ncheck,
-	int nmaxX1, int nmaxX2,
-	int* V, int* sumX1, int* sumX2, int* iind, int* jind,	// Parity check matrix parameterization
-	short int Dint1, short int Dint2, short int Dint3,
-	int* logexp_table		//! The lookup tables for the decoder
-	);
+	bool	initialize( );
 
 	~ldpc_gpu();
+
+	int get_nvar() const { return nvar; }
+	int get_ncheck() const { return ncheck; }
+	int get_ninfo() const { return nvar - ncheck; }
+	float get_rate();
 
 private:
 	bool	release();
@@ -83,4 +86,7 @@ private:
 	short int Dint1, Dint2, Dint3;	//! Decoder (lookup-table) parameters
 	//int max_cnd;	//! Maximum check node degree that the class can handle
 	int QLLR_MAX;
+
+	itpp::LDPC_Code ldpc;
+
 };

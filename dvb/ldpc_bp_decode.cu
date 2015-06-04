@@ -2,11 +2,13 @@
 #include "ldpc_bp_decode.cuh"
 #include "ldpc_bp_decode_kernel.cuh"
 //#include "driverUtility.h"
+#include "dvbUtility.h"
 
 #include <cuda_runtime.h>
 #include <thrust/reduce.h>
 #include <thrust/device_vector.h>
-
+#include <iostream>
+using namespace std;
 #if USE_TEXTURE_ADDRESS
 	cudaArray* arr_mcv;
 	cudaArray* arr_mvc;
@@ -215,19 +217,60 @@ bool ldpc_gpu::check_parity_cpu(char *LLR)
 	return true;   // codeword is valid
 }
 
-bool ldpc_gpu::initialize( int nvar, int ncheck,
-	int nmaxX1, int nmaxX2,
-	int* sumX1, int* sumX2, int* iind, int* jind, int* V, 	// Parity check matrix parameterization
-	short int Dint1, short int Dint2, short int Dint3,
-	int* logexp_table		//! The lookup tables for the decoder
-	)
+bool ldpc_gpu::initialize( )
 {
-	this->nvar = nvar;		this->ncheck = ncheck;
-	this->nmaxX1 = nmaxX1;	this->nmaxX2 = nmaxX2; // max(sumX1) max(sumX2)
-	this->Dint1 = Dint1;	this->Dint2 = Dint2;	this->Dint3 = Dint3;	//! Decoder (lookup-table) parameters
+	itpp::LDPC_Generator_Systematic G; // for codes created with ldpc_gen_codes since generator exists
 	
-	this->h_V = V;
-	this->h_sumX2 = sumX2;
+	ldpc.load_code(FILENAME_IT, &G);
+
+
+	int nmaxX1 = max(ldpc.sumX1._data(), ldpc.sumX1.size());
+	int nmaxX2 = max(ldpc.sumX2._data(), ldpc.sumX2.size());
+	int nminX1 = min(ldpc.sumX1._data(), ldpc.sumX1.size());
+	int nminX2 = min(ldpc.sumX2._data(), ldpc.sumX2.size());
+
+	int nmaxI = max(ldpc.iind._data(), ldpc.iind.size());
+	int nmaxJ = max(ldpc.jind._data(), ldpc.jind.size());
+	int nminI = min(ldpc.iind._data(), ldpc.iind.size());
+	int nminJ = min(ldpc.jind._data(), ldpc.jind.size());
+
+#if 1
+	cout << "max(iind) = " << nmaxI << endl;// max(iind) = nvar*nmaxX1-1
+	cout << "max(jind) = " << nmaxJ << endl;// max(jind) = nvar*nmaxX1-1
+	cout << "min(iind) = " << nminI << endl;// min(iind) = 0
+	cout << "min(jind) = " << nminJ << endl;// min(jind) = 0
+
+	cout << "ldpc.nvar = " << ldpc.nvar << endl;		// nvar = 16200
+	cout << "ldpc.ncheck = " << ldpc.ncheck << endl;	// ncheck = 8100//8073 
+	cout << "ldpc.sumX1.size() = " << ldpc.sumX1.size() << endl;	// = nvar
+	cout << "ldpc.sumX2.size() = " << ldpc.sumX2.size() << endl;	// = ncheck
+	cout << "max(sumX1) = " << nmaxX1 << endl;// max(sumX1) = 3//19
+	cout << "max(sumX2) = " << nmaxX2 << endl;// max(sumX2) = 6//10
+	cout << "min(sumX1) = " << nminX1 << endl;// min(sumX1) = 3//2
+	cout << "min(sumX2) = " << nminX2 << endl;// min(sumX2) = 6//7
+	cout << "ldpc.V.size() = " << ldpc.V.size() << endl;			// = ncheck * max(sumX2)
+	cout << "ldpc.iind.size() = " << ldpc.iind.size() << endl;		// = nvar * max(sumX1)
+	cout << "ldpc.jind.size() = " << ldpc.jind.size() << endl;		// = ncheck * max(sumX2)
+
+	cout << "ldpc.mvc.size() = " << ldpc.mvc.size() << endl;		// = nvar * max(sumX1)
+	cout << "ldpc.mcv.size() = " << ldpc.mcv.size() << endl;		// = ncheck * max(sumX2)
+
+	cout << "ldpc.llrcalc.Dint1 = " << ldpc.llrcalc.Dint1 << endl;	// Dint1 = 12
+	cout << "ldpc.llrcalc.Dint2 = " << ldpc.llrcalc.Dint2 << endl;	// Dint2 = 300
+	cout << "ldpc.llrcalc.Dint3 = " << ldpc.llrcalc.Dint3 << endl;	// Dint3 = 7
+
+	cout << "ldpc.llrcalc.logexp_table.size() = " << ldpc.llrcalc.logexp_table.size() << endl;// = 300
+#endif
+
+
+	this->nvar = ldpc.nvar;		this->ncheck = ldpc.ncheck;
+	this->nmaxX1 = nmaxX1;	this->nmaxX2 = nmaxX2; // max(sumX1) max(sumX2)
+	this->Dint1 = ldpc.llrcalc.Dint1;	
+	this->Dint2 = ldpc.llrcalc.Dint2;	
+	this->Dint3 = ldpc.llrcalc.Dint3;	//! Decoder (lookup-table) parameters
+	
+	this->h_V = ldpc.V._data();
+	this->h_sumX2 = ldpc.sumX2._data();
 
 	//max_cnd = 200;
 	QLLR_MAX = (1<<31 -1)>>4;//(std::numeric_limits<int>::max() >> 4);
@@ -240,19 +283,19 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMemset( d_synd, 0, 1 * sizeof(int) );
 	
 	cudaMalloc( (void**)&d_sumX1, nvar * sizeof(int) );		// const 64 K
-	cudaMemcpy( d_sumX1, sumX1, nvar * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemcpy( d_sumX1, ldpc.sumX1._data(), nvar * sizeof(int), cudaMemcpyHostToDevice );
 
 	cudaMalloc( (void**)&d_sumX2, ncheck * sizeof(int) );	// const 32 K
-	cudaMemcpy( d_sumX2, sumX2, ncheck * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemcpy( d_sumX2, ldpc.sumX2._data(), ncheck * sizeof(int), cudaMemcpyHostToDevice );
 
 	cudaMalloc( (void**)&d_iind, nvar * nmaxX1 * sizeof(int) );		// const 1.2 M
-	cudaMemcpy( d_iind, iind, nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemcpy( d_iind, ldpc.iind._data(), nvar * nmaxX1 * sizeof(int), cudaMemcpyHostToDevice );
 	
 	cudaMalloc( (void**)&d_jind, ncheck * nmaxX2 * sizeof(int) );	// const 300 K
-	cudaMemcpy( d_jind, jind, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemcpy( d_jind, ldpc.jind._data(), ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 
 	cudaMalloc( (void**)&d_V, ncheck * nmaxX2 * sizeof(int) );		// const 300 K
-	cudaMemcpy( d_V, V, ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemcpy( d_V, ldpc.V._data(), ncheck * nmaxX2 * sizeof(int), cudaMemcpyHostToDevice );
 	
 	cudaMalloc( (void**)&d_mcv, ncheck * nmaxX2 * sizeof(int) );
 	cudaMemset( d_mcv, 0, ncheck * nmaxX2 * sizeof(int) );
@@ -261,9 +304,9 @@ bool ldpc_gpu::initialize( int nvar, int ncheck,
 	cudaMemset( d_mvc, 0, nvar * nmaxX1 * sizeof(int) );
 
 	cudaMalloc( (void**)&d_logexp_table, Dint2 * sizeof(int) );		// const 1.2 K
-	cudaMemcpy( d_logexp_table, logexp_table, Dint2 * sizeof(int), cudaMemcpyHostToDevice );
+	cudaMemcpy( d_logexp_table, ldpc.llrcalc.logexp_table._data(), Dint2 * sizeof(int), cudaMemcpyHostToDevice );
 
-	initConstantMemoryLogExp(logexp_table);
+	initConstantMemoryLogExp(ldpc.llrcalc.logexp_table._data());
 
 #if USE_TEXTURE_ADDRESS
 	// cuda texture ------------------------------------------------------------------------------------------
@@ -314,4 +357,23 @@ bool ldpc_gpu::release()
 ldpc_gpu::~ldpc_gpu()
 {
 	release();
+}
+
+int ldpc_gpu::bp_decode_once( itpp::vec& softbits, char *LLRout )
+{
+	itpp::QLLRvec llrIn = ldpc.get_llrcalc().to_qllr(softbits);
+
+	return bp_decode_once( llrIn._data(), LLRout);	
+}
+
+int ldpc_gpu::bp_decode_once( double* softbits, char *LLRout )
+{
+	itpp::vec  softVec( nvar );
+	convertBufferToVec( softbits, softVec );
+	return bp_decode_once( softVec, LLRout );
+}
+
+float ldpc_gpu::get_rate()
+{
+	return ldpc.get_rate();
 }

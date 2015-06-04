@@ -16,7 +16,7 @@ using namespace itpp;
 
 #define		TIME_STEP		4	
 
-#define		USE_GPU			0
+#define		USE_GPU			1
 #define		USE_ALIST		0
 
 
@@ -42,12 +42,8 @@ int main(int argc, char **argv)
 
 	// step 0: intialize ldpc,bch,bpsk,awgn
 #if USE_GPU
-	ldpc_gpu	ldpc_gpu_diy;
-	ldpc_gpu_diy.initialize(ldpc.nvar, ldpc.ncheck, 
-		nmaxX1, nmaxX2, 
-		ldpc.sumX1._data(), ldpc.sumX2._data(), ldpc.iind._data(), ldpc.jind._data(), ldpc.V._data(), 	// Parity check matrix parameterization
-		ldpc.llrcalc.Dint1, ldpc.llrcalc.Dint2, ldpc.llrcalc.Dint3,	//! Decoder (lookup-table) parameters
-		ldpc.llrcalc.logexp_table._data());
+	ldpc_gpu	ldpc;
+	ldpc.initialize();
 #else
 	ldpc_decoder	ldpc;
 	ldpc.initialize();
@@ -221,7 +217,7 @@ int main(int argc, char **argv)
 #endif
 
 #if		USE_GPU
-		countIteration[i] = ldpc_gpu_diy.bp_decode_once( llrIn._data(), bitOut ); 
+		countIteration[i] = ldpc.bp_decode_once( softbits, bitOut ); 
 #else
 		countIteration[i] = ldpc.bp_decode( pSoftBits, bitOut);	
 
