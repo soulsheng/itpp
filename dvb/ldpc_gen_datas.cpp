@@ -9,7 +9,7 @@
 
 using namespace itpp;
 using namespace std;
-
+#if 0
 //! Maximum value of vector
 int max(int *v, int N)
 {
@@ -29,7 +29,7 @@ int min(int *v, int N)
 			tmp = v[i];
 	return tmp;
 }
-
+#endif
 int main(int argc, char **argv)
 {
 	// generate input bit and modulated bit

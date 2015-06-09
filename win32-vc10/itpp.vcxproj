@@ -69,6 +69,9 @@
     <Lib>
       <OutputFile>$(SolutionDir)\lib\$(ProjectName)_$(Configuration).lib</OutputFile>
     </Lib>
+    <PostBuildEvent>
+      <Command>copy "lib\itpp_debug.lib"  "..\..\datvexpress_gui\3rd\lib\itpp_debug.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -85,6 +88,9 @@
     <Lib>
       <OutputFile>$(SolutionDir)\lib\itpp.lib</OutputFile>
     </Lib>
+    <PostBuildEvent>
+      <Command>copy "lib\itpp.lib"  "..\..\datvexpress_gui\3rd\lib\itpp.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\itpp\base\binary.cpp" />
