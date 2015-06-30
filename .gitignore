@@ -79,3 +79,6 @@
 /win32-vc10/*.build
 /bin/*.ilk
 /data/*.dat
+/data/16200_diy
+/data/*.alist
+/data/64800-3-4

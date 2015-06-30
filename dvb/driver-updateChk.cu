@@ -9,10 +9,7 @@ using namespace std;
 
 
 #define		TABLE_SIZE_DINT2	300
-#define		MAX_CHECK_NODE		6//10
-#define		MAX_VAR_NODE		3//19
-#define		VAR_SIZE_CODE		16200
-#define		CHECK_SIZE_CODE		8100//8073
+#define		MAX_LOCAL_CACHE		30
 #define		SIZE_BLOCK			256
 #define		SIZE_BLOCK_2D_X		32
 
@@ -93,9 +90,9 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 	}
 	__syncthreads();
 
-	int ml[MAX_CHECK_NODE];//int* ml	= d_ml	+ j * max_cnd;
-	int mr[MAX_CHECK_NODE];//int* mr	= d_mr	+ j * max_cnd;
-	int m[MAX_CHECK_NODE];
+	int ml[MAX_LOCAL_CACHE];//int* ml	= d_ml	+ j * max_cnd;
+	int mr[MAX_LOCAL_CACHE];//int* mr	= d_mr	+ j * max_cnd;
+	int m[MAX_LOCAL_CACHE];
 
 	switch( sumX2[j] )
 	{
@@ -171,7 +168,7 @@ void updateVariableNodeOpti2D_kernel( const int nvar, const int ncheck, const in
 		return;
 		
 	__shared__ int mvc_temp[SIZE_BLOCK_2D_X];
-	__shared__ int m[MAX_VAR_NODE][SIZE_BLOCK_2D_X];
+	__shared__ int m[MAX_LOCAL_CACHE][SIZE_BLOCK_2D_X];
 	
 
 	if( threadIdx.y < sumX1[i] )
@@ -255,14 +252,27 @@ void 	readArray(T* pArray, int nSize, char* strFileName)
 	fclose(fp);
 }
 
+void	readFile(int& nvar, int& ncheck, int& nmaxX1, int& nmaxX2, char* filename)
+{
+	FILE* fp;
+	fp = fopen( filename, "rb" );
+	if( !fp )
+		return;
+
+	fread( &nvar, sizeof(int), 1, fp );
+	fread( &ncheck, sizeof(int), 1, fp );
+	fread( &nmaxX1, sizeof(int), 1, fp );
+	fread( &nmaxX2, sizeof(int), 1, fp );
+
+	fclose( fp );
+}
+
 driverUpdataChk::driverUpdataChk()
-	: nvar( VAR_SIZE_CODE )
-	, ncheck( CHECK_SIZE_CODE )
-	, nmaxX1( MAX_VAR_NODE )
-	, nmaxX2( MAX_CHECK_NODE )
 {
 	Dint1 = 12;	Dint2 = 300;	Dint3 = 7;	//! Decoder (lookup-table) parameters
 	QLLR_MAX = (1<<31 -1)>>4;//(std::numeric_limits<int>::max() >> 4);
+
+	readFile( nvar, ncheck, nmaxX1, nmaxX2, "../data/ldpcSize.txt" );
 
 	sumX2 = (int*)malloc(ncheck * sizeof(int));
 	jind = (int*)malloc(ncheck * nmaxX2 * sizeof(int));
