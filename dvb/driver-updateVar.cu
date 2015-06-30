@@ -160,12 +160,25 @@ void 	readArray(T* pArray, int nSize, char* strFileName)
 	fclose(fp);
 }
 
-driverUpdataVar::driverUpdataVar(int var, int check, int maxvar, int maxcheck)
-	: nvar( var )
-	, ncheck( check )
-	, nmaxX1( maxvar )
-	, nmaxX2( maxcheck )
+void	readFile(int& nvar, int& ncheck, int& nmaxX1, int& nmaxX2, char* filename)
 {
+	FILE* fp;
+	fp = fopen( filename, "rb" );
+	if( !fp )
+		return;
+
+	fread( &nvar, sizeof(int), 1, fp );
+	fread( &ncheck, sizeof(int), 1, fp );
+	fread( &nmaxX1, sizeof(int), 1, fp );
+	fread( &nmaxX2, sizeof(int), 1, fp );
+
+	fclose( fp );
+}
+
+driverUpdataVar::driverUpdataVar( )
+{
+	readFile( nvar, ncheck, nmaxX1, nmaxX2, "../data/ldpcSize.txt" );
+
 	sumX1 = (int*)malloc(nvar * sizeof(int));
 	iind = (int*)malloc(nvar * nmaxX1 * sizeof(int));
 	mvc = (int*)malloc(nvar * nmaxX1 * sizeof(int) * N_FRAME);

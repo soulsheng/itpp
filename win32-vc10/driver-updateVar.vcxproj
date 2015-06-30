@@ -126,10 +126,10 @@
     <None Include="..\dvb\driver-updateVar.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\tests\helper_timer.h" />
+    <CudaCompile Include="..\dvb\driver-updateVar.cu" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="..\dvb\driver-updateVar.cu" />
+    <ClInclude Include="..\dvb\helper_timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

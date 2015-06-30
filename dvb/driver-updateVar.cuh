@@ -10,7 +10,7 @@ public:
 
 	bool	verify();	//! verify whether the result is right or wrong
 	
-	driverUpdataVar(int var, int check, int maxvar, int maxcheck);
+	driverUpdataVar( );
 
 	~driverUpdataVar();
 
