@@ -20,7 +20,7 @@
     <None Include="..\dvb\driver-updateChk.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\tests\helper_timer.h" />
+    <ClInclude Include="..\dvb\helper_timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1EF43B48-F2FF-4CD6-B94C-9D96FBED6E96}</ProjectGuid>

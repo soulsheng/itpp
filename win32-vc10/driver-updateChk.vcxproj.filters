@@ -22,7 +22,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\tests\helper_timer.h">
+    <ClInclude Include="..\dvb\helper_timer.h">
       <Filter>utility</Filter>
     </ClInclude>
   </ItemGroup>
