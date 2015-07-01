@@ -14,7 +14,7 @@ using namespace std;
 #define		SIZE_BLOCK_2D_X		32
 
 #define		USE_BLOCK_2D		0
-#define		N_FRAME				1	// time scales as long as data length scales
+#define		N_FRAME				10	// time scales as long as data length scales
 
 
 __device__
@@ -71,10 +71,11 @@ int Boxplus(const int a, const int b,
 
 __global__ 
 void updateCheckNodeOpti_kernel( const int ncheck, const int nvar, 
-	const int* sumX2, const int* mvc, const int* jind, int* logexp_table, 
+	const int* sumX2, const int* n_mvc, const int* jind, int* logexp_table, 
 	const short int Dint1, const short int Dint2, const short int Dint3, 
 	const int QLLR_MAX,
-	int* mcv )
+	int* n_mcv,
+	int nmaxX1, int nmaxX2, int nFrame )
 {	//	mvc const(input)-> mcv (output)
 	int j = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -93,6 +94,12 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 	int ml[MAX_LOCAL_CACHE];//int* ml	= d_ml	+ j * max_cnd;
 	int mr[MAX_LOCAL_CACHE];//int* mr	= d_mr	+ j * max_cnd;
 	int m[MAX_LOCAL_CACHE];
+
+	
+	for( int frame = 0; frame < nFrame; frame ++ )	{
+
+	const int	*mvc	= n_mvc + frame * nvar * nmaxX1;
+	int			*mcv	= n_mcv + frame * ncheck * nmaxX2;
 
 	switch( sumX2[j] )
 	{
@@ -155,6 +162,8 @@ void updateCheckNodeOpti_kernel( const int ncheck, const int nvar,
 	}
 	}// default
 	}//switch
+
+	}// nFrame
 }
 
 
@@ -213,7 +222,7 @@ bool driverUpdataChk::launch()
 	updateCheckNodeOpti_kernel<<< grid, block >>>( ncheck, nvar, 
 		d_sumX2, d_mvc, d_jind, d_logexp_table,
 		Dint1, Dint2, Dint3, QLLR_MAX,
-		d_mcv );
+		d_mcv, nmaxX1, nmaxX2, N_FRAME );
 
 #endif
 
@@ -227,13 +236,13 @@ bool driverUpdataChk::verify()
 
 	// mcv
 	int i = 0;
-	for ( ; i < ncheck * nmaxX2; i++ )
+	for ( ; i < ncheck * nmaxX2 * N_FRAME; i++ )
 	{
 		if ( ref_mcv[i] != mcv[i] )
 			break;
 	}
 
-	if ( i < ncheck * nmaxX2 )
+	if ( i < ncheck * nmaxX2 * N_FRAME )
 		return false;
 
 	return true;
