@@ -30,7 +30,7 @@ void main()
 		cout << "Succeed to launch cuda kernel and verify that result is right" << endl;
 
 	cudaDeviceReset();
-	system( "pause" );
+	//system( "pause" );
 
 }
 

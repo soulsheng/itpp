@@ -15,7 +15,7 @@ using namespace std;
 #define		SIZE_BLOCK_2D_X		32
 
 #define		USE_BLOCK_2D		0
-#define		N_FRAME				1	// time scales as long as data length scales
+#define		N_FRAME				10	// time scales as long as data length scales
 
 __global__ 
 void updateVariableNodeOpti_kernel( const int nvar, const int ncheck, const int* sumX1, const int* n_mcv, const int* iind, const int * n_LLRin, 
